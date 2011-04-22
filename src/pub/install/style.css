@@ -1,0 +1,245 @@
+/* @override http://bedrock/install/style.css */
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	color: #666666;
+	font-family: arial, sans-serif;
+}
+
+h2 {
+	padding-bottom: 30px;
+	margin: 0;
+}
+
+p {
+	color: #888888;
+}
+
+a {
+	text-decoration: none;
+	color: #E1A602;
+	font-weight: bold;
+	outline: none;
+}
+
+a:hover {
+	color: #444444;
+}
+
+a:focus {
+	outline: none;
+}
+
+em {
+	color: #DD0000;
+	font-weight: normal;
+	font-size: 0.8em;
+}
+
+input[type=text],
+input[type=password] {
+	border: 1px solid #cccccc;
+	font-size: 10pt;
+	padding: 0.25em;
+}
+
+table {
+	font-size: 10pt;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+td {
+	padding: 0.5em;
+}
+
+th {
+	font-family: arial, sans-serif;
+	text-align: left;
+	vertical-align: top;
+	font-size: 10pt;
+	color: #666666;
+	padding-right: 1em;
+	padding-top: 1em;
+}
+
+#main {
+	color: #444444;
+	margin: 80px auto auto auto;
+	padding: 40px;
+	width: 420px;
+	height: 360px;
+	background: transparent url("images/box.png");
+}
+
+#content {
+	height: 250px;
+}
+
+#logo {
+	float: left;
+	position: relative;
+	top: -80px;
+	left: -80px;
+	margin-bottom: -80px;
+	margin-right: -80px;
+	padding-right: 10px;
+	background-image: url("images/bedrock_logo.png");
+	background-repeat: no-repeat;
+	width: 140px;
+	height: 140px;
+}
+
+table.check {
+	border-collapse: collapse;
+}
+
+table.check th {
+	vertical-align: middle;
+	padding: 0;
+	padding-left: 6px;
+}
+
+td.icon {
+	border-right: 1px solid #cccccc;
+}
+
+#delete_msg {
+	font-family: arial, sans-serif;
+	font-size: 0.8em;
+	font-weight: bold;
+	text-align: center;
+	width: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+#delete_msg.disabled {
+	color: #aaaaaa;
+}
+
+#nav {
+	margin: auto;
+	text-align: center;
+	width: 300px;
+	height: 50px;
+}
+
+#nav input[type=button],
+#nav input[type=submit],
+#nav input[type=reset] {
+	background-position: 0 -100px;
+	border: none;
+	cursor: pointer;
+	height: 50px;
+	padding: 15px;
+}
+
+#nav input[type=button]:hover,
+#nav input[type=submit]:hover,
+#nav input[type=reset]:hover {
+	background-position: 0 -50px;
+}
+
+#nav input[type=button]:active,
+#nav input[type=submit]:active,
+#nav input[type=reset]:active {
+	background-position: 0 0;
+}
+
+#nav .start {
+	background: transparent url("images/nav_start.png");
+	width: 100px;
+}
+
+#nav .next {
+	background: transparent url("images/nav_next.png");
+	float: left;
+	width: 90px;
+}
+
+#nav .back {
+	background: transparent url("images/nav_back.png");
+	float: left;
+	width: 90px;
+}
+
+#nav .finish {
+	background: transparent url("images/nav_finish.png");
+	float: left;
+	width: 90px;
+}
+
+#nav .launch {
+	background: transparent url("images/nav_launch.png");
+	width: 100px;
+}
+
+#nav .launch.disabled,
+#nav .launch.disabled:hover,
+#nav .launch.disabled:active {
+	background-position: 0 -150px;
+	cursor: default;
+}
+
+#nav .step {
+	background: transparent url("images/nav_step.png");
+	display: block;
+	float: left;
+	width: 30px;
+	height: 50px;
+}
+
+#nav .step.disabled {
+	background: transparent url("images/nav_step_disabled.png");
+}
+
+#nav .step.current {
+	background: transparent url("images/nav_step_current.png") 0 -100px;
+}
+
+#output_iframe {
+	width: 100%;
+	height: 90%;
+	background-color: #000000;
+	overflow: auto;
+}
+
+body#output {
+	background-color: #000000;
+}
+
+#output {
+	color: #ffffff;
+	font-family: "Courier New", Courier, mono;
+	font-size: 10pt;
+}
+
+#output .info {
+	font-weight: normal;
+}
+
+#output .status {
+	color: #3333ff;
+	font-weight: bold;
+}
+
+#output .success {
+	color: #00cc00;
+	font-weight: bold;
+}
+
+#output .warn {
+	color: #ff5d00;
+	font-weight: bold;
+}
+
+#output .error {
+	color: #ff0000;
+	font-weight: bold;
+}

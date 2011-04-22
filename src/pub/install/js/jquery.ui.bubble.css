@@ -1,0 +1,527 @@
+/**
+ * Payload::Common::Bubble
+ */
+.ui-bubble {
+	position: absolute;
+	z-index: 1;
+	color: #ffffff;
+	display: none;
+	top: 0;
+	left: 0;
+	background: transparent;
+}
+
+.ui-bubble .ui-bubble-message {
+	z-index: 1;
+	position: absolute;
+	top: -40px;
+	left: -40px;
+	overflow: hidden;
+	margin: 30px 30px 30px 30px;
+	display: table;
+}
+
+.ui-bubble .ui-bubble-text {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+/**
+ * Payload::Common::Bubble::Borders
+ */
+.ui-bubble-mid {
+	background-image: url("images/bubble-background.png");
+	position: absolute;
+	right: 40px;
+	left: 40px;
+	top: 40px;
+	bottom: 40px;
+}
+
+.ui-bubble .ui-bubble-left {
+	height: 40px;
+	margin-right: 20px;
+}
+
+.ui-bubble .ui-bubble-left-wrapper {
+	width: 50%;
+	float: left;
+}
+
+.ui-bubble .ui-bubble-mid-x {
+	width: 40px;
+	height: 40px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.ui-bubble .ui-bubble-right {
+	height: 40px;
+	margin-left: 20px;
+}
+
+.ui-bubble .ui-bubble-right-wrapper {
+	width: 50%;
+	float: right;
+}
+
+.ui-bubble .ui-bubble-top {
+	width: 40px;
+	position: absolute;
+	top: 40px;
+	bottom: 20px;
+}
+
+.ui-bubble .ui-bubble-top-wrapper {
+	width: 40px;
+	height: 50%;
+	position: absolute;
+	top: 0px;
+}
+
+.ui-bubble .ui-bubble-w .ui-bubble-mid-x,
+.ui-bubble .ui-bubble-e .ui-bubble-mid-x {
+	position: absolute;
+	top: 50%;
+	margin-top: -20px;
+}
+
+.ui-bubble .ui-bubble-bottom {
+	width: 40px;
+	position: absolute;
+	top: 20px;
+	bottom: 40px;
+}
+
+.ui-bubble .ui-bubble-bottom-wrapper {
+	width: 40px;
+	height: 50%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.ui-bubble .ui-bubble-short.ui-bubble-nw,
+.ui-bubble .ui-bubble-short.ui-bubble-ne,
+.ui-bubble .ui-bubble-short.ui-bubble-se,
+.ui-bubble .ui-bubble-short.ui-bubble-sw {
+	height: 30px !important;
+}
+
+.ui-bubble .ui-bubble-short.ui-bubble-se,
+.ui-bubble .ui-bubble-short.ui-bubble-sw {
+	background-position: 0px -10px;
+}
+
+.ui-bubble .ui-bubble-short.ui-bubble-top {
+	top: 30px;
+}
+
+.ui-bubble .ui-bubble-short.ui-bubble-bottom {
+	bottom: 30px;
+}
+
+.ui-bubble .ui-bubble-shorter.ui-bubble-top {
+	bottom: 15px;
+}
+
+.ui-bubble .ui-bubble-shorter.ui-bubble-bottom {
+	top: 15px;
+}
+
+.ui-bubble .ui-bubble-shorter.ui-bubble-mid-x {
+	height: 30px;
+	margin-top: -15px;
+	background-position: 0px -5px;
+}
+
+/**
+ * Payload::Common::Bubble::Borders::NW
+ */
+.ui-bubble .ui-bubble-nw {
+	background-image: url("images/bubble-std-border-nw.png");
+	width: 40px;
+	height: 40px;
+	float: left;
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-nw {
+	background-image: url("images/bubble-red-border-nw.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-nw {
+	background-image: url("images/bubble-green-border-nw.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-nw {
+	background-image: url("images/bubble-yellow-border-nw.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::N
+ */
+.ui-bubble .ui-bubble-n {
+	height: 40px;
+	position: absolute;
+	left: 40px;
+	right: 40px;
+}
+
+.ui-bubble .ui-bubble-n .ui-bubble-mid-x {
+
+}
+
+.ui-bubble .ui-bubble-n .ui-bubble-left,
+.ui-bubble .ui-bubble-n .ui-bubble-mid-x,
+.ui-bubble .ui-bubble-n .ui-bubble-right {
+	background-image: url("images/bubble-std-border-n.png");
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-n .ui-bubble-left,
+.ui-bubble.ui-bubble-red .ui-bubble-n .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-red .ui-bubble-n .ui-bubble-right {
+	background-image: url("images/bubble-red-border-n.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-n .ui-bubble-left,
+.ui-bubble.ui-bubble-green .ui-bubble-n .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-green .ui-bubble-n .ui-bubble-right {
+	background-image: url("images/bubble-green-border-n.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-n .ui-bubble-left,
+.ui-bubble.ui-bubble-yellow .ui-bubble-n .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-yellow .ui-bubble-n .ui-bubble-right {
+	background-image: url("images/bubble-yellow-border-n.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::NE
+ */
+.ui-bubble .ui-bubble-ne {
+	background-image: url("images/bubble-std-border-ne.png");
+	background-position: 0px 0;
+	width: 40px;
+	height: 40px;
+	float: right;
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-ne {
+	background-image: url("images/bubble-red-border-ne.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-ne {
+	background-image: url("images/bubble-green-border-ne.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-ne {
+	background-image: url("images/bubble-yellow-border-ne.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::W
+ */
+.ui-bubble .ui-bubble-w {
+	width: 40px;
+	float: left;
+	clear: both;
+}
+
+.ui-bubble .ui-bubble-w .ui-bubble-top,
+.ui-bubble .ui-bubble-w .ui-bubble-mid-x,
+.ui-bubble .ui-bubble-w .ui-bubble-bottom {
+	background-image: url("images/bubble-std-border-w.png");
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-w .ui-bubble-top,
+.ui-bubble.ui-bubble-red .ui-bubble-w .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-red .ui-bubble-w .ui-bubble-bottom {
+	background-image: url("images/bubble-red-border-w.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-w .ui-bubble-top,
+.ui-bubble.ui-bubble-green .ui-bubble-w .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-green .ui-bubble-w .ui-bubble-bottom {
+	background-image: url("images/bubble-green-border-w.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-w .ui-bubble-top,
+.ui-bubble.ui-bubble-yellow .ui-bubble-w .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-yellow .ui-bubble-w .ui-bubble-bottom {
+	background-image: url("images/bubble-yellow-border-w.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::E
+ */
+.ui-bubble .ui-bubble-e {
+	width: 40px;
+	float: right;
+}
+
+.ui-bubble .ui-bubble-e .ui-bubble-mid-x {
+
+}
+
+.ui-bubble .ui-bubble-e .ui-bubble-top,
+.ui-bubble .ui-bubble-e .ui-bubble-mid-x,
+.ui-bubble .ui-bubble-e .ui-bubble-bottom {
+	background-image: url("images/bubble-std-border-e.png");
+
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-e .ui-bubble-top,
+.ui-bubble.ui-bubble-red .ui-bubble-e .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-red .ui-bubble-e .ui-bubble-bottom {
+	background-image: url("images/bubble-red-border-e.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-e .ui-bubble-top,
+.ui-bubble.ui-bubble-green .ui-bubble-e .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-green .ui-bubble-e .ui-bubble-bottom {
+	background-image: url("images/bubble-green-border-e.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-e .ui-bubble-top,
+.ui-bubble.ui-bubble-yellow .ui-bubble-e .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-yellow .ui-bubble-e .ui-bubble-bottom {
+	background-image: url("images/bubble-yellow-border-e.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::SW
+ */
+.ui-bubble .ui-bubble-sw {
+	background-image: url("images/bubble-std-border-sw.png");
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-sw {
+	background-image: url("images/bubble-red-border-sw.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-sw {
+	background-image: url("images/bubble-green-border-sw.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-sw {
+	background-image: url("images/bubble-yellow-border-sw.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::S
+ */
+.ui-bubble .ui-bubble-s {
+	height: 40px;
+	position: absolute;
+	left: 40px;
+	right: 40px;
+	bottom: 0px;
+}
+
+.ui-bubble .ui-bubble-s .ui-bubble-mid-x {
+
+}
+
+.ui-bubble .ui-bubble-s .ui-bubble-left,
+.ui-bubble .ui-bubble-s .ui-bubble-mid-x,
+.ui-bubble .ui-bubble-s .ui-bubble-right {
+	background-image: url("images/bubble-std-border-s.png");
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-s .ui-bubble-left,
+.ui-bubble.ui-bubble-red .ui-bubble-s .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-red .ui-bubble-s .ui-bubble-right {
+	background-image: url("images/bubble-red-border-s.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-s .ui-bubble-left,
+.ui-bubble.ui-bubble-green .ui-bubble-s .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-green .ui-bubble-s .ui-bubble-right {
+	background-image: url("images/bubble-green-border-s.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-s .ui-bubble-left,
+.ui-bubble.ui-bubble-yellow .ui-bubble-s .ui-bubble-mid-x,
+.ui-bubble.ui-bubble-yellow .ui-bubble-s .ui-bubble-right {
+	background-image: url("images/bubble-yellow-border-s.png");
+}
+
+/**
+ * Payload::Common::Bubble::Borders::SE
+ */
+.ui-bubble .ui-bubble-se {
+	background-image: url("images/bubble-std-border-se.png");
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+}
+
+.ui-bubble.ui-bubble-red .ui-bubble-se {
+	background-image: url("images/bubble-red-border-se.png");
+}
+
+.ui-bubble.ui-bubble-green .ui-bubble-se {
+	background-image: url("images/bubble-green-border-se.png");
+}
+
+.ui-bubble.ui-bubble-yellow .ui-bubble-se {
+	background-image: url("images/bubble-yellow-border-se.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::NW
+ */
+.ui-bubble.ui-bubble-point-nw .ui-bubble-nw {
+	background-image: url("images/bubble-std-pointer-nw.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-nw .ui-bubble-nw {
+	background-image: url("images/bubble-red-pointer-nw.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-nw .ui-bubble-nw {
+	background-image: url("images/bubble-green-pointer-nw.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-nw .ui-bubble-nw {
+	background-image: url("images/bubble-yellow-pointer-nw.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::N
+ */
+.ui-bubble.ui-bubble-point-n .ui-bubble-n .ui-bubble-mid-x {
+	background-image: url("images/bubble-std-pointer-n.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-n .ui-bubble-n .ui-bubble-mid-x {
+	background-image: url("images/bubble-red-pointer-n.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-n .ui-bubble-n .ui-bubble-mid-x {
+	background-image: url("images/bubble-green-pointer-n.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-n .ui-bubble-n .ui-bubble-mid-x {
+	background-image: url("images/bubble-yellow-pointer-n.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::NE
+ */
+.ui-bubble.ui-bubble-point-ne .ui-bubble-ne {
+	background-image: url("images/bubble-std-pointer-ne.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-ne .ui-bubble-ne {
+	background-image: url("images/bubble-red-pointer-ne.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-ne .ui-bubble-ne {
+	background-image: url("images/bubble-green-pointer-ne.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-ne .ui-bubble-ne {
+	background-image: url("images/bubble-yellow-pointer-ne.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::W
+ */
+.ui-bubble.ui-bubble-point-w .ui-bubble-w .ui-bubble-mid-x {
+	background-image: url("images/bubble-std-pointer-w.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-w .ui-bubble-w .ui-bubble-mid-x {
+	background-image: url("images/bubble-red-pointer-w.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-w .ui-bubble-w .ui-bubble-mid-x {
+	background-image: url("images/bubble-green-pointer-w.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-w .ui-bubble-w .ui-bubble-mid-x {
+	background-image: url("images/bubble-yellow-pointer-w.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::E
+ */
+.ui-bubble.ui-bubble-point-e .ui-bubble-e .ui-bubble-mid-x {
+	background-image: url("images/bubble-std-pointer-e.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-e .ui-bubble-e .ui-bubble-mid-x {
+	background-image: url("images/bubble-red-pointer-e.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-e .ui-bubble-e .ui-bubble-mid-x {
+	background-image: url("images/bubble-green-pointer-e.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-e .ui-bubble-e .ui-bubble-mid-x {
+	background-image: url("images/bubble-yellow-pointer-e.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::SE
+ */
+.ui-bubble.ui-bubble-point-se .ui-bubble-se {
+	background-image: url("images/bubble-std-pointer-se.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-se .ui-bubble-se {
+	background-image: url("images/bubble-red-pointer-se.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-se .ui-bubble-se {
+	background-image: url("images/bubble-green-pointer-se.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-se .ui-bubble-se {
+	background-image: url("images/bubble-yellow-pointer-se.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::SW
+ */
+.ui-bubble.ui-bubble-point-sw .ui-bubble-sw {
+	background-image: url("images/bubble-std-pointer-sw.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-sw .ui-bubble-sw {
+	background-image: url("images/bubble-red-pointer-sw.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-sw .ui-bubble-sw {
+	background-image: url("images/bubble-green-pointer-sw.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-sw .ui-bubble-sw {
+	background-image: url("images/bubble-yellow-pointer-sw.png");
+}
+
+/**
+ * Payload::Common::Bubble::Pointer::S
+ */
+.ui-bubble.ui-bubble-point-s .ui-bubble-s .ui-bubble-mid-x {
+	background-image: url("images/bubble-std-pointer-s.png");
+}
+
+.ui-bubble.ui-bubble-red.ui-bubble-point-s .ui-bubble-s .ui-bubble-mid-x {
+	background-image: url("images/bubble-red-pointer-s.png");
+}
+
+.ui-bubble.ui-bubble-green.ui-bubble-point-s .ui-bubble-s .ui-bubble-mid-x {
+	background-image: url("images/bubble-green-pointer-s.png");
+}
+
+.ui-bubble.ui-bubble-yellow.ui-bubble-point-s .ui-bubble-s .ui-bubble-mid-x {
+	background-image: url("images/bubble-yellow-pointer-s.png");
+}

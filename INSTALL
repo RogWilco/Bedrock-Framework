@@ -1,0 +1,34 @@
+================================================================================
+ INSTALLATION INSTRUCTIONS
+================================================================================
+ Application:   Bedrock Framework
+ Version:       0.2.1
+ Build:         79
+ Release Date:  03-15-2010
+================================================================================
+ Readme:        View the file "README" in this directory.
+ Changelog:     View the file "CHANGELOG" in this directory.
+ License:       View the file "LICENSE" in this directory for license info.
+================================================================================
+
+
+
+I. AUTOMATED INSTALLATION
+
+ Since version 0.1.1, automated installation of the framework is possible using
+ the included installer application. To start the installation process, simply
+ direct a browser to the framework's web root (under "pub/" by default). You
+ should automatically be redirected to the installer start page (provided an
+ application configuration file does not exist under "cfg/application.xml").
+ 
+ If you cannot access the installer using the above method, try navigating to
+ the installer start page directly by browsing to the location
+ "install/index.php" under your public root ("pub/install/index.php").
+ 
+ Follow the instructions and provide the requested information on each page.
+ When the installation has completed, remove the "install/" directory before
+ making your application publicly accessible.
+
+II. MANUAL INSTALLATION
+
+ Manual installation instructions will be added at a later date.

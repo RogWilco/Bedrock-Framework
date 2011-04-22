@@ -1,0 +1,475 @@
+<?php
+/**
+ * Represents a database connection, manages general database operations, and
+ * stores properties describing the currently connected database.
+ * 
+ * @package Bedrock
+ * @author Nick Williams
+ * @version 1.0.0
+ * @created 08/29/2008
+ * @updated 08/29/2008
+ */
+class Bedrock_Model_Database extends Bedrock {
+	const DB_TYPE_MYSQL = 0;
+	const DB_TYPE_POSTGRES = 1;
+	const DB_TYPE_MSSQL = 2;
+	
+	protected $_connection;
+	protected $_name;
+	protected $_type;
+	protected $_tables;
+	
+	/**
+	 * Initializes a database connection.
+	 *
+	 * @param array $databaseConfig the database configuration
+	 */
+	public function __construct($databaseConfig) {
+		Bedrock_Common_Logger::logEntry();
+		
+		try {
+			// Build Connection String
+			$dsn = $databaseConfig->type . ':host=' . $databaseConfig->host . ';dbname=' . $databaseConfig->dbname;
+			
+			Bedrock_Common_Logger::info('Connecting to database "' . $databaseConfig->dbname . '" on "' . $databaseConfig->host . '"...');
+			
+			// Set Properties
+			switch($databaseConfig->type) {
+				case 'mysql':
+					$this->_type = self::DB_TYPE_MYSQL;
+					break;
+			}
+			
+			// Initialize Database Connection
+			$this->_connection = new PDO($dsn, $databaseConfig->username, $databaseConfig->password);
+			$this->_name = $databaseConfig->dbname;
+			$this->_dbConfig = $databaseConfig;
+			
+			parent::__construct();
+			
+			Bedrock_Common_Logger::logExit();
+		}
+		catch(PDOException $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+			throw new Bedrock_Model_Exception('There was a problem retrieving the table information.');
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+			throw new Bedrock_Model_Exception('There was a problem connecting to the database.');
+		}
+	}
+	
+	/**
+	 * Retrieves the requested table as a table object.
+	 *
+	 * @param string $tableName the name of the table to retrieve
+	 * @return Bedrock_Model_Table the resulting table object
+	 */
+	public function __get($tableName) {
+		Bedrock_Common_Logger::logEntry();
+		
+		try {
+			// If requested table isn't cached, load it.
+			if(!is_object($this->_tables[$tableName])) {
+				$this->_tables[$tableName] = new Bedrock_Model_Table(array('name' => $tableName), $this);
+				$this->_tables[$tableName]->load();
+			}
+			
+			Bedrock_Common_Logger::logExit();
+			return $this->_tables[$tableName];
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+			throw new Bedrock_Model_Exception('There was a problem retrieving the table information.');
+		}
+	}
+	
+	/**
+	 * Loads all current database and table details into the database object.
+	 */
+	public function load() {
+		Bedrock_Common_Logger::logEntry();
+		
+		try {
+			// Get Table List
+			$res = $this->_connection->query('SHOW TABLES');
+			
+			while($row = $res->fetch(PDO::FETCH_NUM)) {
+				$this->__get($row[0]);
+			}
+			
+			Bedrock_Common_Logger::logExit();
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+		}
+	}
+	
+	/**
+	 * Returns the current database connection.
+	 *
+	 * @return PDO the current database connection
+	 */
+	public function getConnection() {
+		if($this->_connection) {
+			return $this->_connection;
+		}
+		else {
+			return NULL;
+		}
+	}
+	
+	/**
+	 * Returns all tables currently stored with the Database object.
+	 *
+	 * @return array an array of the corresponding Table objects
+	 */
+	public function getTables() {
+		return $this->_tables;
+	}
+	
+	/**
+	 * Returns configuration details for the current database connection.
+	 *
+	 * @return array an array containing the configuration details
+	 */
+	public function getConfig() {
+		return $this->_dbConfig;
+	}
+
+	/**
+	 * Returns the current database's table definitions as a string using the
+	 * default format.
+	 *
+	 * @return string all current table definitions
+	 */
+	public function __toString() {
+		return $this->toString();
+	}
+
+	/**
+	 * Returns the current database's table definitions as a string using the
+	 * default format.
+	 *
+	 * @param string $format the desired output format
+	 * @return string all current table definitions
+	 */
+	public function toString($format = Bedrock_Model::FORMAT_SQL) {
+		Bedrock_Common_Logger::logEntry();
+
+		try {
+			// Setup
+			$result = '';
+
+			// Build String
+			if(empty($this->_tables)) {
+				$this->load();
+			}
+			
+			foreach($this->_tables as $table) {
+				$result .= $table->toString($format);
+			}
+
+			Bedrock_Common_Logger::logExit();
+			return $result;
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+		}
+	}
+
+	/**
+	 * Imports table schemas into the current database (overwrites any existing
+	 * tables and records).
+	 *
+	 * @param string $importSource the file containing the definitions to import
+	 * @param string $importType the format used
+	 * @param boolean $sourceIsFile whether or not the specified source is a file
+	 * @return boolean whether or not the import was successful
+	 */
+	public function importTableSchemas($importSource, $importType = Bedrock_Model::FORMAT_SQL, $sourceIsFile = true) {
+		Bedrock_Common_Logger::logEntry();
+
+		try {
+			// Setup
+			$result = true;
+
+			Bedrock_Common_Logger::info('Importing table schemas for database "' . $this->_name . '"...');
+			$this->load();
+
+			if(!is_file($importSource)) {
+				throw new Bedrock_Model_Exception('The import source specified is invalid: "' . $importSource . '"');
+			}
+
+			switch($importType) {
+				default:
+
+				case Bedrock_Model::FORMAT_SQL:
+					$lines = file($importSource);
+					$updated = false;
+
+					foreach($lines as $line) {
+						$line = trim($line);
+
+						if(preg_match("/^CREATE\s+(?:TEMPORARY\s+)?TABLE\s+(?:IF NOT EXISTS\s+)?([^\s]+)/i", $line, $matches)) {
+							$tableName = trim($matches[1], '`');
+							
+							foreach($this->_tables as $key => $table) {
+								if($table->getProperty('name') == $tableName) {
+									$result &= $this->_tables[$key]->importSchema($line, Bedrock_Model::FORMAT_SQL, false);
+									$updated = true;
+								}
+							}
+
+							if(!$updated) {
+								$newTable = new Bedrock_Model_Table();
+								$result &= $this->_tables[$tableName] = $newTable->importSchema($line, Bedrock_Model::FORMAT_SQL, false);
+								$updated = false;
+							}
+						}
+					}
+
+					break;
+
+				case Bedrock_Model::FORMAT_XML:
+					$xml = simplexml_load_file($importSource);
+					$updated = false;
+					
+					foreach($xml as $xmlTable) {
+						foreach($this->_tables as $key => $table) {
+							if($table->getProperty('name') == $xmlTable['name']) {
+								$result &= $this->_tables[$key]->importSchema($xmlTable->asXML(), Bedrock_Model::FORMAT_XML, false);
+								$updated = true;
+							}
+						}
+
+						if(!$updated) {
+							$newTable = new Bedrock_Model_Table(array(), $this);
+							$result &= $this->_tables[$xmlTable['name']] = $newTable->importSchema($xmlTable->asXML(), Bedrock_Model::FORMAT_XML, false);
+							$updated = false;
+						}
+					}
+
+					break;
+
+				case Bedrock_Model::FORMAT_YAML:
+					$importData = file_get_contents($importSource);
+					$yaml = new Bedrock_Common_Data_YAML($importData);
+					$updated = false;
+
+					foreach($yaml->tables as $yamlTable) {
+						foreach($this->_tables as $key => $table) {
+							if($table->getProperty('name') == $yamlTable['name']) {
+								$yamlTable = new Bedrock_Common_Data_YAML(array('table' => $yamlTable), true);
+								$result &= $this->_tables[$key]->importSchema((string) $yamlTable, Bedrock_Model::FORMAT_YAML, false);
+								$updated = true;
+							}
+						}
+
+						if(!$updated) {
+							$newTable = new Bedrock_Model_Table(array(), $this);
+							$yamlTable = new Bedrock_Common_Data_YAML(array('table' => $yamlTable), true);
+							$result &= $this->_tables[$yamlTable['name']] = $newTable->importSchema((string) $yamlTable, Bedrock_Model::FORMAT_YAML, false);
+							$updated = false;
+						}
+					}
+
+					break;
+
+				case Bedrock_Model::FORMAT_CSV:
+					$importData = file_get_contents($importSource);
+					$csv = new Bedrock_Common_Data_CSV($importData, ', ', true);
+					$updated = false;
+					$arrayTable = array();
+					$lastRowNum = count($csv) - 1;
+					
+					foreach($csv as $rowNum => $row) {
+						if($row['class'] == 'table' || $rowNum == $lastRowNum) {
+							if(count($arrayTable)) {
+								foreach($this->_tables as $key => $table) {
+									if($table->getProperty('name') == $arrayTable[0]['name']) {
+										$csvTable = new Bedrock_Common_Data_CSV($arrayTable, ', ', true);
+										$result &= $this->_tables[$key]->importSchema((string) $csvTable, Bedrock_Model::FORMAT_CSV, false);
+										$updated = true;
+										break;
+									}
+								}
+
+								if(!$updated) {
+									$newTable = new Bedrock_Model_Table(array(), $this);
+									$csvTable = new Bedrock_Common_Data_CSV($arrayTable, ', ', true);
+									$result &= $this->_tables[$arrayTable[0]['name']] = $newTable->importSchema((string) $csvTable, Bedrock_Model::FORMAT_CSV, false);
+									$updated = false;
+								}
+							}
+
+							$arrayTable = array();
+						}
+						
+						$arrayTable[] = $row;
+					}
+					
+					break;
+			}
+
+			Bedrock_Common_Logger::logExit();
+			return $result;
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+		}
+	}
+
+	/**
+	 * Exports all table schemas to the specified location.
+	 *
+	 * @param string $exportLocation the file to write
+	 * @param string $exportType the format to use
+	 */
+	public function exportTableSchemas($exportLocation, $exportType = Bedrock_Model::FORMAT_SQL) {
+		Bedrock_Common_Logger::logEntry();
+
+		try {
+			// Setup
+			$fileContents = '';
+			
+			Bedrock_Common_Logger::info('Exporting table schemas for database "' . $this->_name . '"...');
+
+			// Build String
+			$this->load();
+
+			switch($exportType) {
+				case Bedrock_Model::FORMAT_SQL:
+					foreach($this->_tables as $table) {
+						Bedrock_Common_Logger::info('Exporting schema of table "' . $table->getProperty('name') . '"...');
+						$fileContents .= $table->schemaToString($exportType) . ';' . Bedrock_Common::TXT_NEWLINE;
+					}
+					break;
+
+				case Bedrock_Model::FORMAT_XML:
+					foreach($this->_tables as $table) {
+						$fileContents .= $table->schemaToString($exportType);
+						$fileContents = str_replace('<?xml version="1.0"?>' . Bedrock_Common::TXT_NEWLINE, '', $fileContents);
+					}
+
+					$fileContents = '<tables>' . $fileContents . '</tables>';
+					$fileContents = DOMDocument::loadXML($fileContents);
+					$fileContents->formatOutput = true;
+					$fileContents->preserveWhitespace = false;
+					$fileContents = $fileContents->saveXML();
+					break;
+
+				case Bedrock_Model::FORMAT_YAML:
+					$yaml = new Bedrock_Common_Data_YAML();
+
+					foreach($this->_tables as $table) {
+						$table = new Bedrock_Common_Data_YAML($table->schemaToString($exportType));
+						$tables[] = $table->table;
+					}
+
+					$yaml->tables = $tables;
+
+					$fileContents = (string) $yaml;
+					break;
+
+				case Bedrock_Model::FORMAT_CSV:
+					$first = true;
+
+					foreach($this->_tables as $table) {
+						$tableCsv = $table->schemaToString($exportType);
+
+						if(!$first) {
+							$tableCsv = substr($tableCsv, strpos($tableCsv, Bedrock_Common::TXT_NEWLINE) + 1);
+						}
+
+						$fileContents .= $tableCsv;
+						$first = false;
+					}
+					break;
+			}
+			
+			Bedrock_Model::writeFile($exportLocation, $fileContents);
+			
+			Bedrock_Common_Logger::logExit();
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+			throw new Bedrock_Model_Exception('Table schema export failed.');
+		}
+	}
+	
+	/**
+	 * Imports all table data from the specified source directory.
+	 *
+	 * @param string $importSource the source directory containing the files to import
+	 * @param integer $importType the type of data the source files use
+	 * @param boolean $append whether or not to append the imported data to existing table data
+	 */
+	public function importTableData($importSource, $importType, $append = false) {
+		Bedrock_Common_Logger::logEntry();
+		
+		try {
+			// Setup
+			$ext = '.' . Bedrock_Model_Table::typeToString($importType);
+			$fileName = '';
+			
+			// Load Tables
+			$this->load();
+			
+			// Import Data
+			Bedrock_Common_Logger::info('Attempting to import table data for database "' . $this->_name . '" from location "' . $importSource . '" ...');
+			
+			foreach($this->_tables as $name => $table) {
+				$fileName = $importSource . $name . $ext;
+				
+				if(is_file($fileName)) {
+					Bedrock_Common_Logger::info('File "' . $fileName . '" found, importing for corresponding table...');
+					$table->importData($fileName, $importType, $append);
+				}
+			}
+			
+			Bedrock_Common_Logger::logExit();
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+		}
+	}
+	
+	/**
+	 * Exports all table data from the database to the specified location.
+	 *
+	 * @param integer $exportType the data type to use
+	 * @param string $exportLocation the location to which to export
+	 */
+	public function exportTableData($exportLocation, $exportType) {
+		Bedrock_Common_Logger::logEntry();
+		
+		try {
+			// Load Tables
+			$this->load();
+			
+			Bedrock_Common_Logger::info('Exporting all table data for database "' . $this->_name . '" to location "' . $exportLocation . '" ...');
+			
+			// Export Data
+			foreach($this->_tables as $name => $table) {
+				Bedrock_Common_Logger::info('Exporting table "' . $name . '" ...');
+				$table->exportData($exportLocation, $exportType);
+			}
+			
+			Bedrock_Common_Logger::logExit();
+		}
+		catch(Exception $ex) {
+			Bedrock_Common_Logger::exception($ex);
+			Bedrock_Common_Logger::logExit();
+		}
+	}
+}
+?>
