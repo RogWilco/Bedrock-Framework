@@ -18,6 +18,8 @@ class Std extends \Bedrock\Common\Form\Field {
 	 * @param string $property the property to render
 	 */
 	public function render($property = 'input') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$namespace = '';
@@ -180,9 +182,11 @@ class Std extends \Bedrock\Common\Form\Field {
 				echo $html;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

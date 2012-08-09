@@ -57,6 +57,8 @@ class YAML extends \Bedrock\Common\Data {
 	 * @return string the encoded data
 	 */
 	public static function encode($data, $root = true, $prepend = '', $strictTyping = false) {
+		\Bedrock\Common\Logger::logEntry();
+
 		try {
 			// Setup
 			$result = '';
@@ -146,10 +148,12 @@ class YAML extends \Bedrock\Common\Data {
 				$result .= '...';
 			}
 
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Data\Exception('Could not encode the specified data into a string: ' . $ex->getTrace());
 		}
 	}

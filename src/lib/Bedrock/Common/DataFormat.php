@@ -29,6 +29,8 @@ abstract class DataFormat extends \Bedrock {
 	 * Outputs the data to the browser.
 	 */
 	public function printData() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			switch(get_class($this)) {
 				default:
@@ -43,9 +45,11 @@ abstract class DataFormat extends \Bedrock {
 			
 			echo $this->toString();
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	

@@ -17,6 +17,8 @@ class YAML extends \Bedrock\Common\DataFormat {
 	 * @param array $data the data to use
 	 */
 	public function __construct($data = array()) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Build Data
 			foreach($data as $entry) {
@@ -30,9 +32,11 @@ class YAML extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to construct a YAML object from the supplied data.');
 		}
 	}
@@ -43,6 +47,8 @@ class YAML extends \Bedrock\Common\DataFormat {
 	 * @return array the currently stored data
 	 */
 	public function toArray() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = array();
@@ -59,10 +65,12 @@ class YAML extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an array.');
 		}
 	}
@@ -74,6 +82,8 @@ class YAML extends \Bedrock\Common\DataFormat {
 	 * @return string the data assembled into a YAML string
 	 */
 	public function toString($indent = '') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = '';
@@ -98,10 +108,12 @@ class YAML extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate a YAML string.');
 		}
 	}

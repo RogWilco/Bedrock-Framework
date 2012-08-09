@@ -31,6 +31,8 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 	 * @param string $fieldPassword the field used to store passwords
 	 */
 	public function __construct($username, $password, $table = 'users', $fieldUser = 'username', $fieldPassword = 'password') {
+		\Bedrock\Common\Logger::logEntry();
+
 		try {
 			$this->_username = $username;
 			$this->_password = $password;
@@ -38,9 +40,11 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 			$this->_fieldUsername = $fieldUser;
 			$this->_fieldPassword = $fieldPassword;
 
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('The Model authentication protocol could not be initialized.');
 		}
 	}
@@ -53,6 +57,8 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 	 * @return mixed the result of the authentication process, on success the user's unique ID
 	 */
 	public function authenticate() {
+		\Bedrock\Common\Logger::logEntry();
+
 		try {
 			// Query Database
 			$db = \Bedrock\Common\Registry::get('database')->getConnection();
@@ -78,6 +84,7 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('Authentication could not be completed.');
 		}
 	}
@@ -90,6 +97,9 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 	 * @return integer the last response received
 	 */
 	public function authResponse() {
+		\Bedrock\Common\Logger::logEntry();
+		
+		\Bedrock\Common\Logger::logExit();
 		return $this->_response;
 	}
 
@@ -97,11 +107,15 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 	 * Processes a successful authentication request.
 	 */
 	public function authSuccess() {
+		\Bedrock\Common\Logger::logEntry();
+
 		try {
 
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('Authentication was successful, but the response could not be processed.');
 		}
 	}
@@ -110,6 +124,8 @@ class Model extends \Bedrock implements \Bedrock\Common\Auth\Protocol\ProtocolIn
 	 * Processes a failed authentication request.
 	 */
 	public function authFail() {
+		\Bedrock\Common\Logger::logEntry();
 		$this->_failCount++;
+		\Bedrock\Common\Logger::logExit();
 	}
 }

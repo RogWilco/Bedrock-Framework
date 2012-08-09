@@ -17,6 +17,8 @@ class CSV extends \Bedrock\Common\DataFormat {
 	 * @param array $data the data to use
 	 */
 	public function __construct($data = array()) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Build Data
 			foreach($data as $key => $value) {
@@ -28,9 +30,11 @@ class CSV extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to construct a CSV object from the supplied data.');
 		}
 	}
@@ -41,6 +45,8 @@ class CSV extends \Bedrock\Common\DataFormat {
 	 * @return array the currently stored data
 	 */
 	public function toArray() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = array();
@@ -55,10 +61,12 @@ class CSV extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an array.');
 		}
 	}
@@ -69,6 +77,8 @@ class CSV extends \Bedrock\Common\DataFormat {
 	 * @return string the data assembled into an CSV string
 	 */
 	public function toString() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = '';
@@ -82,10 +92,12 @@ class CSV extends \Bedrock\Common\DataFormat {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate a CSV string.');
 		}
 	}

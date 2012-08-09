@@ -32,6 +32,8 @@ class Query extends \Bedrock\Model {
 	 * @param \PDO $database an optional database connection to use, the default will be used otherwise
 	 */
 	public function __construct($targetName = '', $targetType = self::TARGET_TABLE, $database = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			parent::__construct($database);
 			
@@ -50,9 +52,11 @@ class Query extends \Bedrock\Model {
 					break;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The query could not be initialized for "' . $targetName . '"');
 		}
 	}
@@ -71,14 +75,18 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query a new query object
 	 */
 	public static function from($table) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			\Bedrock\Common\Logger::info('Querying from table "' . $table . '"');
 			self::$_instance = new self($table, self::TARGET_TABLE);
 			
+			\Bedrock\Common\Logger::logExit();
 			return self::$_instance;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The query could not be initialized for table "' . $table . '"');
 		}
 	}
@@ -90,14 +98,18 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query a new query object
 	 */
 	public function procedure($procedure) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			\Bedrock\Common\Logger::info('Querying from procedure "' . $procedure . '"');
 			self::$_instance = new self($procedure, self::TARGET_PROCEDURE);
 			
+			\Bedrock\Common\Logger::logExit();
 			return self::$_instance;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -110,6 +122,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function where($field, $operator, $value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$logValue = $value;
@@ -153,10 +167,12 @@ class Query extends \Bedrock\Model {
 					break;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $this;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('A where clause could not be added to the Query object.');
 		}
 	}
@@ -168,6 +184,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function sort($sortParams) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('ORDER BY clauses cannot be used on stored procedure queries.');
@@ -176,10 +194,12 @@ class Query extends \Bedrock\Model {
 			\Bedrock\Common\Logger::info('Applying sorting parameters: "' . $sortParams . '"');
 			$this->_query['sort'][] = $sortParams;
 			
+			\Bedrock\Common\Logger::logExit();
 			return $this;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The specified sort parameters could not be applied to the Query object.');
 		}
 	}
@@ -193,6 +213,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function limit($start, $count) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('LIMIT clauses cannot be used on stored procedure queries.');
@@ -202,10 +224,12 @@ class Query extends \Bedrock\Model {
 			\Bedrock\Common\Logger::info('Applying count limit: ' . $count);
 			$this->_query['limit'] = ' LIMIT ' . self::sanitize($start) . ', ' . self::sanitize($count);
 			
+			\Bedrock\Common\Logger::logExit();
 			return $this;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The specified limit could not be applied to the Query object.');
 		}
 	}
@@ -218,6 +242,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function match($record) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('MATCH clauses cannot be used on stored procedure queries.');
@@ -237,10 +263,12 @@ class Query extends \Bedrock\Model {
 			self::$_instance = new self($record->getProperty('table'));
 			self::$_instance->where($where);
 			
+			\Bedrock\Common\Logger::logExit();
 			return  self::$_instance;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The specified record could not be used for matching.');
 		}
 	}
@@ -253,6 +281,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the resulting query object when the second record is null, allowing for a where clause
 	 */
 	public function associate($firstRecord, $secondRecord = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot be associated with other records.');
@@ -261,6 +291,7 @@ class Query extends \Bedrock\Model {
 			if(is_null($secondRecord)) {
 				$this->reset();
 				$this->_query['associate'] = $firstRecord;
+				\Bedrock\Common\Logger::logExit();
 				return $this;
 			}
 			else {
@@ -332,15 +363,18 @@ class Query extends \Bedrock\Model {
 					throw new \Bedrock\Model\Query\Exception('Records could not be associated, no compatible table mappings were found.');
 				}
 				
+				\Bedrock\Common\Logger::logExit();
 				return;
 			}
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('A general error occurred.');
 		}
 	}
@@ -354,6 +388,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Query the resulting query object when the second record is null, allowing for a where clause
 	 */
 	public function dissociate($firstRecord, $secondRecord = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot be associated with other records.');
@@ -362,6 +398,7 @@ class Query extends \Bedrock\Model {
 			if(is_null($secondRecord)) {
 				$this->reset();
 				$this->_query['dissociate'] = $firstRecord;
+				\Bedrock\Common\Logger::logExit();
 				return $this;
 			}
 			else {
@@ -422,15 +459,18 @@ class Query extends \Bedrock\Model {
 					throw new \Bedrock\Model\Query\Exception('Records could not be dissociated, no compatible table mappings were found.');
 				}
 				
+				\Bedrock\Common\Logger::logExit();
 				return;
 			}
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The specified Record(s) could not be dissociated.');
 		}
 	}
@@ -447,6 +487,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\ResultSet the corresponding ResultSet
 	 */
 	public function associated($record, $targetTableName, $limit = array()) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
 				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot have associated records.');
@@ -518,14 +560,17 @@ class Query extends \Bedrock\Model {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('There was a problem with the database connection, associated records could not be retrieved.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('Could not retrieve associated records for the specified Record object.');
 		}
 	}
@@ -536,6 +581,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\ResultSet a ResultSet object holding the corresponding results
 	 */
 	public function execute() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$sql = '';
@@ -731,14 +778,17 @@ class Query extends \Bedrock\Model {
 			
 			\Bedrock\Common\Logger::info(array('ResultSet: "' . $sql . '" (' . $resultSet->count() . ')' , $resultSet), \Bedrock\Common\Logger::TYPE_TABLE);
 			
+			\Bedrock\Common\Logger::logExit();
 			return $resultSet;
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The Query object could not execute the stored query.');
 		}
 	}
@@ -749,6 +799,8 @@ class Query extends \Bedrock\Model {
 	 * @return \Bedrock\Model\Record the first record returned from the query
 	 */
 	public function executeFirst() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = NULL;
@@ -760,10 +812,12 @@ class Query extends \Bedrock\Model {
 				$result = $resultSet[0];
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Query\Exception('The Query object could not query for the first record using the stored query.');
 		}
 	}
@@ -775,6 +829,8 @@ class Query extends \Bedrock\Model {
 	 * @return string the resulting string
 	 */
 	public static function valueToString($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = '';
@@ -807,10 +863,12 @@ class Query extends \Bedrock\Model {
 					break;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

@@ -20,15 +20,19 @@ class Session extends \Bedrock {
 	 * Starts the session.
 	 */
 	public static function start() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if(!self::$_started) {
 				session_start();
 				self::$_started = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('A problem was encountered while trying to start the session.');
 		}
 	}
@@ -46,6 +50,8 @@ class Session extends \Bedrock {
 	 * Destroys the current session and all related data.
 	 */
 	public static function destroy() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if(!self::$_destroyed) {
 				session_destroy();
@@ -53,9 +59,11 @@ class Session extends \Bedrock {
 				self::$_destroyed = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('A problem was encountered while trying to destroy the session.');
 		}
 	}
@@ -75,6 +83,8 @@ class Session extends \Bedrock {
 	 * @param string $namespace the namespace to retrieve
 	 */
 	public static function loadNamespace($namespace = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
 				throw new \Bedrock\Common\Session\Exception('Could not retrieve the specified namespace, the name was either invalid or empty.');
@@ -87,10 +97,12 @@ class Session extends \Bedrock {
 				self::$_namespaces[$namespace] = new \Bedrock\Common\Session\SessionNamespace($namespace);
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return self::$_namespaces[$namespace];
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be accessed.');
 		}
 	}
@@ -102,6 +114,8 @@ class Session extends \Bedrock {
 	 * @param string $namespace the namespace to lock, leave blank to lock all
 	 */
 	public static function lock($namespace = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
 				throw new \Bedrock\Common\Session\Exception('Could not lock the specified namespace, the name was either invalid or empty.');
@@ -115,9 +129,11 @@ class Session extends \Bedrock {
 			
 			self::$_namespaces[$namespace]->lock();
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be locked.');
 		}
 	}
@@ -129,6 +145,8 @@ class Session extends \Bedrock {
 	 * @param string $namespace the namespace to unlock, leave blank to unlock all
 	 */
 	public static function unlock($namespace = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
 				throw new \Bedrock\Common\Session\Exception('Could not unlock the specified namespace, the name was either invalid or empty.');
@@ -142,9 +160,11 @@ class Session extends \Bedrock {
 			
 			self::$_namespaces[$namespace]->unlock();
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be unlocked.');
 		}
 	}
@@ -156,6 +176,8 @@ class Session extends \Bedrock {
 	 * @param string $namespace the desired namespace to clear
 	 */
 	public function clear($namespace = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($namespace == NULL) {
 				foreach(self::$_namespaces as $currentNamespace) {
@@ -166,9 +188,11 @@ class Session extends \Bedrock {
 				self::loadNamespace($namespace)->clear();
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -183,15 +207,19 @@ class Session extends \Bedrock {
 	 * @return string the current session ID
 	 */
 	public static function id($newSessionId = NULL) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if(!self::started()) {
 				throw new \Bedrock\Common\Session\Exception('A session ID could not be retrieved, no session has been started.');
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return session_id($newSessionId);
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Session\Exception('The session ID could not be set and/or retrieved.');
 		}
 	}

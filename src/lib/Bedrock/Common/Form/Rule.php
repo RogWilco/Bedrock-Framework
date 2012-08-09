@@ -18,6 +18,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function required($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -27,10 +29,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -41,14 +45,18 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function numeric($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Check Value
 			$result = is_numeric($value);
 
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -59,6 +67,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function alphabetic($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -71,10 +81,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -85,14 +97,18 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function alphanumeric($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Check Value
 			$result = ctype_alnum($value);
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -105,6 +121,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function minLength($value, $length) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -113,10 +131,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -129,6 +149,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function maxLength($value, $length) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -138,10 +160,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -153,14 +177,18 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function match($valueA, $valueB) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Check Values
 			$result = $valueA === $valueB;
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -172,6 +200,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function like($valueA, $valueB) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -181,10 +211,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -196,6 +228,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function whiteList($value, $allowedValues) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -205,10 +239,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -220,6 +256,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function blackList($value, $disallowedValues) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = true;
@@ -229,10 +267,12 @@ class Rule extends \Bedrock {
 				$result = false;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -243,6 +283,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function email($value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -253,10 +295,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -268,6 +312,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function phone($value, $locale = 'US') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -295,10 +341,12 @@ class Rule extends \Bedrock {
 				// @todo implement support for additional locales
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -310,6 +358,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function postalCode($value, $locale = 'US') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -328,10 +378,12 @@ class Rule extends \Bedrock {
 				// @todo implement support for additional locales
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -343,6 +395,8 @@ class Rule extends \Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function password($valueA, $valueB) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = false;
@@ -354,10 +408,12 @@ class Rule extends \Bedrock {
 				$result = true;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

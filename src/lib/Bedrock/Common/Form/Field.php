@@ -22,6 +22,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @param string $parentId the parent form or group's ID
 	 */
 	public function __construct($options, $parentId = '') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Load Default Properties
 			$this->defaults();
@@ -29,9 +31,11 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 			// Load Specified Options
 			$this->load($options);
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -39,6 +43,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * Applies any default properties for the current object.
 	 */
 	public function defaults() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			parent::defaults();
 			
@@ -49,9 +55,11 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 				'subtype' => 'text'
 			)), true);
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -62,6 +70,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @param mixed $arg the data to load as an array, Config object, or SimpleXMLElement object
 	 */
 	public function load($arg) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// =================================================================
 			// Argument: SimpleXMLElement Object
@@ -137,9 +147,11 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 				$this->_properties->subtype = $typeData[1];
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -150,6 +162,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = null;
@@ -161,10 +175,12 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 				$result = $this->_properties->{$name};
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -175,6 +191,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @param string $value the value to apply to the property
 	 */
 	public function __set($name, $value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($name == 'value') {
 				$this->_value = $value;
@@ -183,9 +201,11 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 				$this->_properties->{$name} = $value;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -195,6 +215,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @param string $property the name of the property to render
 	 */
 	public function render($property = 'input') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			switch($property) {
 				default:
@@ -206,9 +228,11 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 					break;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -221,6 +245,8 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 	 * @return string the resulting attribute string
 	 */
 	protected function attributeToString($attribute, $value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = '';
@@ -229,10 +255,12 @@ class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterfac
 				$result = $attribute . '="' . $value . '" ';
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

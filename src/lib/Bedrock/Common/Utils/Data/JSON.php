@@ -26,6 +26,8 @@ class JSON extends \Bedrock {
 	 * @return string the assembled JSON string
 	 */
 	public static function encode($array, $format = self::FORMAT_INDENT, $indentPrefix = '') {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$t = \Bedrock\Common::TXT_TAB;
@@ -95,10 +97,12 @@ class JSON extends \Bedrock {
 				}
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $json;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Exception('A problem was encountered while attempting to encode the data to JSON.');
 		}
 	}

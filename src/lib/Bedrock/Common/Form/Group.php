@@ -21,6 +21,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @param mixed $options initialization options for the field group
 	 */
 	public function __construct($options = null) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Load Default Properties
 			$this->defaults();
@@ -28,9 +30,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 			// Load Specified Options
 			$this->load($options);
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -38,6 +42,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * Applies any default properties for the current object.
 	 */
 	public function defaults() {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			parent::defaults();
 			
@@ -46,9 +52,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				'label' => 'Group'
 			)), true);
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -59,6 +67,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @param mixed $arg the data to load as an array, Config object, or SimpleXMLElement object
 	 */
 	public function load($arg) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// =================================================================
 			// Argument: SimpleXMLElement Object
@@ -143,9 +153,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				throw new \Bedrock\Common\Form\Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock\Common\Config objects, or null.');
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -156,6 +168,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = null;
@@ -165,10 +179,12 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				$result = $this->_fields[$name];
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -179,6 +195,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @param mixed $value the value to assign to the specified field
 	 */
 	public function __set($name, $value) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			if($value instanceof \Bedrock\Common\Form\Field) {
 				$this->_fields[$name] = $value;
@@ -187,9 +205,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				throw new \Bedrock\Common\Form\Exception('Only Field and Group objects can be assigned to a Form.');
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -201,6 +221,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @return mixed either the corresponding Field, all Fields, or null if none are found
 	 */
 	public function fields($fieldIndex = null) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = null;
@@ -215,10 +237,12 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				$result = $this->_fields;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -230,6 +254,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @return array either the corresponding switch block, all switch blocks, or null if none are found
 	 */
 	public function switches($switchIndex = null) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$result = null;
@@ -241,10 +267,12 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				$result = $this->_switches;
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -254,6 +282,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @param mixed $field the field data to store
 	 */
 	private function storeField($field) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// =================================================================
 			// Source Data: SimpleXMLElement
@@ -322,9 +352,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 				throw new \Bedrock\Common\Form\Exception('Invalid data provided, field could not be stored.');
 			}
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -334,6 +366,8 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 	 * @param mixed $switch the switch data to store
 	 */
 	private function storeSwitch($switch) {
+		\Bedrock\Common\Logger::logEntry();
+		
 		try {
 			// Setup
 			$data = array();
@@ -422,9 +456,11 @@ class Group extends \Bedrock implements \Bedrock\Common\Form\Group\GroupInterfac
 			
 			$this->_switches[] = new \Bedrock\Common\Config($data, true);
 			
+			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	

@@ -21,6 +21,8 @@ class Data extends \Bedrock {
      * @return string the generated hash
      */
     public static function hash($string, $salt = NULL) {
+        \Bedrock\Common\Logger::logEntry();
+        
         try {
             // Setup
             $hashedText = '';
@@ -40,10 +42,12 @@ class Data extends \Bedrock {
             // Create hash with salt.
             $hashedText = $salt.hash('sha1', $salt.$string);
             
+            \Bedrock\Common\Logger::logExit();
             return $hashedText;
         }
         catch(\Exception $ex) {
             \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -54,16 +58,20 @@ class Data extends \Bedrock {
      * @return integer the number of years
      */
     public static function yearsSince($date) {
+        \Bedrock\Common\Logger::logEntry();
+        
         try {
             $date = is_string($date) ? strtotime($date) : $date;
             $secondsSince = time() - $date;
             $secondsInAYear = 31556926;
             $yearsSince = floor($secondsSince / $secondsInAYear);
             
+            \Bedrock\Common\Logger::logExit();
             return $yearsSince;
         }
         catch(\Exception $ex) {
             \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -76,6 +84,8 @@ class Data extends \Bedrock {
      * @return string the generated string of random characters
      */
     public static function randString($length = 7) {
+        \Bedrock\Common\Logger::logEntry();
+        
         try {
             $chars = 'abcdefghijkmnopqrstuvwxyz023456789';
             srand((double)microtime()*1000000);
@@ -89,10 +99,12 @@ class Data extends \Bedrock {
                 $i++;
             }
             
+            \Bedrock\Common\Logger::logExit();
             return $result;
         }
         catch(\Exception $ex) {
             \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -105,15 +117,19 @@ class Data extends \Bedrock {
      * @return float the rounded number
      */
     public function roundToFixed($number, $precision = 0) {
+        \Bedrock\Common\Logger::logEntry();
+        
         try {
             $tempd = $number*pow(10,$precision);
             $tempd1 = round($tempd);
             $number = $tempd1/pow(10,$precision);
             
+            \Bedrock\Common\Logger::logExit();
             return $number;
         }
         catch(\Exception $ex) {
             \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -126,6 +142,8 @@ class Data extends \Bedrock {
      * @return float the converted value
      */
     public function convertDataUnits($value, $sourceUnits, $destUnits) {
+        \Bedrock\Common\Logger::logEntry();
+        
         try {
             $units['bytes'] = 0;
             $units['kilobytes'] = 1;
@@ -138,10 +156,12 @@ class Data extends \Bedrock {
             
             $result = $value*pow(1024, $exp);
             
+            \Bedrock\Common\Logger::logExit();
             return $result;
         }
         catch(\Exception $ex) {
             \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
 }
