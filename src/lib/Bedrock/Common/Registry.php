@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Application Registry Container
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 03/29/2008
- * @updated 03/10/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable, SeekableIterator {
+class Registry extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected static $_instance = null;
 	protected $_registry = array();
 
@@ -19,8 +21,8 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 		// Setup
 		$backtrace = debug_backtrace();
 
-		if($backtrace[1]['function'] != '_init' || $backtrace[1]['class'] != 'Bedrock_Common_Registry') {
-			throw new Bedrock_Common_Registry_Exception('The registry implements the Singleton pattern, and cannot be instantiated outside the class.');
+		if($backtrace[1]['function'] != '_init' || $backtrace[1]['class'] != 'Bedrock\\Common\\Registry') {
+			throw new \Bedrock\Common\Registry\Exception('The registry implements the Singleton pattern, and cannot be instantiated outside the class.');
 		}
 	}
 
@@ -34,9 +36,11 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	/**
 	 * Retrieves the current instance of the registry. If a registry instance is
 	 * passed as a parameter, the current instance (if set) will be replaced.
-	 * 
-	 * @param Bedrock_Common_Registry $instance a new Registry instance to store
-	 * @return Bedrock_Common_Registry the current Registry instance
+	 *
+	 * @param Registry $instance a new Registry instance to store
+	 *
+	 * @throws Registry\Exception when the specified instance is not a valid Registry object
+	 * @return Registry the current Registry instance
 	 */
 	public static function instance($instance = null) {
 		// Retrieve  Current Instance
@@ -47,11 +51,11 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 		}
 		// Store New Instance
 		else {
-			if($instance instanceof Bedrock_Common_Registry) {
-				self::$_isntance = $instance;
+			if($instance instanceof \Bedrock\Common\Registry) {
+				self::$_instance = $instance;
 			}
 			else {
-				throw new Bedrock_Common_Registry_Exception('The specified instance was not a valid Registry instance.');
+				throw new \Bedrock\Common\Registry\Exception('The specified instance was not a valid Registry instance.');
 			}
 		}
 
@@ -60,8 +64,10 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 
 	/**
 	 * Retrieves the entrie stored at the specified ID.
-	 * 
+	 *
 	 * @param string $id the ID of the entry to retrieve
+	 *
+	 * @throws Registry\Exception when an entry with the specified ID cannot be found
 	 * @return mixed the corresponding entry
 	 */
 	public static function get($id) {
@@ -70,7 +76,7 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 
 		// Retrieve Entry
 		if(!self::registered($id)) {
-			throw new Bedrock_Common_Registry_Exception('An entry with id "' . $id . '" was not found.');
+			throw new \Bedrock\Common\Registry\Exception('An entry with id "' . $id . '" was not found.');
 		}
 
 		return $registry->$id;
@@ -95,6 +101,7 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	 * Checks if an entry is registered with the specified ID.
 	 *
 	 * @param string $id the ID to check
+	 *
 	 * @return boolean whether or not an entry is registered
 	 */
 	public static function registered($id) {
@@ -108,6 +115,7 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	 * Gets the specified value.
 	 *
 	 * @param string $id the ID of the value to get
+	 *
 	 * @return mixed the requested value
 	 */
 	public function __get($id) {
@@ -155,6 +163,7 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	 * Defined by the ArrayAccess interface.
 	 *
 	 * @param int $offset the value to check
+	 *
 	 * @return boolean whether or not the value exists
 	 */
 	public function offsetExists($offset) {
@@ -171,11 +180,13 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	 * Defined by the ArrayAccess interface.
 	 *
 	 * @param integer $offset the specified value to retrieve
+	 *
+	 * @throws Registry\Exception when the specified offset does not exist
 	 * @return mixed the corresponding value
 	 */
 	public function offsetGet($offset) {
 		if(!$this->offsetExists($offset)) {
-			throw new Bedrock_Common_Registry_Exception('A value does not exist at the requested offset of ' . $offset);
+			throw new \Bedrock\Common\Registry\Exception('A value does not exist at the requested offset of ' . $offset);
 		}
 
 		return $this->_registry[$offset];
@@ -262,6 +273,9 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 	 * Defined by the SeekableIterator interface.
 	 *
 	 * @param string $index the index to seek
+	 *
+	 * @throws Registry\Exception when an invalid index is specified
+	 * @return void
 	 */
 	public function seek($index) {
 		// Setup
@@ -274,8 +288,7 @@ class Bedrock_Common_Registry extends Bedrock implements ArrayAccess, Countable,
 		}
 
 		if(!$this->valid()) {
-			throw new Bedrock_Common_Registry_Exception('Invalid index specified.');
+			throw new \Bedrock\Common\Registry\Exception('Invalid index specified.');
 		}
 	}
 }
-?>

@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Control;
+
 /**
  * Data Query API Controller
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 09/08/2008
- * @updated 09/08/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Control_Query extends Bedrock_Control {
+class Query extends \Bedrock\Control {
 	protected $_params;
 	
 	/**
@@ -17,7 +19,7 @@ class Bedrock_Control_Query extends Bedrock_Control {
 	 * @param array $args an array of arguments passed from the GET string
 	 */
 	public function index($args) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -38,11 +40,11 @@ class Bedrock_Control_Query extends Bedrock_Control {
 					break;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -51,11 +53,14 @@ class Bedrock_Control_Query extends Bedrock_Control {
 	 * parameters.
 	 */
 	public function get() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
+			// Setup
+			$results = array();
+
 			// Query Database
-			$query = Bedrock_Model_Query::from($this->_params['table']);
+			$query = \Bedrock\Model\Query::from($this->_params['table']);
 			
 			// Query: Where Clause
 			if($this->_params['where']) {
@@ -88,8 +93,11 @@ class Bedrock_Control_Query extends Bedrock_Control {
 			
 			// Format Rows for Data Format
 			switch($this->_params['format']) {
+				default:
 				case 'xml':
-					$format = Bedrock_Common_DataFormat::TYPE_XML;
+					$format = \Bedrock\Common\DataFormat::TYPE_XML;
+					$reorgRows = array();
+
 					foreach($rows as $row) {
 						$reorgRows[]['row'] = array($row);
 					}
@@ -98,7 +106,7 @@ class Bedrock_Control_Query extends Bedrock_Control {
 					break;
 					
 				case 'yaml':
-					$format = Bedrock_Common_DataFormat::TYPE_YAML;
+					$format = \Bedrock\Common\DataFormat::TYPE_YAML;
 					foreach($rows as $row) {
 						$results[]['row'] = array($row);
 					}
@@ -106,25 +114,25 @@ class Bedrock_Control_Query extends Bedrock_Control {
 					
 				case 'flexigrid':
 				case 'json':
-					$format = Bedrock_Common_DataFormat::TYPE_JSON;
+					$format = \Bedrock\Common\DataFormat::TYPE_JSON;
 					$results[]['page'] = $this->_params['page'];
 					$results[]['total'] = $rows->countAll();
 					$results[]['rows'] = $rows;
 					break;
 					
 				case 'csv':
-					$format = Bedrock_Common_DataFormat::TYPE_CSV;
+					$format = \Bedrock\Common\DataFormat::TYPE_CSV;
 					break;
 			}
 			
-			$response = Bedrock_Common_DataFormat_Factory::get($format, $results);
+			$response = \Bedrock\Common\DataFormat\Factory::get($format, $results);
 			$response->printData();
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -132,17 +140,18 @@ class Bedrock_Control_Query extends Bedrock_Control {
 	 * Builds a query and saves the data passed via URL parameters.
 	 */
 	public function set() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
-			$table = $args[0];
+			//$table = $args[0];
+			// TODO: implement this method
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -150,9 +159,11 @@ class Bedrock_Control_Query extends Bedrock_Control {
 	 * Returns the currently passed parameters for the particular query action
 	 *
 	 * @param array $args the supplied arguments
+	 *
+	 * @return array the corresponding parameters
 	 */
 	protected function getParams($args) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -236,13 +247,12 @@ class Bedrock_Control_Query extends Bedrock_Control {
 				}
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $params;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
-?>

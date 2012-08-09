@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common\Error;
+
 /**
  * PHP Error Exception
  * 
@@ -6,11 +8,11 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 07/18/2008
- * @updated 07/18/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Error_Exception extends Bedrock_Common_Exception {
+class Exception extends \Bedrock\Common\Exception {
 	/**
 	 * Default Constructor
 	 * 
@@ -27,4 +29,3 @@ class Bedrock_Common_Error_Exception extends Bedrock_Common_Exception {
 		$this->context = $context;
 	}
 }
-?>

@@ -15,11 +15,11 @@ class Bedrock {
 	/**
 	 * Initializes the object.
 	 */
-	public function __construct(Bedrock_Common_Config $options = null) {
+	public function __construct(\Bedrock\Common\Config $options = null) {
 		$this->defaults();
-		$this->_config = Bedrock_Common_Registry::get('config');
+		$this->_config = \Bedrock\Common\Registry::get('config');
 		
-		if($options instanceof Bedrock_Common_Config) {
+		if($options instanceof \Bedrock\Common\Config) {
 			$this->_properties->merge($options);
 		}
 	}
@@ -28,25 +28,24 @@ class Bedrock {
 	 * Applies all default properties for the current object. 
 	 */
 	public function defaults() {
-		$this->_properties = new Bedrock_Common_Config(array(), true);
+		$this->_properties = new \Bedrock\Common\Config(array(), true);
 	}
 	
 	/**
 	 * Retrieves the publicly available properties for the object.
 	 *
-	 * @return Bedrock_Common_Config the currently stored public properties
+	 * @return \Bedrock\Common\Config the currently stored public properties
 	 */
 	public function properties() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $this->_properties;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
-?>

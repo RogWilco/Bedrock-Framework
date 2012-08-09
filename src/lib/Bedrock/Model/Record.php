@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * Represents a database record holding data stored in the database. Also
  * handles basic saving/deleting operations.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 08/29/2008
- * @updated 08/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countable, SeekableIterator {
+class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \SeekableIterator {
 	const STATE_UNCHANGED = 0;
 	const STATE_CHANGED = 1;
 	const STATE_NEW = 2;
@@ -23,24 +25,24 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	/**
 	 * Initializes the record object.
 	 * 
-	 * @param PDO $connection the database connection to use
-	 * @param Bedrock_Model_Table the record's corresponding table
+	 * @param \PDO $connection the database connection to use
+	 * @param \Bedrock\Model\Table the record's corresponding table
 	 * @param array $values the record's values
 	 */
 	public function __construct($table, $values = array(), $database = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			parent::__construct($database);
 			
-			$this->_table = new Bedrock_Model_Table(array('name' => $table));
+			$this->_table = new \Bedrock\Model\Table(array('name' => $table));
 			$this->_table->load();
 			$this->_columns = $this->_table->getColumns();
 			$this->_state = self::STATE_UNCHANGED;
 			
 			foreach($this->_columns as $column) {
 				switch($column->type) {
-					case Bedrock_Model_Column::FIELD_TYPE_BOOL:
+					case \Bedrock\Model\Column::FIELD_TYPE_BOOL:
 						if(is_bool($values[$column->name])) {
 							$this->_data[$column->name] = $values[$column->name];
 						}
@@ -66,12 +68,12 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 				
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('A record object could not be initialized.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('A record object could not be initialized.');
 		}
 	}
 	
@@ -91,7 +93,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 			}
 		}
 		else {
-			throw new Bedrock_Model_Record_Exception('The specified field "' . $field . '" was not found.');
+			throw new \Bedrock\Model\Record\Exception('The specified field "' . $field . '" was not found.');
 		}
 	}
 	
@@ -107,7 +109,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 			return $this->_data[$field];
 		}
 		else {
-			throw new Bedrock_Model_Record_Exception('The specified field "' . $field . '" was not found.');
+			throw new \Bedrock\Model\Record\Exception('The specified field "' . $field . '" was not found.');
 		}
 	}
 	
@@ -143,7 +145,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	/**
 	 * Returns the record's corresponding Table object.
 	 *
-	 * @return Bedrock_Model_Table the table object for the record
+	 * @return \Bedrock\Model\Table the table object for the record
 	 */
 	public function getTable() {
 		return $this->_table;
@@ -155,7 +157,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 * @return array an array of values
 	 */
 	public function toArray() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -165,13 +167,13 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 				$result[$column->name] = $this->_data[$column->name];
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('There was a problem converting the Record to an array.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('There was a problem converting the Record to an array.');
 		}
 	}
 	
@@ -179,9 +181,11 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 * Saves the current record to the database.
 	 */
 	public function save() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
+			$sql = '';
+
 			if($this->_state == self::STATE_CHANGED) {
 				$sql = 'UPDATE ' . self::sanitize($this->_table->getProperty('name')) . ' SET ';
 				
@@ -189,10 +193,10 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 					$sql .= $column->name . ' = ';
 					
 					switch($column->type) {
-						case Bedrock_Model_Column::FIELD_TYPE_INT:
-						case Bedrock_Model_Column::FIELD_TYPE_FLOAT:
-						case Bedrock_Model_Column::FIELD_TYPE_DOUBLE:
-						case Bedrock_Model_Column::FIELD_TYPE_DECIMAL:
+						case \Bedrock\Model\Column::FIELD_TYPE_INT:
+						case \Bedrock\Model\Column::FIELD_TYPE_FLOAT:
+						case \Bedrock\Model\Column::FIELD_TYPE_DOUBLE:
+						case \Bedrock\Model\Column::FIELD_TYPE_DECIMAL:
 							if($this->_data[$column->name]) {
 								$sql .= $this->_data[$column->name] . ', ';
 							}
@@ -201,11 +205,11 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 							}
 							break;
 							
-						case Bedrock_Model_Column::FIELD_TYPE_BOOL:
+						case \Bedrock\Model\Column::FIELD_TYPE_BOOL:
 							$sql .= ($this->_data[$column->name] ? '1' : '0') . ', ';
 							break;
 							
-						case Bedrock_Model_Column::FIELD_TYPE_DATETIME:
+						case \Bedrock\Model\Column::FIELD_TYPE_DATETIME:
 							if(!$this->_data[$column->name]) {
 								$sql .= 'NOW(), ';
 							}
@@ -214,7 +218,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 							}
 							break;
 							
-						case Bedrock_Model_Column::FIELD_TYPE_DATE:
+						case \Bedrock\Model\Column::FIELD_TYPE_DATE:
 							if(!$this->_data[$column->name]) {
 								$sql .= 'NOW(), ';
 							}
@@ -223,7 +227,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 							}
 							break;
 							
-						case Bedrock_Model_Column::FIELD_TYPE_TIME:
+						case \Bedrock\Model\Column::FIELD_TYPE_TIME:
 							if(!$this->_data[$column->name]) {
 								$sql .= 'NOW(), ';
 							}
@@ -254,10 +258,10 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 				foreach($this->_columns as $column) {
 					if(!$column->primary_key) {
 						switch($column->type) {
-							case Bedrock_Model_Column::FIELD_TYPE_INT:
-							case Bedrock_Model_Column::FIELD_TYPE_FLOAT:
-							case Bedrock_Model_Column::FIELD_TYPE_DOUBLE:
-							case Bedrock_Model_Column::FIELD_TYPE_DECIMAL:
+							case \Bedrock\Model\Column::FIELD_TYPE_INT:
+							case \Bedrock\Model\Column::FIELD_TYPE_FLOAT:
+							case \Bedrock\Model\Column::FIELD_TYPE_DOUBLE:
+							case \Bedrock\Model\Column::FIELD_TYPE_DECIMAL:
 								if($this->_data[$column->name]) {
 									$sql .= $this->_data[$column->name] . ', ';
 								}
@@ -266,11 +270,11 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 								}
 								break;
 								
-							case Bedrock_Model_Column::FIELD_TYPE_BOOL:
+							case \Bedrock\Model\Column::FIELD_TYPE_BOOL:
 								$sql .= ($this->_data[$column->name] ? '1' : '0') . ', ';
 								break;
 								
-							case Bedrock_Model_Column::FIELD_TYPE_DATETIME:
+							case \Bedrock\Model\Column::FIELD_TYPE_DATETIME:
 								if(!$this->_data[$column->name]) {
 									$sql .= 'NOW(), ';
 								}
@@ -279,7 +283,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 								}
 								break;
 								
-							case Bedrock_Model_Column::FIELD_TYPE_DATE:
+							case \Bedrock\Model\Column::FIELD_TYPE_DATE:
 								if(!$this->_data[$column->name]) {
 									$sql .= 'NOW(), ';
 								}
@@ -288,7 +292,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 								}
 								break;
 								
-							case Bedrock_Model_Column::FIELD_TYPE_TIME:
+							case \Bedrock\Model\Column::FIELD_TYPE_TIME:
 								if(!$this->_data[$column->name]) {
 									$sql .= 'NOW(), ';
 								}
@@ -307,21 +311,21 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 				$sql = substr($sql, 0, strlen($sql) -2) . ')';
 			}
 			
-			Bedrock_Common_Logger::info('Saving record with query: ' . $sql);
+			\Bedrock\Common\Logger::info('Saving record with query: ' . $sql);
 			$this->_connection->exec($sql);
 			$this->_state = self::STATE_UNCHANGED;
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('There was a problem saving the record to the database.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('There was a problem saving the record to the database.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('An error was encountered and the record could not be saved.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('An error was encountered and the record could not be saved.');
 		}
 	}
 	
@@ -329,51 +333,51 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 * Deletes the currend record from the database.
 	 */
 	public function delete() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($this->_state == self::STATE_UNCHANGED) {
 				$sql = 'DELETE FROM ' . self::sanitize($this->_table->getProperty('name')) . ' WHERE ' . self::sanitize($this->_key_primary->name) . ' = ' . self::sanitize($this->_data[$this->_key_primary->name]);
-				Bedrock_Common_Logger::info('Deleting record with query: ' . $sql); echo $sql;
+				\Bedrock\Common\Logger::info('Deleting record with query: ' . $sql); echo $sql;
 				$this->_connection->exec($sql);
 			}
 			elseif($this->_state == self::STATE_CHANGED) {
-				throw new Bedrock_Model_Record_Exception('Unsaved changes found, cannot delete record.');
+				throw new \Bedrock\Model\Record\Exception('Unsaved changes found, cannot delete record.');
 			}
 			else {
-				throw new Bedrock_Model_Record_Exception('Record not found in database.');
+				throw new \Bedrock\Model\Record\Exception('Record not found in database.');
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('A database error was encountered, the record could not be deleted.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('A database error was encountered, the record could not be deleted.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('The record could not be deleted.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('The record could not be deleted.');
 		}
 	}
 	
 	/**
 	 * Associates the specified record with the current Record object.
 	 *
-	 * @param Bedrock_Model_Record $record the record to associate
+	 * @param \Bedrock\Model\Record $record the record to associate
 	 */
 	public function associate($record) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			Bedrock_Model_Query::associate($this, $record);
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Model\Query::associate($this, $record);
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('The record could not be associated.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('The record could not be associated.');
 		}
 	}
 	
@@ -381,19 +385,19 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 * Removes any associations between the specified record with the current
 	 * Record object.
 	 *
-	 * @param Bedrock_Model_Record $record the record to remove associations with
+	 * @param \Bedrock\Model\Record $record the record to remove associations with
 	 */
 	public function dissociate($record) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			Bedrock_Model_Query::dissociate($this, $record);
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Model\Query::dissociate($this, $record);
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('The record could not be dissociated.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('The record could not be dissociated.');
 		}
 	}
 	
@@ -402,20 +406,20 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 * Record.
 	 *
 	 * @param string $tableName the name of the table to use
-	 * @return Bedrock_Model_ResultSet any associated records in the table
+	 * @return \Bedrock\Model\ResultSet any associated records in the table
 	 */
 	public function associated($tableName, $limit = array()) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			$result = Bedrock_Model_Query::associated($this, $tableName, $limit);
-			Bedrock_Common_Logger::logExit();
+			$result = \Bedrock\Model\Query::associated($this, $tableName, $limit);
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Record_Exception('A problem was encountered while checking for associated records.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Record\Exception('A problem was encountered while checking for associated records.');
 		}
 	}
 	
@@ -443,7 +447,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 */
 	public function offsetGet($offset) {
 		if(!$this->offsetExists($offset)) {
-			throw new Bedrock_Model_Record_Exception('The requested column "' . $offset . '" is not a part of this record.');
+			throw new \Bedrock\Model\Record\Exception('The requested column "' . $offset . '" is not a part of this record.');
 		}
 		
 		return $this->_data[$offset];
@@ -457,7 +461,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 */
 	public function offsetSet($offset, $value) {
 		if(!array_key_exists($offset, $this->_data)) {
-			throw new Bedrock_Model_Record_Exception('The specified column "' . $offset . '" is not a part of this record, the value was not assigned.');
+			throw new \Bedrock\Model\Record\Exception('The specified column "' . $offset . '" is not a part of this record, the value was not assigned.');
 		}
 		
 		$this->_data[$offset] = $value;
@@ -470,7 +474,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 	 */
 	public function offsetUnset($offset) {
 		if(!array_key_exists($offset, $this->_data)) {
-			throw new Bedrock_Model_Record_Exception('The specified column "' . $offset . '" is not a part of this record, the value was not unset.');
+			throw new \Bedrock\Model\Record\Exception('The specified column "' . $offset . '" is not a part of this record, the value was not unset.');
 		}
 		
 		unset($this->_data[$offset]);
@@ -533,7 +537,7 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 		}
 		
 		if(!$this->valid()) {
-			throw new Bedrock_Model_Record_Exception('Invalid index specified.');
+			throw new \Bedrock\Model\Record\Exception('Invalid index specified.');
 		}
 	}
 	
@@ -547,4 +551,3 @@ class Bedrock_Model_Record extends Bedrock_Model implements ArrayAccess, Countab
 		return (current($this->_data) !== false);
 	}
 }
-?>

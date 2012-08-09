@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Common\Form;
+
 /**
  * Represents a form field, allowing for the modification of all available
  * properties.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 12/16/2008
- * @updated 12/16/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_Field_Interface {
+class Field extends \Bedrock implements \Bedrock\Common\Form\Field\FieldInterface {
 	protected $_value;
 	protected $_rules;
 	
@@ -20,7 +22,7 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * @param string $parentId the parent form or group's ID
 	 */
 	public function __construct($options, $parentId = '') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Load Default Properties
@@ -29,11 +31,11 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 			// Load Specified Options
 			$this->load($options);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -41,23 +43,23 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * Applies any default properties for the current object.
 	 */
 	public function defaults() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			parent::defaults();
 			
-			$this->_properties->merge(new Bedrock_Common_Config(array(
+			$this->_properties->merge(new \Bedrock\Common\Config(array(
 				'name' => 'field',
 				'label' => 'Field',
 				'type' => 'std',
 				'subtype' => 'text'
 			)), true);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -68,13 +70,13 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * @param mixed $arg the data to load as an array, Config object, or SimpleXMLElement object
 	 */
 	public function load($arg) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// =================================================================
 			// Argument: SimpleXMLElement Object
 			// =================================================================
-			if($arg instanceof SimpleXMLElement) {
+			if($arg instanceof \SimpleXMLElement) {
 				// Store Properties
 				$this->_properties->name = (string) $arg->attributes()->name;
 				$this->_properties->id = (string) $arg->attributes()->id;
@@ -85,12 +87,13 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				
 				if(isset($arg->options->option) && count($arg->options->option) > 0) {
 					$count = count($arg->options->option);
+					$options = array();
 					
 					for($i = 0; $i < $count; $i++) {
 						$options[] = array('label' => $arg->options->option[$i], 'value' => $arg->options->option[$i]->attributes()->value);
 					}
 					
-					$this->_properties->options = new Bedrock_Common_Config($options);
+					$this->_properties->options = new \Bedrock\Common\Config($options);
 				}
 			}
 			
@@ -107,14 +110,14 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				$this->_value = $arg['value'];
 				
 				if(isset($arg['options'])) {
-					$this->_properties->options = new Bedrock_Common_Config($arg['options']);
+					$this->_properties->options = new \Bedrock\Common\Config($arg['options']);
 				}
 			}
 			
 			// =================================================================
 			// Argument: Config Object
 			// =================================================================
-			elseif($arg instanceof Bedrock_Common_Config) {
+			elseif($arg instanceof \Bedrock\Common\Config) {
 				// Store Properties
 				$this->_properties->name = $arg->name;
 				$this->_properties->id = $arg->id;
@@ -129,7 +132,7 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 			// Argument: Invalid
 			// =================================================================
 			elseif($arg != null) {
-				throw new Bedrock_Common_Form_Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock_Common_Config objects, or null.');
+				throw new \Bedrock\Common\Form\Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock\Common\Config objects, or null.');
 			}
 			
 			// Update Type
@@ -144,11 +147,11 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				$this->_properties->subtype = $typeData[1];
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -159,7 +162,7 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -172,12 +175,12 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				$result = $this->_properties->{$name};
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -188,7 +191,7 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * @param string $value the value to apply to the property
 	 */
 	public function __set($name, $value) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($name == 'value') {
@@ -198,11 +201,11 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				$this->_properties->{$name} = $value;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -212,7 +215,7 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 * @param string $property the name of the property to render
 	 */
 	public function render($property = 'input') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			switch($property) {
@@ -221,15 +224,15 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 					break;
 					
 				case 'input':
-					throw new Bedrock_Common_Form_Exception('Cannot render field input, field type is unspecified.');
+					throw new \Bedrock\Common\Form\Exception('Cannot render field input, field type is unspecified.');
 					break;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -238,9 +241,11 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 	 *
 	 * @param string $attribute the attribute to print
 	 * @param string $value the value to associate with the attribute
+	 *
+	 * @return string the resulting attribute string
 	 */
 	protected function attributeToString($attribute, $value) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -250,13 +255,12 @@ class Bedrock_Common_Form_Field extends Bedrock implements Bedrock_Common_Form_F
 				$result = $attribute . '="' . $value . '" ';
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
-?>

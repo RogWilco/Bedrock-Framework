@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Email
  * 
@@ -6,11 +8,11 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 06/05/2008
- * @updated 06/05/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Email extends Bedrock {
+class Email extends \Bedrock {
 	/**
 	 * Sends an email using the specified details.
 	 * 
@@ -22,10 +24,10 @@ class Bedrock_Common_Email extends Bedrock {
 	 */
 	public static function send($from, $to, $subject, $body) {
 		try {
-			Bedrock_Common_Logger::logEntry();
+			\Bedrock\Common\Logger::logEntry();
 			
 			// Setup
-			$config = Bedrock_Common_Registry::get('config');
+			$config = \Bedrock\Common\Registry::get('config');
 			
 			$headers = array('From' => $from,
 							'To' => $to,
@@ -38,27 +40,26 @@ class Bedrock_Common_Email extends Bedrock {
 								'username' => $config->email->username,
 								'password' => $config->email->password);
 		
-			$smtp = Mail::factory('smtp', $smtpConfig);
+			$smtp = \Mail::factory('smtp', $smtpConfig);
 			
-			Bedrock_Common_Logger::info('Attempting to send an email to "' . $to . '" ...');
+			\Bedrock\Common\Logger::info('Attempting to send an email to "' . $to . '" ...');
 			$mail = $smtp->send($to, $headers, $body);
 			
-			if(PEAR::isError($mail)) {
-				throw new Bedrock_Common_Email_Exception($mail->getMessage());
+			if(\PEAR::isError($mail)) {
+				throw new \Bedrock\Common\Email\Exception($mail->getMessage());
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Bedrock_Common_Email_Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Bedrock\Common\Email\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 			throw $ex;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Email_Exception('The email could not be sent.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Email\Exception('The email could not be sent.');
 		}
 	}
 }
-?>

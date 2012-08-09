@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Utils;
+
 /**
  * General data manipulation utilities.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 11/10/2008
- * @updated 11/10/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Utils_Data extends Bedrock {
+class Data extends \Bedrock {
     const HASH_SALT_LENGTH = 24;
     
     /**
@@ -19,14 +21,14 @@ class Bedrock_Common_Utils_Data extends Bedrock {
      * @return string the generated hash
      */
     public static function hash($string, $salt = NULL) {
-        Bedrock_Common_Logger::logEntry();
+        \Bedrock\Common\Logger::logEntry();
         
         try {
             // Setup
             $hashedText = '';
             
-            if($clearText == '') {
-                throw new Bedrock_Common_Exception('The specified cleartext password was empty.');
+            if($string == '') {
+                throw new \Bedrock\Common\Exception('The specified string was empty.');
             }
             
             // Get the specified salt string, or generate one if null.
@@ -38,14 +40,14 @@ class Bedrock_Common_Utils_Data extends Bedrock {
             }
             
             // Create hash with salt.
-            $hashedText = $salt.hash('sha1', $salt.$clearText);
+            $hashedText = $salt.hash('sha1', $salt.$string);
             
-            Bedrock_Common_Logger::logExit();
+            \Bedrock\Common\Logger::logExit();
             return $hashedText;
         }
-        catch(Exception $ex) {
-            Bedrock_Common_Logger::exception($ex);
-            Bedrock_Common_Logger::logExit();
+        catch(\Exception $ex) {
+            \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -56,7 +58,7 @@ class Bedrock_Common_Utils_Data extends Bedrock {
      * @return integer the number of years
      */
     public static function yearsSince($date) {
-        Bedrock_Common_Logger::logEntry();
+        \Bedrock\Common\Logger::logEntry();
         
         try {
             $date = is_string($date) ? strtotime($date) : $date;
@@ -64,12 +66,12 @@ class Bedrock_Common_Utils_Data extends Bedrock {
             $secondsInAYear = 31556926;
             $yearsSince = floor($secondsSince / $secondsInAYear);
             
-            Bedrock_Common_Logger::logExit();
+            \Bedrock\Common\Logger::logExit();
             return $yearsSince;
         }
-        catch(Exception $ex) {
-            Bedrock_Common_Logger::exception($ex);
-            Bedrock_Common_Logger::logExit();
+        catch(\Exception $ex) {
+            \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -82,26 +84,27 @@ class Bedrock_Common_Utils_Data extends Bedrock {
      * @return string the generated string of random characters
      */
     public static function randString($length = 7) {
-        Bedrock_Common_Logger::logEntry();
+        \Bedrock\Common\Logger::logEntry();
         
         try {
             $chars = 'abcdefghijkmnopqrstuvwxyz023456789';
             srand((double)microtime()*1000000);
             $i = 0;
+			$result = '';
             
             while($i <= $length) {
                 $num = rand()%33;
                 $tmp = substr($chars, $num, 1);
-                $pass .= $tmp;
+				$result .= $tmp;
                 $i++;
             }
             
-            Bedrock_Common_Logger::logExit();
-            return $pass;
+            \Bedrock\Common\Logger::logExit();
+            return $result;
         }
-        catch(Exception $ex) {
-            Bedrock_Common_Logger::exception($ex);
-            Bedrock_Common_Logger::logExit();
+        catch(\Exception $ex) {
+            \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
@@ -109,37 +112,37 @@ class Bedrock_Common_Utils_Data extends Bedrock {
      * Rounds a number to the specified precision. Expands on PHP's round()
      * function to accomodate decimals correctly.
      * 
-     * @param double $number the number to round
+     * @param float $number the number to round
      * @param integer $precision the level of desired precision (default is 0)
-     * @return double the rounded number
+     * @return float the rounded number
      */
     public function roundToFixed($number, $precision = 0) {
-        Bedrock_Common_Logger::logEntry();
+        \Bedrock\Common\Logger::logEntry();
         
         try {
             $tempd = $number*pow(10,$precision);
             $tempd1 = round($tempd);
             $number = $tempd1/pow(10,$precision);
             
-            Bedrock_Common_Logger::logExit();
+            \Bedrock\Common\Logger::logExit();
             return $number;
         }
-        catch(Exception $ex) {
-            Bedrock_Common_Logger::exception($ex);
-            Bedrock_Common_Logger::logExit();
+        catch(\Exception $ex) {
+            \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
     
     /**
      * Converts the specified value to the desired unit of measure (for data).
      * 
-     * @param double $value the numeric value to convert
+     * @param float $value the numeric value to convert
      * @param string $sourceUnits the numeric value's current units
      * @param string $destUnits the desired units to convert to
-     * @return double the converted value
+     * @return float the converted value
      */
     public function convertDataUnits($value, $sourceUnits, $destUnits) {
-        Bedrock_Common_Logger::logEntry();
+        \Bedrock\Common\Logger::logEntry();
         
         try {
             $units['bytes'] = 0;
@@ -153,13 +156,12 @@ class Bedrock_Common_Utils_Data extends Bedrock {
             
             $result = $value*pow(1024, $exp);
             
-            Bedrock_Common_Logger::logExit();
+            \Bedrock\Common\Logger::logExit();
             return $result;
         }
-        catch(Exception $ex) {
-            Bedrock_Common_Logger::exception($ex);
-            Bedrock_Common_Logger::logExit();
+        catch(\Exception $ex) {
+            \Bedrock\Common\Logger::exception($ex);
+            \Bedrock\Common\Logger::logExit();
         }
     }
 }
-?>

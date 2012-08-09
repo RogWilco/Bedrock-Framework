@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Data;
+
 /**
  * Data Container: JSON (JavaScript Object Notation)
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 04/23/2009
- * @updated 04/23/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Data_JSON extends Bedrock_Common_Data {
+class JSON extends \Bedrock\Common\Data {
 	/**
 	 * Returns the stored data as a JSON string.
 	 *
@@ -20,21 +22,21 @@ class Bedrock_Common_Data_JSON extends Bedrock_Common_Data {
 
 	/**
 	 * Encodes the specified data into a string.
-	 * 
+	 *
 	 * @param mixed $data the data to encode
+	 *
+	 * @throws \Bedrock\Common\Data\Exception when the specified data cannot be encoded
 	 * @return string the encoded data
 	 */
 	public static function encode($data) {
-		if(is_array($data) || $data instanceof Bedrock_Common_Data) {
-			if(!is_array($data)) {
-				return json_encode($data->toArray());
-			}
-			else {
-				return json_encode($data);
-			}
+		if(is_array($data)) {
+			return json_encode($data);
+		}
+		elseif($data instanceof \Bedrock\Common\Data) {
+			return json_encode($data->toArray());
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
+			throw new \Bedrock\Common\Data\Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
 		}
 	}
 
@@ -42,6 +44,8 @@ class Bedrock_Common_Data_JSON extends Bedrock_Common_Data {
 	 * Decodes the specified string to an array.
 	 *
 	 * @param string $string the string to decode
+	 *
+	 * @throws \Bedrock\Common\Data\Exception when the specified data cannot be decoded
 	 * @return array the decoded data
 	 */
 	public static function decode($string) {
@@ -49,7 +53,7 @@ class Bedrock_Common_Data_JSON extends Bedrock_Common_Data {
 			return json_decode($string);
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('Only strings can be decoded, please provide a valid string to decode.');
+			throw new \Bedrock\Common\Data\Exception('Only strings can be decoded, please provide a valid string to decode.');
 		}
 	}
 
@@ -71,4 +75,3 @@ class Bedrock_Common_Data_JSON extends Bedrock_Common_Data {
 		}
 	}
 }
-?>

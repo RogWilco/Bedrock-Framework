@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Service;
+
 /**
  * Provides an interface to Twitter's public APIs.
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 05/06/2009
- * @updated 05/06/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Service_Twitter extends Bedrock_Common {
+class Twitter extends \Bedrock\Common {
 	protected $_url = 'http://www.twitter.com/';
 	protected $_searchUrl = 'http://search.twitter.com/';
 	protected $_username = '';
@@ -23,7 +25,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @param array $options any initial properties to use
 	 */
 	public function __construct($username = '', $password = '', $options = array()) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$this->_username = $username;
@@ -32,12 +34,12 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 			if(array_key_exists('url', $options)) $this->_url = $options['url'];
 			if(array_key_exists('search_url', $options)) $this->_searchUrl = $options['search_url'];
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A service connection to Twitter could not be initialized.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A service connection to Twitter could not be initialized.');
 		}
 	}
 
@@ -46,21 +48,21 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * instance (for chainable calls).
 	 * 
 	 * @param string $name the name of the Twitter method category (as defined in the Twitter API)
-	 * @return Bedrock_Common_Service_Twitter a reference to the curren tinstance
+	 * @return \Bedrock\Common\Service\Twitter a reference to the curren tinstance
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$this->category($name);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $this;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('There was a problem while attempting to set the method category to "' . $name . '".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('There was a problem while attempting to set the method category to "' . $name . '".');
 		}
 	}
 
@@ -69,9 +71,12 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 *
 	 * @param string $method the method to call
 	 * @param array $params any additional parameters provided
+	 *
+	 * @throws \Bedrock\Common\Service\Exception if the request fails
+	 * @return mixed the result of the method being called
 	 */
 	public function __call($method, $params) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$parts = explode($method, '_');
@@ -79,16 +84,16 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 			$realMethod = implode($parts);
 			$realMethod = $this->_category . ucwords($method);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			
 			if(method_exists($this, $realMethod)) {
 				return call_user_func_array(array(&$this, $realMethod), $params);
 			}
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('The specified request could not be made, verify you are using a valid twitter API call and that Bedrock currently supports it.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('The specified request could not be made, verify you are using a valid twitter API call and that Bedrock currently supports it.');
 		}
 	}
 
@@ -100,9 +105,12 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @param string $username a valid Twitter username
 	 * @param string $password the matching password
 	 * @param array $params additional parameters to send
+	 *
+	 * @throws \Bedrock\Common\Service\Exception if the specified query fails
+	 * @return string the response for the executed query when available
 	 */
 	public static function exec($url, $method = 'GET', $username = '', $password = '', $params = array()) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -115,20 +123,21 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 			switch(strtoupper($method)) {
 				default:
 				case 'GET':
-					return Bedrock_Common_Rest::get($url, $params, $options);
+					$result = \Bedrock\Common\Rest::get($url, $params, $options);
 					break;
 
 				case 'POST':
-					return Bedrock_Common_Rest::post($url, $params, $options);
+					$result = \Bedrock\Common\Rest::post($url, $params, $options);
 					break;
 			}
-			
-			Bedrock_Common_Logger::logExit();
+
+			\Bedrock\Common\Logger::logExit();
+			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to execute the specified request.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to execute the specified request.');
 		}
 	}
 
@@ -139,20 +148,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the currently set method category
 	 */
 	public function category($category = '') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			if(trim($category) != '') {
 				$this->_category = $category;
 			}
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $this->_category;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('There was a problem while attempting to set the method category to "' . $category . '".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('There was a problem while attempting to set the method category to "' . $category . '".');
 		}
 	}
 
@@ -169,18 +178,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountEndSession($format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'account/end_session.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/end_session".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/end_session".');
 		}
 	}
 
@@ -201,18 +210,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountRateLimitStatus($format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'account/rate_limit_status.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/rate_limit_status".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/rate_limit_status".');
 		}
 	}
 
@@ -231,20 +240,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountUpdateDeliveryDevice($device, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
 			$params = array('device' => $device);
 			$result = self::exec($this->_url . 'account/update_delivery_device.' . $format, 'POST', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/update_delivery_device".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/update_delivery_device".');
 		}
 	}
 
@@ -266,7 +275,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountUpdateProfile($name = null, $email = null, $url = null, $location = null, $description = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -280,13 +289,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'account/update_profile.' . $format, 'POST', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/update_profile".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/update_profile".');
 		}
 	}
 
@@ -305,7 +314,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountUpdateProfileBackgroundImage($image , $tile = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -315,13 +324,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'account/update_profile_background_image.' . $format, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/update_profile_background_image".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/update_profile_background_image".');
 		}
 	}
 
@@ -343,7 +352,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountUpdateProfileColors($profileBackgroundColor = null, $profileTextColor = null, $profileLinkColor = null, $profileSidebarFillColor = null, $profileSidebarBorderColor = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -357,13 +366,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'account/update_profile_colors.' . $format, 'POST', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/update_profile_colors".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/update_profile_colors".');
 		}
 	}
 
@@ -381,7 +390,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountUpdateProfileImage($image, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -389,13 +398,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'account/update_profile_image.' . $format, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/update_profile_image".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/update_profile_image".');
 		}
 	}
 
@@ -414,18 +423,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function accountVerifyCredentials($format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'account/verify_credentials.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "account/verify_credentials".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "account/verify_credentials".');
 		}
 	}
 
@@ -444,18 +453,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function blocksCreate($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'blocks/create/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "blocks/create".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "blocks/create".');
 		}
 	}
 
@@ -474,18 +483,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function blocksDestroy($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'blocks/destroy/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "blocks/destroy".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "blocks/destroy".');
 		}
 	}
 
@@ -507,7 +516,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function directMessages($sinceId = null, $maxId = null, $count = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -520,13 +529,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'direct_messages.' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "direct_messages".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "direct_messages".');
 		}
 	}
 
@@ -545,18 +554,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function directMessagesDestroy($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'direct_messages/destroy/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "direct_messages/destroy".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "direct_messages/destroy".');
 		}
 	}
 
@@ -576,7 +585,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function directMessagesNew($user, $text, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -584,13 +593,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'direct_messages/new.' . $format, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "direct_messages/new".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "direct_messages/new".');
 		}
 	}
 
@@ -611,7 +620,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function directMessagesSent($sinceId = null, $maxId = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -623,13 +632,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'direct_messages/sent.' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "direct_messages/sent".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "direct_messages/sent".');
 		}
 	}
 
@@ -648,7 +657,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function favorites($id = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -666,13 +675,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "favorites".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "favorites".');
 		}
 	}
 
@@ -690,18 +699,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function favoritesCreate($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'favorites/create/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "favorites/create".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "favorites/create".');
 		}
 	}
 
@@ -720,18 +729,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function favoritesDestroy($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'favorites/destroy/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "favorites/destroy".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "favorites/destroy".');
 		}
 	}
 
@@ -752,7 +761,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function followersId($id = null, $userId = null, $screenName = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -771,20 +780,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($page)) $params['page'] = $page;
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "followers/id".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "followers/id".');
 		}
 	}
 
@@ -804,7 +813,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function friendsIds($id = null, $userId = null, $screenName = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -823,20 +832,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($page)) $params['page'] = $page;
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "friends/ids".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "friends/ids".');
 		}
 	}
 
@@ -859,7 +868,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function friendshipsCreate($id = null, $userId = null, $screenName = null, $follow = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -878,20 +887,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($follow)) $params['follow'] = $follow;
 
 			$result = self::exec($url, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "friendships/create".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "friendships/create".');
 		}
 	}
 
@@ -913,7 +922,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function friendshipsDestroy($id = null, $userId = null, $screenName = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -932,18 +941,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			$result = self::exec($url, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "friendships/destroy".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "friendships/destroy".');
 		}
 	}
 
@@ -962,7 +971,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function friendshipsExists($userA, $userB, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -970,13 +979,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'friendships/exists.' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "friendships/exists".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "friendships/exists".');
 		}
 	}
 
@@ -993,18 +1002,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function helpTest($format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'help/test.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "help/test".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "help/test".');
 		}
 	}
 
@@ -1024,7 +1033,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function notificationsFollow($id = null, $userId = null, $screenName = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1043,18 +1052,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			$result = self::exec($url, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "notifications/follow".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "notifications/follow".');
 		}
 	}
 
@@ -1074,7 +1083,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function notificationsLeave($id = null, $userId = null, $screenName = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1093,18 +1102,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			$result = self::exec($url, 'POST', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "notifications/leave".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "notifications/leave".');
 		}
 	}
 
@@ -1127,7 +1136,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function search($callback = null, $lang = null, $rpp = null, $page = null, $sinceId = null, $geocode = null, $showUser = null, $format = 'json') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1143,13 +1152,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_searchUrl . 'search.' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "search".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "search".');
 		}
 	}
 
@@ -1167,18 +1176,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesDestroy($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'statuses/destroy/' . $id . '.' . $format, 'POST', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/destroy".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/destroy".');
 		}
 	}
 
@@ -1199,7 +1208,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesFollowers($id = null, $userId = null, $screenName = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1218,20 +1227,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($page)) $params['page'] = $page;
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/followers".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/followers".');
 		}
 	}
 
@@ -1254,7 +1263,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesFriends($id = null, $userId = null, $screenName = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1273,20 +1282,20 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($page)) $params['page'] = $page;
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/friends".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/friends".');
 		}
 	}
 
@@ -1307,7 +1316,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesFriendsTimeline($sinceId = null, $maxId = null, $count = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1320,13 +1329,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'statuses/friends_timeline' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/friends_timeline".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/friends_timeline".');
 		}
 	}
 
@@ -1347,7 +1356,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesMentions($sinceId = null, $maxId = null, $count = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1361,13 +1370,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/mentions".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/mentions".');
 		}
 	}
 
@@ -1385,18 +1394,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesPublicTimeline($format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'statuses/public_timeline.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/public_timeline".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/public_timeline".');
 		}
 	}
 
@@ -1414,18 +1423,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesShow($id, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_url . 'statuses/show/' . $id . '.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/show".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/show".');
 		}
 	}
 
@@ -1446,7 +1455,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesUpdate($status, $inReplyToStatusId = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1458,13 +1467,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_url . 'statuses/update.' . $format, 'POST', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/update".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/update".');
 		}
 	}
 
@@ -1490,7 +1499,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function statusesUserTimeline($id = null, $userId = null, $screenName = null, $sinceId = null, $maxId = null, $count = null, $page = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1509,7 +1518,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			if(!empty($sinceId)) $params['since_id'] = $sinceId;
@@ -1519,13 +1528,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "statuses/user_timeline".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "statuses/user_timeline".');
 		}
 	}
 
@@ -1543,18 +1552,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function trends($format = 'json') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			$result = self::exec($this->_searchUrl . 'trends.' . $format, 'GET', $this->_username, $this->_password);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "trends".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "trends".');
 		}
 	}
 
@@ -1573,7 +1582,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function trendsCurrent($exclude = null, $format = 'json') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1583,13 +1592,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_searchUrl . 'trends/current.' . $format, 'GET', $this->_username, $this->_password, $params);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "trends/current".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "trends/current".');
 		}
 	}
 
@@ -1607,7 +1616,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function trendsDaily($date = null, $exclude = null, $format = 'json') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1618,13 +1627,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_searchUrl . 'trends/daily.' . $format, 'GET', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "trends/daily".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "trends/daily".');
 		}
 	}
 
@@ -1642,7 +1651,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function trendsWeekly($date = null, $exclude = null, $format = 'json') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1653,13 +1662,13 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 
 			$result = self::exec($this->_searchUrl . 'trends/weekly.' . $format, 'GET', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "trends/weekly".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "trends/weekly".');
 		}
 	}
 
@@ -1680,7 +1689,7 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 	 * @return string the formatted response
 	 */
 	protected function usersShow($id = null, $userId = null, $screenName = null, $format = 'xml') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -1699,19 +1708,18 @@ class Bedrock_Common_Service_Twitter extends Bedrock_Common {
 				$params['screen_name'] = $screenName;
 			}
 			else {
-				throw new Bedrock_Common_Services_Twitter_Exception('No user identifier specified, cannot complete query.');
+				throw new \Bedrock\Common\Service\Exception('No user identifier specified, cannot complete query.');
 			}
 
 			$result = self::exec($url, 'GET', $this->_username, $this->_password, $params);
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Service_Twitter_Exception('A problem was encountered while attempting to make the request "users/show".');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Service\Exception('A problem was encountered while attempting to make the request "users/show".');
 		}
 	}
 }
-?>

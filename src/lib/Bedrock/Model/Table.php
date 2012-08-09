@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * Represents a table in the database, allowing basic table operations and
  * storing table-specific properties.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 08/29/2008
- * @updated 08/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_Table extends Bedrock_Model {
+class Table extends \Bedrock\Model {
 	const STATE_UNCHANGED = 0;
 	const STATE_CHANGED = 1;
 	const STATE_NEW = 2;
@@ -42,10 +44,10 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Initializes the table object.
 	 * 
 	 * @param array $tableConfig the table configuration
-	 * @param Bedrock_Model_Database $database the Database object to use
+	 * @param \Bedrock\Model\Database $database the Database object to use
 	 */
 	public function __construct($tableConfig = array(), $database = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			parent::__construct($database);
@@ -55,15 +57,15 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			// @todo handle column details in tableConfig
 			$this->_state = self::STATE_NEW;
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('The table object could not be initialized.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('The table object could not be initialized.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('The table object could not be initialized.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('The table object could not be initialized.');
 		}
 	}
 	
@@ -71,7 +73,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Loads the table schema from the database.
 	 */
 	public function load() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			$resTable = $this->_connection->query('SHOW TABLE STATUS WHERE Name = \'' . self::sanitize($this->_name) . '\'');
@@ -79,7 +81,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			// Retrieve Table Info
 			$this->_properties = array();
-			$rowTable = $resTable->fetch(PDO::FETCH_ASSOC);
+			$rowTable = $resTable->fetch(\PDO::FETCH_ASSOC);
 			
 			$this->_properties['engine'] = $rowTable['Engine'];
 			$this->_properties['length'] = $rowTable['Data_length'];
@@ -110,7 +112,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$matches = array();
 						preg_match('#\((.*?)\)#', $mapping, $matches);
 
-						Bedrock_Common_Logger::info('Mapping with table "' . $table . '" found: ' . $matches[1]);
+						\Bedrock\Common\Logger::info('Mapping with table "' . $table . '" found: ' . $matches[1]);
 
 						switch($matches[1]) {
 							case 'one_one':
@@ -138,7 +140,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			// Retrieve Column Info
 			$this->_columns = array();
-			$rows = $resColumns->fetchAll(PDO::FETCH_ASSOC);
+			$rows = $resColumns->fetchAll(\PDO::FETCH_ASSOC);
 			
 			foreach($rows as $row) {
 				$columnData = array();
@@ -164,31 +166,31 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					
 					switch($this->_mappings[$columnData['foreign_key']]) {
 						case self::MAP_TYPE_ONE_ONE:
-							$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_ONE_TO_ONE;
+							$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_ONE_TO_ONE;
 							break;
 							
 						case self::MAP_TYPE_ONE_MANY:
-							$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_ONE_TO_MANY;
+							$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_ONE_TO_MANY;
 							break;
 							
 						case self::MAP_TYPE_MANY_ONE:
-							$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_MANY_TO_ONE;
+							$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_MANY_TO_ONE;
 							break;
 							
 						case self::MAP_TYPE_MANY_MANY:
-							$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_MANY_MANY;
+							$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_MANY_TO_MANY;
 							break;
 							
 						default:
-							$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_NONE;
+							$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_NONE;
 							break;
 					}
 				}
 				else {
-					$columnData['foreign_key_type'] = Bedrock_Model_Column::FK_TYPE_NONE;
+					$columnData['foreign_key_type'] = \Bedrock\Model\Column::FK_TYPE_NONE;
 				}
 				
-				$columnObj = new Bedrock_Model_Column($columnData);
+				$columnObj = new \Bedrock\Model\Column($columnData);
 				
 				$this->_columns[] = $columnObj;
 				
@@ -202,15 +204,15 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			$this->_state = self::STATE_UNCHANGED;
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('There was a problem retrieving the table information.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('There was a problem retrieving the table information.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
 	}
 	
@@ -219,7 +221,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * exist.
 	 */
 	public function save() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($this->_state == self::STATE_CHANGED) {
@@ -300,17 +302,17 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			$this->_state = self::STATE_UNCHANGED;
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while saving the table schema.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while saving the table schema.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while saving the table schema.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while saving the table schema.');
 		}
 	}
 	
@@ -318,7 +320,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Drops the current table from the database.
 	 */
 	public function drop() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Execute Query
@@ -326,17 +328,17 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			$this->_state = self::STATE_NEW;
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while dropping the table from the database.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while dropping the table from the database.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 	}
 	
@@ -344,24 +346,24 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Empties the table of all data and resets any auto increment fields.
 	 */
 	public function reset() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Execute Query
 			$this->_connection->query('DELETE FROM ' . self::sanitize($this->_name));
 			$this->_connection->query('ALTER TABLE ' . self::sanitize($this->_name) . ' AUTO_INCREMENT = 0');
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while dropping the table from the database.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while dropping the table from the database.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 	}
 
@@ -369,15 +371,18 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Attempts to revert a table from the specified backup copy.
 	 *
 	 * @param string $backupName the name of the backup table
+	 *
+	 * @throws \Bedrock\Model\Exception if the revert fails
+	 * @return bool whether or not the revert was successful
 	 */
 	public function revert($backupName) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
 			$result = false;
 
-			Bedrock_Common_Logger::info('Reverting table "' . $this->_name . '" from backup "' . $backupName . '"...');
+			\Bedrock\Common\Logger::info('Reverting table "' . $this->_name . '" from backup "' . $backupName . '"...');
 			$res = $this->_connection->query('CREATE TABLE ' . self::sanitize($this->_name) . ' SELECT * FROM ' . self::sanitize($backupName));
 			
 			if($res) {
@@ -386,13 +391,13 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				$result = (bool) $res;
 			}
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('Reverting a table from the backup table "' . $backupName . '" failed!');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('Reverting a table from the backup table "' . $backupName . '" failed!');
 		}
 	}
 	
@@ -408,7 +413,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	/**
 	 * Adds a new column to the table.
 	 *
-	 * @param Bedrock_Model_Column $newColumn the column to add to the table
+	 * @param \Bedrock\Model\Column $newColumn the column to add to the table
 	 */
 	public function addColumn($newColumn) {
 		$this->_columns_add[] = $newColumn;
@@ -424,7 +429,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	/**
 	 * Inserts a new column after the specified column index.
 	 *
-	 * @param Bedrock_Model_Column $newColumn the column to add to the table
+	 * @param \Bedrock\Model\Column $newColumn the column to add to the table
 	 * @param integer $afterIndex the index after which to insert the column
 	 */
 	public function insertColumn($newColumn, $afterColumnName) {
@@ -521,7 +526,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	/**
 	 * Retrieves the table's primary key.
 	 *
-	 * @return Bedrock_Model_Column the primary key's Column object
+	 * @return \Bedrock\Model\Column the primary key's Column object
 	 */
 	public function getPrimaryKey() {
 		return $this->_key_primary;
@@ -641,19 +646,19 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				$result = '';
 				break;
 				
-			case Bedrock_Model::FORMAT_SQL:
+			case \Bedrock\Model::FORMAT_SQL:
 				$result = 'sql';
 				break;
 				
-			case Bedrock_Model::FORMAT_XML:
+			case \Bedrock\Model::FORMAT_XML:
 				$result = 'xml';
 				break;
 				
-			case Bedrock_Model::FORMAT_YAML:
+			case \Bedrock\Model::FORMAT_YAML:
 				$result = 'yaml';
 				break;
 				
-			case Bedrock_Model::FORMAT_CSV:
+			case \Bedrock\Model::FORMAT_CSV:
 				$result = 'csv';
 				break;
 		}
@@ -665,7 +670,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * Returns the current table's definition (including data) as a string using
 	 * the default format.
 	 *
-	 * @return the generated string
+	 * @return string the generated string
 	 */
 	public function __toString() {
 		return $this->toString();
@@ -676,10 +681,10 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * the specified format.
 	 *
 	 * @param string $format the output format to use
-	 * @return the generated string
+	 * @return string the generated string
 	 */
-	public function toString($format = Bedrock_Model::FORMAT_SQL) {
-		Bedrock_Common_Logger::logEntry();
+	public function toString($format = \Bedrock\Model::FORMAT_SQL) {
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -687,14 +692,14 @@ class Bedrock_Model_Table extends Bedrock_Model {
 
 			switch($format) {
 				default:
-				case Bedrock_Model::FORMAT_SQL:
-					$result .= $this->schemaToString(Bedrock_Model::FORMAT_SQL) . "\n";
-					$result .= $this->dataToString(Bedrock_Model::FORMAT_SQL);
+				case \Bedrock\Model::FORMAT_SQL:
+					$result .= $this->schemaToString(\Bedrock\Model::FORMAT_SQL) . "\n";
+					$result .= $this->dataToString(\Bedrock\Model::FORMAT_SQL);
 					break;
 
-				case Bedrock_Model::FORMAT_XML:
-					$schema = DOMDocument::loadXML($this->schemaToString(Bedrock_Model::FORMAT_XML));
-					$records = DOMDocument::loadXML($this->dataToString(Bedrock_Model::FORMAT_XML));
+				case \Bedrock\Model::FORMAT_XML:
+					$schema = \DOMDocument::loadXML($this->schemaToString(\Bedrock\Model::FORMAT_XML));
+					$records = \DOMDocument::loadXML($this->dataToString(\Bedrock\Model::FORMAT_XML));
 					//$records = DOMDocument::loadXML($records->saveXML($records->documentElement));
 
 					$fragment = $schema->createDocumentFragment();
@@ -705,34 +710,34 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					$result = $schema->saveXML();
 					break;
 
-				case Bedrock_Model::FORMAT_YAML:
-					$yaml = Bedrock_Common_Data_YAML::decode($this->schemaToString(Bedrock_Model::FORMAT_YAML));
-					$records = Bedrock_Common_Data_YAML::decode($this->dataToString(Bedrock_Model::FORMAT_YAML));
+				case \Bedrock\Model::FORMAT_YAML:
+					$yaml = \Bedrock\Common\Data\YAML::decode($this->schemaToString(\Bedrock\Model::FORMAT_YAML));
+					$records = \Bedrock\Common\Data\YAML::decode($this->dataToString(\Bedrock\Model::FORMAT_YAML));
 					
 					foreach($records as $record) {
 						$yaml['table']['records'] = $records['records'];
 					}
 
-					$result = new Bedrock_Common_Data_YAML($yaml);
+					$result = new \Bedrock\Common\Data\YAML($yaml);
 					$result = (string) $result;
 					break;
 
-				case Bedrock_Model::FORMAT_CSV:
-					$result .= $this->schemaToString(Bedrock_Model::FORMAT_CSV) . "\n";
-					$result .= $this->dataToString(Bedrock_Model::FORMAT_CSV) . "\n";
+				case \Bedrock\Model::FORMAT_CSV:
+					$result .= $this->schemaToString(\Bedrock\Model::FORMAT_CSV) . "\n";
+					$result .= $this->dataToString(\Bedrock\Model::FORMAT_CSV) . "\n";
 					break;
 			}
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(DOMException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\DOMException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -742,8 +747,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * @param integer $formatType the format type to use
 	 * @return string the schema represented as a string
 	 */
-	public function schemaToString($formatType = Bedrock_Model::FORMAT_SQL) {
-		Bedrock_Common_Logger::logEntry();
+	public function schemaToString($formatType = \Bedrock\Model::FORMAT_SQL) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -755,7 +760,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				default:
 					
 				// SQL Query
-				case Bedrock_Model::FORMAT_SQL:
+				case \Bedrock\Model::FORMAT_SQL:
 					$result = 'CREATE TABLE `' . self::sanitize($this->_name) . '` (';
 					
 					// Table Columns
@@ -784,8 +789,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// XML String
-				case Bedrock_Model::FORMAT_XML:
-					$xml = new SimpleXMLElement('<table></table>');
+				case \Bedrock\Model::FORMAT_XML:
+					$xml = new \SimpleXMLElement('<table></table>');
 					$xml->addAttribute('name', $this->_name);
 					
 					// Table Properties
@@ -833,7 +838,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// YAML String
-				case Bedrock_Model::FORMAT_YAML:
+				case \Bedrock\Model::FORMAT_YAML:
 					// Build Array
 					$data = array(
 						'table' => array(
@@ -881,11 +886,11 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					}
 
 					// Build YAML
-					$result = Bedrock_Common_Data_YAML::encode($data);
+					$result = \Bedrock\Common\Data\YAML::encode($data);
 					break;
 					
 				// CSV String
-				case Bedrock_Model::FORMAT_CSV:
+				case \Bedrock\Model::FORMAT_CSV:
 					// Build Array
 					$columns = array('class', 'name', 'type', 'length', 'size', 'default', 'comment', 'primarykey', 'autoincrement', 'unique', 'null', 'engine', 'charset', 'collation');
 
@@ -930,22 +935,22 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						);
 					}
 
-					$result = Bedrock_Common_Data_CSV::encode($data, ', ', $columns);
+					$result = \Bedrock\Common\Data\CSV::encode($data, ', ', $columns);
 					break;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(DOMException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
+		catch(\DOMException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
 		}
 	}
 	
@@ -955,8 +960,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * @param integer $formatType the format type to use
 	 * @return string the data represented as a string
 	 */
-	public function dataToString($formatType = Bedrock_Model::FORMAT_SQL) {
-		Bedrock_Common_Logger::logEntry();
+	public function dataToString($formatType = \Bedrock\Model::FORMAT_SQL) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -964,18 +969,18 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			
 			// Check for Unsaved Changes
 			if($this->_state != self::STATE_UNCHANGED) {
-				throw new Bedrock_Model_Exception('Table \'' . $this->_name . '\' data retrieval aborted, the table has unsaved changes.');
+				throw new \Bedrock\Model\Exception('Table \'' . $this->_name . '\' data retrieval aborted, the table has unsaved changes.');
 			}
 			
 			// Query Database
 			$res = $this->_connection->query('SELECT * FROM ' . self::sanitize($this->_name));
-			$rows = $res->fetchAll(PDO::FETCH_ASSOC);
+			$rows = $res->fetchAll(\PDO::FETCH_ASSOC);
 			
 			switch($formatType) {
 				default:
 					
 				// SQL Queries
-				case Bedrock_Model::FORMAT_SQL:
+				case \Bedrock\Model::FORMAT_SQL:
 					foreach($rows as $row) {
 						// Build SQL Query
 						$insertQuery = 'INSERT INTO ' . self::sanitize($this->_name) . ' (';
@@ -987,11 +992,11 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$insertQuery = substr($insertQuery, 0, strlen($insertQuery) - 2) . ') VALUES (';
 						
 						foreach($this->_columns as $column) {
-							if($column->type == Bedrock_Model_Column::FIELD_TYPE_INT ||
-									$column->type == Bedrock_Model_Column::FIELD_TYPE_FLOAT ||
-									$column->type == Bedrock_Model_Column::FIELD_TYPE_DOUBLE ||
-									$column->type == Bedrock_Model_Column::FIELD_TYPE_DECIMAL ||
-									$column->type == Bedrock_Model_Column::FIELD_TYPE_BOOL) {
+							if($column->type == \Bedrock\Model\Column::FIELD_TYPE_INT ||
+									$column->type == \Bedrock\Model\Column::FIELD_TYPE_FLOAT ||
+									$column->type == \Bedrock\Model\Column::FIELD_TYPE_DOUBLE ||
+									$column->type == \Bedrock\Model\Column::FIELD_TYPE_DECIMAL ||
+									$column->type == \Bedrock\Model\Column::FIELD_TYPE_BOOL) {
 								$insertQuery .= $row[$column->name] . ', ';
 							}
 							else {
@@ -1007,8 +1012,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// XML Document
-				case Bedrock_Model::FORMAT_XML:
-					$xml = new SimpleXMLElement('<records></records>');
+				case \Bedrock\Model::FORMAT_XML:
+					$xml = new \SimpleXMLElement('<records></records>');
 					
 					foreach($rows as $row) {
 						$rowXml = $xml->addChild('record');
@@ -1025,7 +1030,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// YAML Document
-				case Bedrock_Model::FORMAT_YAML:
+				case \Bedrock\Model::FORMAT_YAML:
 					// Build Data
 					$data = array('records' => array());
 
@@ -1040,11 +1045,11 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$data['records'][] = $currentRecord;
 					}
 					
-					$result = Bedrock_Common_Data_YAML::encode($data);
+					$result = \Bedrock\Common\Data\YAML::encode($data);
 					break;
 					
 				// CSV Document
-				case Bedrock_Model::FORMAT_CSV:
+				case \Bedrock\Model::FORMAT_CSV:
 					// Build Data
 					$columns = array();
 					$records = array();
@@ -1065,55 +1070,55 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$records[] = $currentRecord;
 					}
 					
-					$result = Bedrock_Common_Data_CSV::encode($records, ', ', $columns);
+					$result = \Bedrock\Common\Data\CSV::encode($records, ', ', $columns);
 					break;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered converting the data for table "' . $this->_name . '" to a string.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered converting the data for table "' . $this->_name . '" to a string.');
 		}
 	}
 	
 	/**
 	 * Imports the table schema using the specified source. The table will not
-	 * be created until the Bedrock_Model_Table::save() method is called.
+	 * be created until the \Bedrock\Model\Table::save() method is called.
 	 *
 	 * @param string $importSource the source file to import from
 	 * @param integer $importType the format of the source file
 	 * @return boolean whether or not the import was successful
 	 */
-	public function importSchema($importSource, $importType = Bedrock_Model::FORMAT_SQL, $sourceIsFile = true) {
-		Bedrock_Common_Logger::logEntry();
+	public function importSchema($importSource, $importType = \Bedrock\Model::FORMAT_SQL, $sourceIsFile = true) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
 			$result = false;
 
 			if($sourceIsFile && !is_file($importSource)) {
-				throw new Bedrock_Model_Exception('The import source specified is invalid: "' . $importSource . '"');
+				throw new \Bedrock\Model\Exception('The import source specified is invalid: "' . $importSource . '"');
 			}
 
 			// Copy/Backup Table
-			$backupName = '_bed_' . Bedrock_Common_String::random(4) . '_' . $this->_name;
-			Bedrock_Common_Logger::info('Creating backup of table "' . $this->_name . '" to "' . $backupName . '"');
+			$backupName = '_bed_' . \Bedrock\Common\String::random(4) . '_' . $this->_name;
+			\Bedrock\Common\Logger::info('Creating backup of table "' . $this->_name . '" to "' . $backupName . '"');
 			$sql = 'CREATE TABLE ' . self::sanitize($backupName) . ' SELECT * FROM ' . self::sanitize($this->_name);
 			
-			if(!$this->_connection->query($sql)) throw new Bedrock_Model_Exception('Table backup failed for table "' . $this->_name . '".');
+			if(!$this->_connection->query($sql)) throw new \Bedrock\Model\Exception('Table backup failed for table "' . $this->_name . '".');
 
 			// Drop Table
-			if($this->drop()) throw new Bedrock_Model_Exception('Dropping table "' . $this->_name . '" failed.');
+			if($this->drop()) throw new \Bedrock\Model\Exception('Dropping table "' . $this->_name . '" failed.');
 
 			// Parse Data
 			switch($importType) {
 				default:
 
 				// SQL Query
-				case Bedrock_Model::FORMAT_SQL:
+				case \Bedrock\Model::FORMAT_SQL:
 					if($sourceIsFile) {
 						$sql = file_get_contents($importSource);
 					}
@@ -1123,7 +1128,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 
 				// XML Document
-				case Bedrock_Model::FORMAT_XML:
+				case \Bedrock\Model::FORMAT_XML:
 					if($sourceIsFile) {
 						$xml = simplexml_load_file($importSource);
 					}
@@ -1134,14 +1139,14 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					$sql = 'CREATE TABLE `' . self::sanitize($xml['name']) . '` (';
 
 					foreach($xml->columns->column as $column) {
-						$colObj = new Bedrock_Model_Column(array(
+						$colObj = new \Bedrock\Model\Column(array(
 							'name' => $column['name'],
 							'type' => $column->type,
 							'length' => $column->length,
 							'size' => $column->size,
 							'null' => $column->flags->null == 0 ? false : true,
 							'default' => $column->default,
-							'primary_key' => $columns->flags->primarykey,
+							'primary_key' => $column->flags->primarykey,
 							'foreign_key' => '',
 							'foreign_key_type' => ''
 						));
@@ -1170,7 +1175,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 
 				// YAML Document
-				case Bedrock_Model::FORMAT_YAML:
+				case \Bedrock\Model::FORMAT_YAML:
 					if($sourceIsFile) {
 						$importString = file_get_contents($importSource);
 					}
@@ -1178,18 +1183,18 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$importString = $importSource;
 					}
 
-					$yaml = new Bedrock_Common_Data_YAML($importString, true);
+					$yaml = new \Bedrock\Common\Data\YAML($importString, true);
 					$sql = 'CREATE TABLE `' . self::sanitize($yaml->table->name) . '` (';
 					
 					foreach($yaml->table->columns as $column) {
-						$colObj = new Bedrock_Model_Column(array(
+						$colObj = new \Bedrock\Model\Column(array(
 							'name' => $column->name,
 							'type' => $column->type,
 							'length' => $column->length,
 							'size' => $column->size,
 							'null' => $column->flags->null,
 							'default' => $column->default,
-							'primary_key' => $columns->flags->primarykey,
+							'primary_key' => $column->flags->primarykey,
 							'foreign_key' => '',
 							'foreign_key_type' => ''
 						));
@@ -1218,7 +1223,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 
 				// CSV Document
-				case Bedrock_Model::FORMAT_CSV:
+				case \Bedrock\Model::FORMAT_CSV:
 					if($sourceIsFile) {
 						$importString = file_get_contents($importSource);
 					}
@@ -1226,7 +1231,9 @@ class Bedrock_Model_Table extends Bedrock_Model {
 						$importString = $importSource;
 					}
 
-					$csv = new Bedrock_Common_Data_Csv($importString, ', ', true);
+					$csv = new \Bedrock\Common\Data\CSV($importString, ', ', true);
+					$tableRow = null;
+					$columnRows = array();
 					
 					foreach($csv as $row) {
 						if($row['class'] == 'table') {
@@ -1240,7 +1247,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					$sql = 'CREATE TABLE `' . self::sanitize($tableRow['name']) . '` (';
 					
 					foreach($columnRows as $columnRow) {
-						$colObj = new Bedrock_Model_Column(array(
+						$colObj = new \Bedrock\Model\Column(array(
 							'name' => isset($columnRow['name']) ? $columnRow['name'] : '',
 							'type' => isset($columnRow['type']) ? $columnRow['type'] : '',
 							'length' => isset($columnRow['length']) ? $columnRow['length'] : '',
@@ -1277,7 +1284,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 			}
 
 			// Execute Queries
-			Bedrock_Common_Logger::info('Importing schema with query: ' . $sql);
+			\Bedrock\Common\Logger::info('Importing schema with query: ' . $sql);
 			$res = $this->_connection->query($sql);
 
 			if(!$res) {
@@ -1285,29 +1292,33 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				$result = false;
 			}
 			else {
-				Bedrock_Common_Logger::info('Removing backup table "' . $backupName .'"...');
+				\Bedrock\Common\Logger::info('Removing backup table "' . $backupName .'"...');
 				$this->_connection->query('DROP TABLE IF EXISTS ' . self::sanitize($backupName));
 				$result = true;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Bedrock\Model\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 
-			$this->revert($backupName);
+			if(isset($backupName)) {
+				$this->revert($backupName);
+			}
 
-			throw new Bedrock_Model_Exception('Schema import failed.');
+			throw new \Bedrock\Model\Exception('Schema import failed.');
 		}
-		catch(Bedrock_Model_Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 
-			$this->revert($backupName);
+			if(isset($backupName)) {
+				$this->revert($backupName);
+			}
 
-			throw new Bedrock_Model_Exception('Schema import failed.');
+			throw new \Bedrock\Model\Exception('Schema import failed.');
 		}
 	}
 	
@@ -1318,20 +1329,20 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * @param string $exportLocation the file to which the exported schema will be saved
 	 * @param integer $exportType the export format to use
 	 */
-	public function exportSchema($exportLocation, $exportType = Bedrock_Model::FORMAT_SQL) {
-		Bedrock_Common_Logger::logEntry();
+	public function exportSchema($exportLocation, $exportType = \Bedrock\Model::FORMAT_SQL) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			Bedrock_Common_Logger::info('Exporting schema of table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . ' to "' . $exportLocation . '" ...');
+			\Bedrock\Common\Logger::info('Exporting schema of table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . ' to "' . $exportLocation . '" ...');
 			$fileContents = $this->schemaToString($exportType);
 			self::writeFile($exportLocation, $fileContents);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('Schema export failed.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('Schema export failed.');
 		}
 	}
 	
@@ -1343,8 +1354,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * @param integer $importType the format of the source file
 	 * @param boolean $append whether or not existing data should be replaced or appended to
 	 */
-	public function importData($importSource, $importType = Bedrock_Model::FORMAT_SQL, $append = false) {
-		Bedrock_Common_Logger::logEntry();
+	public function importData($importSource, $importType = \Bedrock\Model::FORMAT_SQL, $append = false) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -1354,13 +1365,13 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				default:
 				
 				// SQL Query
-				case Bedrock_Model::FORMAT_SQL:
+				case \Bedrock\Model::FORMAT_SQL:
 					$importSql = file($importSource);
 					break;
 					
 				// XML Document
-				case Bedrock_Model::FORMAT_XML:
-					$importXml = new SimpleXMLElement($importSource, NULL, true);
+				case \Bedrock\Model::FORMAT_XML:
+					$importXml = new \SimpleXMLElement($importSource, NULL, true);
 					
 					foreach($importXml->record as $row) {
 						$sql = 'INSERT INTO ' . $this->_name . '(';
@@ -1381,8 +1392,8 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// YAML Document
-				case Bedrock_Model::FORMAT_YAML:
-					$importYaml = new Bedrock_Common_Data_YAML(file_get_contents($importSource));
+				case \Bedrock\Model::FORMAT_YAML:
+					$importYaml = new \Bedrock\Common\Data\YAML(file_get_contents($importSource));
 					
 					foreach($importYaml->records as $record) {
 						$sql = 'INSERT INTO ' . $this->_name . '(';
@@ -1412,7 +1423,7 @@ class Bedrock_Model_Table extends Bedrock_Model {
 					break;
 					
 				// CSV Document
-				case Bedrock_Model::FORMAT_CSV:
+				case \Bedrock\Model::FORMAT_CSV:
 					$importCsv = file($importSource);
 					$columns = explode(',', array_shift($importCsv));
 					$values = array();
@@ -1454,12 +1465,12 @@ class Bedrock_Model_Table extends Bedrock_Model {
 				$this->_connection->exec($query);
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('Data import failed.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('Data import failed.');
 		}
 	}
 	
@@ -1470,21 +1481,20 @@ class Bedrock_Model_Table extends Bedrock_Model {
 	 * @param string $exportLocation the file to which exported data will be saved
 	 * @param integer $exportType the export format to use
 	 */
-	public function exportData($exportLocation, $exportType = Bedrock_Model::FORMAT_SQL) {
-		Bedrock_Common_Logger::logEntry();
+	public function exportData($exportLocation, $exportType = \Bedrock\Model::FORMAT_SQL) {
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
-			Bedrock_Common_Logger::info('Exporting data in table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . '...');
+			\Bedrock\Common\Logger::info('Exporting data in table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . '...');
 			$fileContents = $this->dataToString($exportType);
 			self::writeFile($exportLocation, $fileContents);
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('Data export failed.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('Data export failed.');
 		}
 	}
 }
-?>

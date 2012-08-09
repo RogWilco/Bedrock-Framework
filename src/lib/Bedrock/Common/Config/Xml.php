@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common\Config;
+
 /**
  * XML Configuration
  *
@@ -6,11 +8,11 @@
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 03/29/2008
- * @updated 03/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
+class Xml extends \Bedrock\Common\Config {
 	/**
 	 * Initializes an XML-based Config object.
 	 *
@@ -24,7 +26,7 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 		
 		// Load XML File
 		if(empty($file)) {
-			throw new Bedrock_Common_Config_Exception('No file specified.');
+			throw new \Bedrock\Common\Config\Exception('No file specified.');
 		}
 
 		$config = simplexml_load_file($file);
@@ -38,7 +40,7 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 		elseif(is_array($section)) {
 			foreach($section as $aSection) {
 				if(!$config->$aSection) {
-					throw new Bedrock_Common_Config_Exception('The section "' . $aSection . '" could not be found.');
+					throw new \Bedrock\Common\Config\Exception('The section "' . $aSection . '" could not be found.');
 				}
 
 				$data = array_merge($this->_extends($config, $aSection), $data);
@@ -46,7 +48,7 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 		}
 		else {
 			if(!$config->$section) {
-				throw new Bedrock_Common_Config_Exception('The section "' . $section . '" could not be found.');
+				throw new \Bedrock\Common\Config\Exception('The section "' . $section . '" could not be found.');
 			}
 
 			$data = $this->_extends($config, $section);
@@ -63,7 +65,7 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 	/**
 	 * Converts a SimpleXMLElement object into an array recurrsively.
 	 *
-	 * @param SimpleXMLElement $xmlObject the object to convert
+	 * @param \SimpleXMLElement $xmlObject the object to convert
 	 * @return array the converted object
 	 */
 	protected function _xmlToArray($xmlObject) {
@@ -101,14 +103,17 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 	/**
 	 * Applies an extended section to the specified configuration.
 	 *
-	 * @param SimpleXMLElement $xmlObject the SimpleXMLElement containing the extending section
+	 * @param \SimpleXMLElement $xmlObject the SimpleXMLElement containing the extending section
 	 * @param string $section the name of the section
 	 * @param array $config the configuration to extend
+	 *
+	 * @throws \Bedrock\Common\Config\Exception if the specified section cannot be found
+	 * @return array the extended configuration
 	 */
 	protected function _extends($xmlObject, $section, $config = array()) {
 		// Check for Section
 		if(!$xmlObject->$section) {
-			throw new Bedrock_Common_Config_Exception('Section "' . $section . '" was not found.');
+			throw new \Bedrock\Common\Config\Exception('Section "' . $section . '" was not found.');
 		}
 
 		$thisSection = $xmlObject->$section;
@@ -133,6 +138,10 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 	protected function _mergeArrays($arrayOne, $arrayTwo) {
 		foreach($arrayTwo as $key => $value) {
 			if(is_array($value)) {
+				if(!array_key_exists($key, $arrayOne)) {
+					$arrayOne[$key] = array();
+				}
+
 				$arrayOne[$key] = $this->_mergeArrays($arrayOne[$key], $value);
 			}
 			else {
@@ -143,4 +152,3 @@ class Bedrock_Common_Config_Xml extends Bedrock_Common_Config {
 		return $arrayOne;
 	}
 }
-?>

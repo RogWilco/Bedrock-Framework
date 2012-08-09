@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Configuration Object
  *
@@ -6,11 +8,11 @@
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 03/29/2008
- * @updated 03/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, SeekableIterator {
+class Config extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected $_data;
 	protected $_locked;
 	protected $_key;
@@ -82,7 +84,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 			}
 		}
 		else {
-			throw new Bedrock_Common_Config_Exception('This Config object is locked (read-only).');
+			throw new \Bedrock\Common\Config\Exception('This Config object is locked (read-only).');
 		}
 	}
 
@@ -106,7 +108,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 			unset($this->_data[$name]);
 		}
 		else {
-			throw new Bedrock_Common_Config_Exception('This Config object is locked (read-only).');
+			throw new \Bedrock\Common\Config\Exception('This Config object is locked (read-only).');
 		}
 	}
 
@@ -130,7 +132,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 		$result = '';
 
 		foreach($this->_data as $key => $value) {
-			if($value instanceof Bedrock_Common_Config) {
+			if($value instanceof \Bedrock\Common\Config) {
 				$result .= $value->__toString($prefix . "\t");
 			}
 			else {
@@ -154,7 +156,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 			return $this->_key;
 		}
 		else {
-			throw new Bedrock_Common_Config_Exception('This Config object is already locked.');
+			throw new \Bedrock\Common\Config\Exception('This Config object is already locked.');
 		}
 	}
 
@@ -170,7 +172,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 				$this->_key = '';
 			}
 			else {
-				throw new Bedrock_Common_Config_Exception('The specified unlock key was invalid.');
+				throw new \Bedrock\Common\Config\Exception('The specified unlock key was invalid.');
 			}
 		}
 	}
@@ -179,17 +181,17 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 	 * Merges another config object with the current object, overwriting
 	 * existing data with the same name.
 	 *
-	 * @param Bedrock_Common_Config $newConfig the Config object to merge
-	 * @return Bedrock_Common_Config the merged Config object
+	 * @param \Bedrock\Common\Config $newConfig the Config object to merge
+	 * @return \Bedrock\Common\Config the merged Config object
 	 */
 	public function merge($newConfig) {
-		if(!($newConfig instanceof Bedrock_Common_Config)) {
-			throw new Bedrock_Common_Config_Exception('Only valid Config objects can be merged.');
+		if(!($newConfig instanceof \Bedrock\Common\Config)) {
+			throw new \Bedrock\Common\Config\Exception('Only valid Config objects can be merged.');
 		}
 		
 		foreach($newConfig as $key => $config) {
 			if(array_key_exists($key, $this->_data)) {
-				if($config instanceof Bedrock_Common_Config && $this->$key instanceof Bedrock_Common_Config) {
+				if($config instanceof \Bedrock\Common\Config && $this->$key instanceof \Bedrock\Common\Config) {
 					$this->$key = $this->$key->merge($config);
 				} else {
 					$this->$key = $config;
@@ -227,7 +229,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 	 */
 	public function offsetGet($offset) {
 		if(!$this->offsetExists($offset)) {
-			throw new Bedrock_Common_Config_Exception('A value does not exist at the requested offset of ' . $offset);
+			throw new \Bedrock\Common\Config\Exception('A value does not exist at the requested offset of ' . $offset);
 		}
 
 		return $this->_data[$offset];
@@ -244,7 +246,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 			$this->_data[$offset] = $value;
 		}
 		else {
-			throw new Bedrock_Common_Config_Exception('This Config object is locked (read-only).');
+			throw new \Bedrock\Common\Config\Exception('This Config object is locked (read-only).');
 		}
 	}
 
@@ -258,7 +260,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 			unset($this->_data[$offset]);
 		}
 		else {
-			throw new Bedrock_Common_Config_Exception('This Config object is locked (read-only).');
+			throw new \Bedrock\Common\Config\Exception('This Config object is locked (read-only).');
 		}
 	}
 
@@ -336,8 +338,7 @@ class Bedrock_Common_Config extends Bedrock implements ArrayAccess, Countable, S
 		}
 
 		if(!$this->valid()) {
-			throw new Bedrock_Common_Config_Exception('Invalid index specified.');
+			throw new \Bedrock\Common\Config\Exception('Invalid index specified.');
 		}
 	}
 }
-?>

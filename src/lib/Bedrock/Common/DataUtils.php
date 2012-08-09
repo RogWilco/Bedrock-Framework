@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Data Utilities Class
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/02/2008
- * @updated 10/02/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_DataUtils extends Bedrock {
+class DataUtils extends \Bedrock {
 	/**
 	 * Determines whether or not the specified array is associative or
 	 * sequential.
@@ -20,4 +22,3 @@ class Bedrock_Common_DataUtils extends Bedrock {
 		return array_keys($array) != range(0, count($array) - 1);
 	}
 }
-?>

@@ -1,14 +1,18 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Provides basic image manipulation for common image formats.
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 2009-07-21
- * @updated 2009-07-21
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Image extends Bedrock {
+class Image extends \Bedrock {
+	const TINT_BLACKANDWHITE = 0;
+
 	protected static $_methods = null;
 	protected $_location;
 	protected $_properties = array();
@@ -21,22 +25,22 @@ class Bedrock_Common_Image extends Bedrock {
 	 */
 	public function __construct($location) {
 		try {
-			Bedrock_Common_Logger::logEntry();
+			\Bedrock\Common\Logger::logEntry();
 
 			if(!is_file($location)) {
-				Bedrock_Common_Logger::logExit();
-				throw new Bedrock_Common_Image_Exception('No image file was found at the location "' . $location . '"');
+				\Bedrock\Common\Logger::logExit();
+				throw new \Bedrock\Common\Image\Exception('No image file was found at the location "' . $location . '"');
 			}
 
 			$this->_location = $location;
 			$this->load();
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Image_Exception('An image could not be initialized.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Image\Exception('An image could not be initialized.');
 		}
 	}
 
@@ -70,16 +74,16 @@ class Bedrock_Common_Image extends Bedrock {
 	 */
 	public function load() {
 		try {
-			Bedrock_Common_Logger::logEntry();
+			\Bedrock\Common\Logger::logEntry();
 
 			// Reset Changed Properties
 			$this->_changed = array();
 
 			// Load: Dimensions
-			$command = $this->_methods['identify'] . ' -format "%w %h %m %f %d" ' . $this->_location;
+			$command = self::$_methods['identify'] . ' -format "%w %h %m %f %d" ' . $this->_location;
 			$result = exec($command);
 
-			Bedrock_Common_Logger::info('Retrieved properties for image: ' . $result);
+			\Bedrock\Common\Logger::info('Retrieved properties for image: ' . $result);
 			$result = explode(' ', $result);
 
 			$this->_properties['width'] = $result[0];
@@ -88,12 +92,12 @@ class Bedrock_Common_Image extends Bedrock {
 			$this->_properties['filename'] = $result[3];
 			$this->_properties['directory'] = $result[4];
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Image_Exception('The image could not be loaded.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Image\Exception('The image could not be loaded.');
 		}
 	}
 
@@ -102,7 +106,7 @@ class Bedrock_Common_Image extends Bedrock {
 	 */
 	public function commit() {
 		try {
-			Bedrock_Common_Logger::logEntry();
+			\Bedrock\Common\Logger::logEntry();
 
 			if(count($this->_changed) > 0) {
 				// Commit: Size
@@ -112,7 +116,7 @@ class Bedrock_Common_Image extends Bedrock {
 					$newHeight = $this->_changed['height'] ? $this->_changed['height'] : $this->_properties['height'];
 
 					// Apply Changes
-					Bedrock_Common_Logger::info('Adjusting image dimensions to: ' . $newWidth . 'x' . $newHeight);
+					\Bedrock\Common\Logger::info('Adjusting image dimensions to: ' . $newWidth . 'x' . $newHeight);
 					
 
 					// Update Properties
@@ -124,7 +128,7 @@ class Bedrock_Common_Image extends Bedrock {
 				if($this->_changed['type']) {
 
 					// Apply Changes
-					Bedrock_Common_Logger::info('Adjusting image type: ' . $this->_changed['type']);
+					\Bedrock\Common\Logger::info('Adjusting image type: ' . $this->_changed['type']);
 					
 
 					// Update Properties
@@ -138,7 +142,7 @@ class Bedrock_Common_Image extends Bedrock {
 					$newDirectory = $this->_changed['directory'] ? $this->_changed['directory'] : $this->_properties['directory'];
 
 					// Apply Changes
-					Bedrock_Common_Logger::info('Adjusting image filename/directory: ' . $newDirectory . $newFilename);
+					\Bedrock\Common\Logger::info('Adjusting image filename/directory: ' . $newDirectory . $newFilename);
 					
 
 					// Update Properties
@@ -151,17 +155,13 @@ class Bedrock_Common_Image extends Bedrock {
 			// Reset
 			$this->_changed = array();
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Image_Exception('The image could not be loaded.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Image\Exception('The image could not be loaded.');
 		}
-	}
-
-	public function resize($width, $height) {
-		
 	}
 
 	/**
@@ -172,19 +172,19 @@ class Bedrock_Common_Image extends Bedrock {
 	 */
 	public static function exec($method, $params) {
 		try {
-			Bedrock_Common_Logger::logEntry();
+			\Bedrock\Common\Logger::logEntry();
 
 			// Setup
 			$command = '';
 
-			if(!$this->_methods[$method]) {
-				Bedrock_Common_Logger::logExit();
-				throw new Bedrock_Common_Image_Exception('Unknown method "' . $method . '" specified.');
+			if(!self::$_methods[$method]) {
+				\Bedrock\Common\Logger::logExit();
+				throw new \Bedrock\Common\Image\Exception('Unknown method "' . $method . '" specified.');
 			}
 
 			// Load Paths
 			if(self::$_methods === null) {
-				$root = Bedrock_Common_Registry::get('config')->root->image;
+				$root = \Bedrock\Common\Registry::get('config')->root->image;
 				self::$_methods = array(
 					'animate' => $root . 'animate',
 					'compare' => $root . 'compare',
@@ -201,7 +201,7 @@ class Bedrock_Common_Image extends Bedrock {
 			}
 
 			// Build Command
-			$command = $this->_methods[$method];
+			$command = self::$_methods[$method];
 
 			foreach($params as $key => $value) {
 				if(is_numeric($key)) {
@@ -212,16 +212,16 @@ class Bedrock_Common_Image extends Bedrock {
 				}
 			}
 
-			$command = excapeshellcmd($command);
+			$command = escapeshellcmd($command);
 
-			Bedrock_Common_Logger::info('Executing command: ' . $command);
+			\Bedrock\Common\Logger::info('Executing command: ' . $command);
 
 			exec($command);
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Image_Exception('The method "' . $method . '" could not be executed.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Image\Exception('The method "' . $method . '" could not be executed.');
 		}
 	}
 
@@ -237,4 +237,3 @@ class Bedrock_Common_Image extends Bedrock {
 
 	}
 }
-?>

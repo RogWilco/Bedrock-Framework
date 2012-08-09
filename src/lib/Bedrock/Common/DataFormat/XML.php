@@ -1,28 +1,30 @@
 <?php
+namespace Bedrock\Common\DataFormat;
+
 /**
  * DataFormat XML Variant
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 09/26/2008
- * @updated 09/26/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
+class XML extends \Bedrock\Common\DataFormat {
 	/**
 	 * Initializes the DataFormat object.
 	 *
 	 * @param array $data the data to use
 	 */
 	public function __construct($data = array()) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Build Data
 			foreach($data as $entry) {
 				foreach($entry as $key => $value) {
 					if(is_array($value)) {
-						$this->_data[][$key] = new Bedrock_Common_DataFormat_XML($value);
+						$this->_data[][$key] = new self($value);
 					}
 					else {
 						$this->_data[][$key] = $value;
@@ -30,12 +32,12 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 				}
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to construct an XML object from the supplied data.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to construct an XML object from the supplied data.');
 		}
 	}
 	
@@ -45,7 +47,7 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 	 * @return array the currently stored data
 	 */
 	public function toArray() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -54,7 +56,7 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 			// Build Array
 			foreach($this->_data as $entry) {
 				foreach($entry as $key => $value) {
-					if(get_class($value) == 'Bedrock_Common_DataFormat_XML') {
+					if(get_class($value) == 'Bedrock\\Common\\DataFormat\\XML') {
 						$result[] = array($key => $value->toArray());
 					}
 					else {
@@ -63,13 +65,13 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 				}
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to generate an array.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an array.');
 		}
 	}
 	
@@ -80,18 +82,18 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 	 * @return string the data assembled into an XML string
 	 */
 	public function toString($indent = '') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
 			$result = '';
-			$t = Bedrock_Common::TXT_TAB;
-			$n = Bedrock_Common::TXT_NEWLINE;
+			$t = \Bedrock\Common::TXT_TAB;
+			$n = \Bedrock\Common::TXT_NEWLINE;
 			
 			// Build XML
 			foreach($this->_data as $entry) {
 				foreach($entry as $key => $value) {
-					if(get_class($value) == 'Bedrock_Common_DataFormat_XML') {
+					if(get_class($value) == 'Bedrock\\Common\\DataFormat\\XML') {
 						$result .=
 							$indent . '<' . $key . '>' . $n . 
 							$value->toString($indent . $t) .
@@ -103,14 +105,13 @@ class Bedrock_Common_DataFormat_XML extends Bedrock_Common_DataFormat {
 				}
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to generate an XML string.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an XML string.');
 		}
 	}
 }
-?>

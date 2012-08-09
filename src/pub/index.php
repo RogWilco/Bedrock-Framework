@@ -18,16 +18,16 @@ require_once '../lib/Bedrock/Common.php';
 
 try {
 	// Initialize Environment
-	Bedrock_Common::init('../cfg/application.xml');
-	Bedrock_Common_Logger::logEntry();
+	\Bedrock\Common::init('../cfg/application.xml');
+	\Bedrock\Common\Logger::logEntry();
 
 	// Start Router
-	Bedrock_Common_Registry::get('router')->delegate();
+	\Bedrock\Common\Registry::get('router')->delegate();
 
-	Bedrock_Common_Logger::logExit();
+	\Bedrock\Common\Logger::logExit();
 }
-catch(Bedrock_Common_Exception $ex) {
-	Bedrock_Common_Logger::exception($ex);
-	Bedrock_Common_Logger::logExit();
+catch(\Bedrock\Common\Exception $ex) {
+	\Bedrock\Common\Logger::exception($ex);
+	\Bedrock\Common\Logger::logExit();
 }
 ?>

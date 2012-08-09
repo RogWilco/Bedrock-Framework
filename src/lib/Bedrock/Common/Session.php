@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Session Handler
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 11/05/2008
- * @updated 11/05/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Session extends Bedrock {
+class Session extends \Bedrock {
 	protected static $_started = false;
 	protected static $_destroyed = false;
 	protected static $_id = NULL;
@@ -18,7 +20,7 @@ class Bedrock_Common_Session extends Bedrock {
 	 * Starts the session.
 	 */
 	public static function start() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if(!self::$_started) {
@@ -26,12 +28,12 @@ class Bedrock_Common_Session extends Bedrock {
 				self::$_started = true;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('A problem was encountered while trying to start the session.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('A problem was encountered while trying to start the session.');
 		}
 	}
 	
@@ -48,7 +50,7 @@ class Bedrock_Common_Session extends Bedrock {
 	 * Destroys the current session and all related data.
 	 */
 	public static function destroy() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if(!self::$_destroyed) {
@@ -57,12 +59,12 @@ class Bedrock_Common_Session extends Bedrock {
 				self::$_destroyed = true;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('A problem was encountered while trying to destroy the session.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('A problem was encountered while trying to destroy the session.');
 		}
 	}
 	
@@ -81,27 +83,27 @@ class Bedrock_Common_Session extends Bedrock {
 	 * @param string $namespace the namespace to retrieve
 	 */
 	public static function loadNamespace($namespace = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
-				throw new Bedrock_Common_Session_Exception('Could not retrieve the specified namespace, the name was either invalid or empty.');
+				throw new \Bedrock\Common\Session\Exception('Could not retrieve the specified namespace, the name was either invalid or empty.');
 			}
 			
 			$namespace = trim($namespace);
 			
 			// Retrieve Namespace
 			if(!isset(self::$_namespaces[$namespace])) {
-				self::$_namespaces[$namespace] = new Bedrock_Common_Session_Namespace($namespace);
+				self::$_namespaces[$namespace] = new \Bedrock\Common\Session\SessionNamespace($namespace);
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return self::$_namespaces[$namespace];
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be accessed.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be accessed.');
 		}
 	}
 	
@@ -112,27 +114,27 @@ class Bedrock_Common_Session extends Bedrock {
 	 * @param string $namespace the namespace to lock, leave blank to lock all
 	 */
 	public static function lock($namespace = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
-				throw new Bedrock_Common_Session_Exception('Could not lock the specified namespace, the name was either invalid or empty.');
+				throw new \Bedrock\Common\Session\Exception('Could not lock the specified namespace, the name was either invalid or empty.');
 			}
 			
 			$namespace = trim($namespace);
 			
 			if(!isset(self::$_namespaces[$namespace])) {
-				throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be locked, no namespace by that name was found.');
+				throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be locked, no namespace by that name was found.');
 			}
 			
 			self::$_namespaces[$namespace]->lock();
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be locked.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be locked.');
 		}
 	}
 	
@@ -143,27 +145,27 @@ class Bedrock_Common_Session extends Bedrock {
 	 * @param string $namespace the namespace to unlock, leave blank to unlock all
 	 */
 	public static function unlock($namespace = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($namespace == NULL || trim($namespace) == '') {
-				throw new Bedrock_Common_Session_Exception('Could not unlock the specified namespace, the name was either invalid or empty.');
+				throw new \Bedrock\Common\Session\Exception('Could not unlock the specified namespace, the name was either invalid or empty.');
 			}
 			
 			$namespace = trim($namespace);
 			
 			if(!isset(self::$_namespaces[$namespace])) {
-				throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be unlocked, no namespace by that name was found.');
+				throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be unlocked, no namespace by that name was found.');
 			}
 			
 			self::$_namespaces[$namespace]->unlock();
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be unlocked.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be unlocked.');
 		}
 	}
 	
@@ -174,7 +176,7 @@ class Bedrock_Common_Session extends Bedrock {
 	 * @param string $namespace the desired namespace to clear
 	 */
 	public function clear($namespace = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if($namespace == NULL) {
@@ -186,37 +188,39 @@ class Bedrock_Common_Session extends Bedrock {
 				self::loadNamespace($namespace)->clear();
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
-	
+
 	/**
 	 * Sets or gets the current session ID. If an ID is specified, the session
 	 * ID will be set to that value. If no ID is specified, the current ID will
 	 * be returned.
 	 *
 	 * @param string $newSessionId a new session ID to use, leave blank to retrieve the current ID
+	 *
+	 * @throws \Bedrock\Common\Session\Exception if a session ID cannot be set and/or retrieved
+	 * @return string the current session ID
 	 */
 	public static function id($newSessionId = NULL) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			if(!self::started()) {
-				throw new Bedrock_Common_Session_Exception('A session ID could not be retrieved, no session has been started.');
+				throw new \Bedrock\Common\Session\Exception('A session ID could not be retrieved, no session has been started.');
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return session_id($newSessionId);
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The session ID could not be set and/or retrieved.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Session\Exception('The session ID could not be set and/or retrieved.');
 		}
 	}
 }
-?>

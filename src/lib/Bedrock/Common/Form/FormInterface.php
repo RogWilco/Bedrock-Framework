@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Form;
+
 /**
  * Form interface for implementing custom form management classes.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 12/31/2008
- * @updated 12/31/2008
+ * @updated 07/02/2012
  */
-interface Bedrock_Common_Form_Interface extends ArrayAccess, Countable, SeekableIterator {
+interface FormInterface extends \ArrayAccess, \Countable, \SeekableIterator {
 	/**
 	 * Initializes a new form with the specified options.
 	 *
@@ -75,7 +77,7 @@ interface Bedrock_Common_Form_Interface extends ArrayAccess, Countable, Seekable
 	 * Retrieves the requested Field by name or index, or returns all stored
 	 * Fields if no index/name is given.
 	 *
-	 * @param mxied $fieldIndex either the index of the Field, or the Field's name
+	 * @param mixed $fieldIndex either the index of the Field, or the Field's name
 	 * @return mixed either the corresponding Field, all Fields, or null if none are found
 	 */
 	public function fields($fieldIndex = null);
@@ -96,4 +98,3 @@ interface Bedrock_Common_Form_Interface extends ArrayAccess, Countable, Seekable
 	 */
 	public function validate();
 }
-?>

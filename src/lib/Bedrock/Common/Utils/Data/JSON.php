@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Utils\Data;
+
 /**
  * A utilities class for working with the JSON format.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/22/2008
- * @updated 10/22/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Utils_Data_JSON extends Bedrock {
+class JSON extends \Bedrock {
 	const FORMAT_NONE = 0;
 	const FORMAT_INDENT = 1;
 	const FORMAT_ROWS = 2;
@@ -24,12 +26,12 @@ class Bedrock_Common_Utils_Data_JSON extends Bedrock {
 	 * @return string the assembled JSON string
 	 */
 	public static function encode($array, $format = self::FORMAT_INDENT, $indentPrefix = '') {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
-			$t = Bedrock_Common::TXT_TAB;
-			$n = Bedrock_Common::TXT_NEWLINE;
+			$t = \Bedrock\Common::TXT_TAB;
+			$n = \Bedrock\Common::TXT_NEWLINE;
 			$json = '';
 			
 			if($format === self::FORMAT_NONE) {
@@ -95,13 +97,13 @@ class Bedrock_Common_Utils_Data_JSON extends Bedrock {
 				}
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $json;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Exception('A problem was encountered while attempting to encode the data to JSON.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Exception('A problem was encountered while attempting to encode the data to JSON.');
 		}
 	}
 	
@@ -151,4 +153,3 @@ class Bedrock_Common_Utils_Data_JSON extends Bedrock {
 		return $result;
 	}
 }
-?>

@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * General utilities related to the model layer.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/13/2008
- * @updated 10/13/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_Utilities extends Bedrock_Model {
+class Utilities extends \Bedrock\Model {
 	/**
 	 * Attempts to retrieve a mapping table name for the two specified tables.
 	 * If the two tables do not exist, or no association is defined, an error
@@ -19,37 +21,37 @@ class Bedrock_Model_Utilities extends Bedrock_Model {
 	 * @return string the name of the mapping table
 	 */
 	public static function getMappingTableName($firstTableName, $secondTableName) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
 			$result = '';
-			$connection = Bedrock_Common_Registry::get('database')->getConnection();
+			$connection = \Bedrock\Common\Registry::get('database')->getConnection();
 			
 			// Query for Mapping Table
 			$sql = 'SHOW TABLE STATUS WHERE Comment LIKE \'map|%\' AND (INSTR(Name, \'' . self::sanitize($firstTableName) . '\') > 0 OR INSTR(Name, \'' . self::sanitize($secondTableName) . '\') > 0)';
-			Bedrock_Common_Logger::info('Querying for mapping table: "' . $sql . '"');
-			$res = $connection->query($sql)->fetch(PDO::FETCH_ASSOC);
+			\Bedrock\Common\Logger::info('Querying for mapping table: "' . $sql . '"');
+			$res = $connection->query($sql)->fetch(\PDO::FETCH_ASSOC);
 			
 			if(!$res) {
-				throw new Bedrock_Model_Exception('A mapping table for the specified tables could not be found.');
+				throw new \Bedrock\Model\Exception('A mapping table for the specified tables could not be found.');
 			}
 			
 			$result = $res['Name'];
-			Bedrock_Common_Logger::info('Mapping table found: "' . $result . '"');
+			\Bedrock\Common\Logger::info('Mapping table found: "' . $result . '"');
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A database error was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A database error was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Exception('A problem was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Model\Exception('A problem was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
 		}
 	}
 	
@@ -60,25 +62,26 @@ class Bedrock_Model_Utilities extends Bedrock_Model {
 	 * @return array an array of associated tables and the type of association
 	 */
 	public static function getAssociatedTableNames($tableName) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
 			$result = array();
-			$connection = Bedrock_Common_Registry::get('database')->getConnection();
+			$connection = \Bedrock\Common\Registry::get('database')->getConnection();
 			
 			// Query for Associations
 			$sql = 'SHOW TABLE STATUS WHERE Comment LIKE \'table|%\' AND ' .
 					'(Comment LIKE \'%:' . self::sanitize($tableName) . '(%\' OR ' .
 					'Comment LIKE \'%,' . self::sanitize($tableName) . '(%\')';
 			
-			Bedrock_Common_Logger::info('Querying for associated tables: "' . $sql . '"');
+			\Bedrock\Common\Logger::info('Querying for associated tables: "' . $sql . '"');
 			
-			$res = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+			$res = $connection->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 			
 			foreach($res as $row) {
 				// Parse Association Type
 				$mappings = explode(',', substr($row['Comment'], 15));
+				$type = '';
 				
 				foreach($mappings as $mapping) {
 					if(substr($mapping, 0, strpos($mapping, '(')) == $tableName) {
@@ -91,13 +94,12 @@ class Bedrock_Model_Utilities extends Bedrock_Model {
 				$result[$row['Name']] = $type;
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
-?>

@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Growl Notification Class
  * 
@@ -10,11 +12,11 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 03/29/2008
- * @updated 03/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Growl extends Bedrock {
+class Growl extends \Bedrock {
 	const GROWL_PRIORITY_LOW = -2;
 	const GROWL_PRIORITY_MODERATE = -1;
 	const GROWL_PRIORITY_NORMAL = 0;
@@ -149,4 +151,3 @@ class Bedrock_Common_Growl extends Bedrock {
 		}
 	}
 }
-?>

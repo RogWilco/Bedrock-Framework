@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock;
+
 /**
  * Base view object, used to represent a page.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 07/09/2008
- * @updated 07/09/2008
+ * @updated 07/02/2012
  */
-abstract class Bedrock_View extends Bedrock {
+abstract class View extends \Bedrock {
 	const MESSAGE_ALL = 0;
 	const MESSAGE_INFO = 1;
 	const MESSAGE_ERROR = 2;
@@ -21,6 +23,7 @@ abstract class Bedrock_View extends Bedrock {
 	protected $_pageroot;
 	protected $_values = array();
 	protected $_messages = array();
+	protected $_forms = array();
 	protected static $_cssStylesheets = array();
 	protected static $_javascriptTemplates = array();
 	protected static $_javascriptLibraries = array();
@@ -28,7 +31,7 @@ abstract class Bedrock_View extends Bedrock {
 	/**
 	 * The default constructor.
 	 * 
-	 * @return Bedrock_View
+	 * @return \Bedrock\View
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -41,17 +44,17 @@ abstract class Bedrock_View extends Bedrock {
 	/**
 	 * Set the values to use when displaying the page.
 	 * 
-	 * @param name $name the name of the value
+	 * @param string $name the name of the value
 	 * @param mixed $value the value to use
 	 * @param mixed $default a default value if the passed value is empty
 	 * @return void
 	 */
 	public function setValue($name, $value, $default = '') {
 		if(gettype($value) != 'object' ) {
-			Bedrock_Common_Logger::info('Value Set: ' . $name . ' = ' . $value);
+			\Bedrock\Common\Logger::info('Value Set: ' . $name . ' = ' . $value);
 		}
 		else {
-			Bedrock_Common_Logger::info('Value Set: ' . $name . ' = Object');
+			\Bedrock\Common\Logger::info('Value Set: ' . $name . ' = Object');
 		}
 		
 		if(!isset($value) || count($value) == 0) {
@@ -110,10 +113,10 @@ abstract class Bedrock_View extends Bedrock {
 	 * Adds the specified form to the template, using the specified name.
 	 *
 	 * @param string $name the name for the form
-	 * @param Bedrock_Common_Form_Generator $form the form object to store
+	 * @param \Bedrock\Common\Form\Generator $form the form object to store
 	 */
 	public function setForm($name, $form) {
-		Bedrock_Common_Logger::info('Form Set: ' . $name);
+		\Bedrock\Common\Logger::info('Form Set: ' . $name);
 		$this->_forms[$name] = $form;
 	}
 	
@@ -121,7 +124,7 @@ abstract class Bedrock_View extends Bedrock {
 	 * Returns the requested form.
 	 *
 	 * @param string $name the name of the form object to retrieve
-	 * @return Bedrock_Common_Form_Generator the requested form object
+	 * @return \Bedrock\Common\Form\Generator the requested form object
 	 */
 	public function getForm($name) {
 		return $this->_forms[$name];
@@ -273,44 +276,50 @@ abstract class Bedrock_View extends Bedrock {
 		}
 	}
 
-	/**
-	 * Registers the specified CSS stylesheet.
-	 *
-	 * @param string $cssStylesheet the location of the CSS stylesheet
-	 */
+    /**
+     * Registers the specified CSS stylesheet.
+     *
+     * @param string $cssStylesheet the location of the CSS stylesheet
+     * @throws View\Exception
+     * @return void
+     */
 	public static function registerCssStylesheet($cssStylesheet) {
 		if(!is_file('../' . $cssStylesheet)) {
-			throw new Bedrock_View_Exception('The specified stylesheet could not be found: "' . $cssStylesheet . '"');
+			throw new \Bedrock\View\Exception('The specified stylesheet could not be found: "' . $cssStylesheet . '"');
 		}
 
 		if(!in_array($cssStylesheet, self::$_cssStylesheets)) {
 			self::$_cssStylesheets[] = $cssStylesheet;
 		}
 	}
-	
-	/**
-	 * Registers the specified JavaScript template location.
-	 *
-	 * @param string $javascriptTemplate the location of the JS template file
-	 */
+
+    /**
+     * Registers the specified JavaScript template location.
+     *
+     * @param string $javascriptTemplate the location of the JS template file
+     * @throws View\Exception
+     * @return void
+     */
 	public static function registerJavascriptTemplate($javascriptTemplate) {
 		if(!is_file('../' . $javascriptTemplate)) {
-			throw new Bedrock_View_Exception('The specified template file could not be found: "' . $javascriptTemplate . '"');
+			throw new \Bedrock\View\Exception('The specified template file could not be found: "' . $javascriptTemplate . '"');
 		}
 		
 		if(!in_array($javascriptTemplate, self::$_javascriptTemplates)) {
 			self::$_javascriptTemplates[] = $javascriptTemplate;
 		}
 	}
-	
-	/**
-	 * Registers the specified JavaScript library location.
-	 *
-	 * @param string $javascriptLibrary the location of the JS library file
-	 */
+
+    /**
+     * Registers the specified JavaScript library location.
+     *
+     * @param string $javascriptLibrary the location of the JS library file
+     * @throws View\Exception
+     * @return void
+     */
 	public static function registerJavascriptLibrary($javascriptLibrary) {
 		if(!is_file('.'.$javascriptLibrary)) {
-			throw new Bedrock_View_Exception('The specified library file could not be found: "' . $javascriptLibrary . '"');
+			throw new \Bedrock\View\Exception('The specified library file could not be found: "' . $javascriptLibrary . '"');
 		}
 		
 		if(!in_array($javascriptLibrary, self::$_javascriptLibraries)) {
@@ -336,7 +345,7 @@ abstract class Bedrock_View extends Bedrock {
 	 */
 	public static function importJavascriptLibraries($javascriptLibraries) {
 		foreach($javascriptLibraries as $library) {
-			self::retisterJavascriptLibrary($library);
+			self::registerJavascriptLibrary($library);
 		}
 	}
 	
@@ -369,7 +378,7 @@ abstract class Bedrock_View extends Bedrock {
 		$result = false;
 		
 		if($_POST['ajax'] == 1) {
-			Bedrock_Common_Logger::info('AJAX Request Detected');
+			\Bedrock\Common\Logger::info('AJAX Request Detected');
 			$result = true;
 		}
 		
@@ -378,4 +387,3 @@ abstract class Bedrock_View extends Bedrock {
 	
 	abstract function render();
 }
-?>

@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock;
+
 /**
  * Common Utilities
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 03/13/2009
- * @updated 03/13/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common extends Bedrock {
+class Common extends \Bedrock {
 	// Miscellaneous
 	const HASH_SALT_LENGTH = 24;	// DO NOT CHANGE in a deployed environment!
 
@@ -37,7 +39,7 @@ class Bedrock_Common extends Bedrock {
 			header('Location: install/');
 		}
 
-		$config = new Bedrock_Common_Config_Xml($configPath, $env);
+		$config = new \Bedrock\Common\Config\Xml($configPath, $env);
 
 		// Setup
 		define('ROOT', $config->root->system);
@@ -58,11 +60,11 @@ class Bedrock_Common extends Bedrock {
 			// Imports
 			require_once ROOT . '/lib/Bedrock.php';
 			require_once ROOT . '/lib/Bedrock/Common.php';
-			Bedrock_Common::autoload($className, ROOT);
+			\Bedrock\Common::autoload($className, ROOT);
 		}
 
 		// Register Configuration
-		Bedrock_Common_Registry::set('config', $config);
+		\Bedrock\Common\Registry::set('config', $config);
 
 		// Include Paths
 		ini_set('include_path', ini_get('include_path') . DELIMITER .
@@ -73,35 +75,35 @@ class Bedrock_Common extends Bedrock {
 
 		// Error Reporting/Handling
 		eval('error_reporting(' . $config->env->error . ');');
-		set_error_handler('Bedrock_Common::error', E_ALL - E_NOTICE);
+		set_error_handler('\\Bedrock\\Common::error', E_ALL - E_NOTICE);
 
 		// Initialize: Logger
-		Bedrock_Common_Logger::init(Bedrock_Common_Logger::LEVEL_INFO, $config->meta->title, $config->meta->version->application, $config->meta->status);
+		\Bedrock\Common\Logger::init(\Bedrock\Common\Logger::LEVEL_INFO, $config->meta->title, $config->meta->version->application, $config->meta->status);
 
 		// Add built-in targets that are enabled...
 		if($config->logger->targets->system->active) {
-			Bedrock_Common_Logger::addTarget(new Bedrock_Common_Logger_Target_System(), $config->logger->targets->system->level);
+			\Bedrock\Common\Logger::addTarget(new \Bedrock\Common\Logger\Target\System(), $config->logger->targets->system->level);
 		}
 
 		if($config->logger->targets->file->active) {
-			Bedrock_Common_Logger::addTarget(new Bedrock_Common_Logger_Target_File($config->root->log . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log'), $config->logger->targets->file->level);
+			\Bedrock\Common\Logger::addTarget(new \Bedrock\Common\Logger\Target\File($config->root->log . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log'), $config->logger->targets->file->level);
 		}
 
 		if($config->logger->targets->firephp->active) {
-			Bedrock_Common_Logger::addTarget(new Bedrock_Common_Logger_Target_FirePHP(), $config->logger->targets->firephp->level);
+			\Bedrock\Common\Logger::addTarget(new \Bedrock\Common\Logger\Target\FirePHP(), $config->logger->targets->firephp->level);
 		}
 
 		if($config->logger->targets->growl->active) {
-			Bedrock_Common_Logger::addTarget(new Bedrock_Common_Logger_Target_Growl(array($config->growl->host, $config->growl->password, $config->meta->title)), $config->logger->targets->growl->level);
+			\Bedrock\Common\Logger::addTarget(new \Bedrock\Common\Logger\Target\Growl(array($config->growl->host, $config->growl->password, $config->meta->title)), $config->logger->targets->growl->level);
 		}
 
 		// Initialize: Session
 		if($session) {
-			Bedrock_Common_Session::start();
+			\Bedrock\Common\Session::start();
 		}
 
-		$router = new Bedrock_Common_Router();
-		Bedrock_Common_Registry::set('router', $router);
+		$router = new \Bedrock\Common\Router();
+		\Bedrock\Common\Registry::set('router', $router);
 
 		// Execute Callback
 		if($callback) {
@@ -119,7 +121,7 @@ class Bedrock_Common extends Bedrock {
 	 */
 	public static function autoload($className, $classPath = '') {
 		// Setup
-		$parts = explode('_', $className);
+		$parts = explode('\\', $className);
 		$filename = array_pop($parts) . '.php';
 		$path = $classPath . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $parts);
 		$file = $path . DIRECTORY_SEPARATOR . $filename;
@@ -127,9 +129,9 @@ class Bedrock_Common extends Bedrock {
 		if(file_exists($file)) {
 			require_once $file;
 
-			if(!class_exists($className, false) && $filename != 'Interface.php') {
+			if(!class_exists($className, false) && substr($filename, -13) != 'AlertInterface.php') {
 				eval('class ' . $className . ' {}');
-				throw new Exception('Could not autoload class "' . $className . '" using path "' . $file . '", please check your configuration.');
+				throw new \Exception('Could not autoload class "' . $className . '" using path "' . $file . '", please check your configuration.');
 			}
 		}
 		elseif(count($parts) > 2) {
@@ -142,17 +144,17 @@ class Bedrock_Common extends Bedrock {
 			if($isModule && file_exists($moduleFile)) {
 				require_once $moduleFile;
 
-				if(!class_exists($className, false) && $filename != 'Interface.php') {
+				if(!class_exists($className, false) && substr($filename, -13) != 'AlertInterface.php') {
 					eval('class ' . $className . ' {}');
-					throw new Exception('Could not autoload Module class "' . $className . '" using path "' . $moduleFile . '", please check your configuration.');
+					throw new \Exception('Could not autoload Module class "' . $className . '" using path "' . $moduleFile . '", please check your configuration.');
 				}
 			}
 			else {
-				throw new Exception('Could not find class file for class "' . $className . '" using path "' . $file . '", please check your configuration.');
+				throw new \Exception('Could not find class file for class "' . $className . '" using path "' . $file . '", please check your configuration.');
 			}
 		}
 		else {
-			throw new Exception('Could not find class file for class "' . $className . '" using path "' . $file . '", please check your configuration.');
+			throw new \Exception('Could not find class file for class "' . $className . '" using path "' . $file . '", please check your configuration.');
 		}
 	}
 
@@ -168,7 +170,6 @@ class Bedrock_Common extends Bedrock {
 	 */
 	public static function error($code, $message, $file, $line) {
 		require_once 'Bedrock/Common/Error/Exception.php';
-		throw new Bedrock_Common_Error_Exception($code, $message, $file, $line);
+		throw new \Bedrock\Common\Error\Exception($code, $message, $file, $line);
 	}
 }
-?>

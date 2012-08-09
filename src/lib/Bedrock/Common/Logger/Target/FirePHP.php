@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Logger\Target;
+
 /**
  * FirePHP Logger Target
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 6/12/2009
- * @updated 6/12/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Common_Logger_Target_Interface {
+class FirePHP extends \Bedrock implements \Bedrock\Common\Logger\Target\TargetInterface {
 	protected $_firePHP = NULL;
 
 	/**
@@ -24,12 +26,12 @@ class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Co
 	/**
 	 * Opens a FirePHP output stream using the specified parameters.
 	 *
-	 * @see Bedrock_Common_Logger_Target_Interface::open()
+	 * @see \Bedrock\Common\Logger\Target\TargetInterface::open()
 	 * @param array $args any initialization arguments
 	 */
 	public function open($args = array()) {
 		// Initialize FirePHP Connection
-		$this->_firePHP = Bedrock_Common_FirePHP::getInstance(true);
+		$this->_firePHP = \Bedrock\Common\FirePHP::getInstance(true);
 
 		// Start Output-Buffering
 		ob_start();
@@ -38,7 +40,7 @@ class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Co
 	/**
 	 * Closes the current FirePHP stream.
 	 *
-	 * @see Bedrock_Common_Logger_Target_Interface::close()
+	 * @see \Bedrock\Common\Logger\Target\TargetInterface::close()
 	 */
 	public function close() {
 		$this->_firePHP = NULL;
@@ -56,7 +58,7 @@ class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Co
 	/**
 	 * Writes data to the output stream.
 	 *
-	 * @see Bedrock_Common_Logger_Target_Interface::write()
+	 * @see \Bedrock\Common\Logger\Target\TargetInterface::write()
 	 * @param array $data the data to write to the output stream
 	 */
 	public function write($data) {
@@ -65,63 +67,63 @@ class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Co
 		$type = $data[1];
 		$class = $data[2];
 		$function = $data[3];
-		$table = $data[4] == Bedrock_Common_Logger::TYPE_TABLE ? true : false;
+		$table = $data[4] == \Bedrock\Common\Logger::TYPE_TABLE ? true : false;
 		$exception = false;
 		$label = $class . '::' . $function . '()';
 
 		if(!$table) {
-			$exception = $data[4] == Bedrock_Common_Logger::TYPE_EXCEPTION ? true : false;
+			$exception = $data[4] == \Bedrock\Common\Logger::TYPE_EXCEPTION ? true : false;
 		}
 
 		// Determine Type
 		switch($type) {
 			case 'TRAVERSE':
 				if($message == '__ENTRY__') {
-					$type = Bedrock_Common_FirePHP::TYPE_GROUP_START;
+					$type = \Bedrock\Common\FirePHP::TYPE_GROUP_START;
 				}
 				elseif($message == '__EXIT__') {
-					$type = Bedrock_Common_FirePHP::TYPE_GROUP_END;
+					$type = \Bedrock\Common\FirePHP::TYPE_GROUP_END;
 				}
 				else {
-					throw new Bedrock_Common_Logger_Target_Exception('Invalid TRAVERSE data type passed.');
+					throw new \Bedrock\Common\Logger\Target\Exception('Invalid TRAVERSE data type passed.');
 				}
 				break;
 
 			default:
 			case 'INFO':
 				if($table) {
-					$type = Bedrock_Common_FirePHP::TYPE_TABLE;
+					$type = \Bedrock\Common\FirePHP::TYPE_TABLE;
 				}
 				else {
-					$type = Bedrock_Common_FirePHP::TYPE_INFO;
+					$type = \Bedrock\Common\FirePHP::TYPE_INFO;
 				}
 				break;
 
 			case 'WARN':
-				$type = Bedrock_Common_FirePHP::TYPE_WARN;
+				$type = \Bedrock\Common\FirePHP::TYPE_WARN;
 				break;
 
 			case 'ERROR':
 				if($exception) {
-					$type = Bedrock_Common_FirePHP::TYPE_EXCEPTION;
+					$type = \Bedrock\Common\FirePHP::TYPE_EXCEPTION;
 				}
 				else {
-					$type = Bedrock_Common_FirePHP::TYPE_ERROR;
+					$type = \Bedrock\Common\FirePHP::TYPE_ERROR;
 				}
 				break;
 		}
 
 		// Send Message
 		if(isset($this->_firePHP)) {
-			if($type == Bedrock_Common_FirePHP::TYPE_GROUP_START || $type == Bedrock_Common_FirePHP::TYPE_GROUP_END) {
+			if($type == \Bedrock\Common\FirePHP::TYPE_GROUP_START || $type == \Bedrock\Common\FirePHP::TYPE_GROUP_END) {
 				if($class != 'global' && $function != 'main') {
 					$this->_firePHP->fb($message, $label, $type);
 				}
 			}
-			elseif($type == Bedrock_Common_FirePHP::TYPE_TABLE) {
+			elseif($type == \Bedrock\Common\FirePHP::TYPE_TABLE) {
 				$this->_firePHP->fb($message[1], $message[0], $type);
 			}
-			elseif($type == Bedrock_Common_FirePHP::TYPE_EXCEPTION) {
+			elseif($type == \Bedrock\Common\FirePHP::TYPE_EXCEPTION) {
 				$this->_firePHP->fb($message);
 			}
 			else {
@@ -129,8 +131,7 @@ class Bedrock_Common_Logger_Target_FirePHP extends Bedrock implements Bedrock_Co
 			}
 		}
 		else {
-			throw new Bedrock_Common_Logger_Target_Exception('No FirePHP stream has been initialized.');
+			throw new \Bedrock\Common\Logger\Target\Exception('No FirePHP stream has been initialized.');
 		}
 	}
 }
-?>

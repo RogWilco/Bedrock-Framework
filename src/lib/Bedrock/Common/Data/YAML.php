@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Data;
+
 /**
  * Data Container: YAML (YAML Ain't Markup Language)
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 04/23/2009
- * @updated 04/23/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
+class YAML extends \Bedrock\Common\Data {
 	const INDENT_CHAR = '    ';
 
 	/**
@@ -43,7 +45,7 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 		try {
 			return self::encode($this->_data, true, '', $this->optionGet('strict_typing'));
 		}
-		catch(Bedrock_Common_Data_Exception $ex) {
+		catch(\Bedrock\Common\Data\Exception $ex) {
 			return '';
 		}
 	}
@@ -55,7 +57,7 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 	 * @return string the encoded data
 	 */
 	public static function encode($data, $root = true, $prepend = '', $strictTyping = false) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 
 		try {
 			// Setup
@@ -64,15 +66,15 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 
 			// Mark start of document.
 			if($root) {
-				$result = '---' . Bedrock_Common::TXT_NEWLINE;
+				$result = '---' . \Bedrock\Common::TXT_NEWLINE;
 			}
 
-			if($data instanceof Bedrock_Common_Data) {
+			if($data instanceof \Bedrock\Common\Data) {
 				$data = $data->toArray();
 			}
 
 			// Build YAML
-			if(is_array($data) || $data instanceof Bedrock_Common_Data) {
+			if(is_array($data) || $data instanceof \Bedrock\Common\Data) {
 				$keys = array_keys($data);
 				$length = 0;
 
@@ -87,18 +89,18 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 				foreach($data as $name => $value) {
 					if(is_numeric($name)) {
 						// Type: List
-						if(is_array($value) || $value instanceof Bedrock_Common_Data) {
-							$result .= substr($prepend, 0, -2) . '- ' . substr(self::encode($value, false, $prepend, $strictTyping), strlen($prepend)) . Bedrock_Common::TXT_NEWLINE;
+						if(is_array($value) || $value instanceof \Bedrock\Common\Data) {
+							$result .= substr($prepend, 0, -2) . '- ' . substr(self::encode($value, false, $prepend, $strictTyping), strlen($prepend)) . \Bedrock\Common::TXT_NEWLINE;
 						}
 						// Type: Hash Member
 						else {
 							$result .= self::formatValue($value, $strictTyping) . ', ';
-							//$result .= substr($prepend, -2) . '- ' . $value . Bedrock_Common::TXT_NEWLINE;
+							//$result .= substr($prepend, -2) . '- ' . $value . \Bedrock\Common::TXT_NEWLINE;
 						}
 					}
 					else {
 						// Type: Complex Value
-						if(is_array($value) || $value instanceof Bedrock_Common_Data) {
+						if(is_array($value) || $value instanceof \Bedrock\Common\Data) {
 							$isHash = false;
 							$hasArray = false;
 							$isAssoc = false;
@@ -120,39 +122,39 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 
 							// Type: Hash Container
 							if($isHash) {
-								$result .= $prepend . $name . ': ' . '[' . substr(self::encode($value, false, $prepend . self::INDENT_CHAR, $strictTyping), 0, -2) . ']' . Bedrock_Common::TXT_NEWLINE;
+								$result .= $prepend . $name . ': ' . '[' . substr(self::encode($value, false, $prepend . self::INDENT_CHAR, $strictTyping), 0, -2) . ']' . \Bedrock\Common::TXT_NEWLINE;
 							}
 							// Type: List Container
 							else {
-								$result .= $prepend . $name . ': ' . Bedrock_common::TXT_NEWLINE . self::encode($value, false, $prepend . self::INDENT_CHAR, $strictTyping) . Bedrock_Common::TXT_NEWLINE;
+								$result .= $prepend . $name . ': ' . \Bedrock\Common::TXT_NEWLINE . self::encode($value, false, $prepend . self::INDENT_CHAR, $strictTyping) . \Bedrock\Common::TXT_NEWLINE;
 							}
 						}
 						// Type: Primitive Value
 						else {
-							$result .= $prepend . $name . ': ' . self::formatValue($value, $strictTyping) . Bedrock_Common::TXT_NEWLINE;
+							$result .= $prepend . $name . ': ' . self::formatValue($value, $strictTyping) . \Bedrock\Common::TXT_NEWLINE;
 						}
 					}
 				}
 			}
 			else {
-				throw new Bedrock_Common_Data_Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
+				throw new \Bedrock\Common\Data\Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
 			}
 
 			// Mark end of document.
 			if($root) {
-				$result = str_replace(Bedrock_Common::TXT_NEWLINE . Bedrock_Common::TXT_NEWLINE . Bedrock_Common::TXT_NEWLINE, /*Bedrock_Common::TXT_NEWLINE .*/ Bedrock_Common::TXT_NEWLINE, $result);
-				$result = str_replace(Bedrock_Common::TXT_NEWLINE . Bedrock_Common::TXT_NEWLINE, Bedrock_Common::TXT_NEWLINE, $result);
+				$result = str_replace(\Bedrock\Common::TXT_NEWLINE . \Bedrock\Common::TXT_NEWLINE . \Bedrock\Common::TXT_NEWLINE, /*\Bedrock\Common::TXT_NEWLINE .*/ \Bedrock\Common::TXT_NEWLINE, $result);
+				$result = str_replace(\Bedrock\Common::TXT_NEWLINE . \Bedrock\Common::TXT_NEWLINE, \Bedrock\Common::TXT_NEWLINE, $result);
 
 				$result .= '...';
 			}
 
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Data_Exception('Could not encode the specified data into a string: ' . $ex->getTrace());
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+			throw new \Bedrock\Common\Data\Exception('Could not encode the specified data into a string: ' . $ex->getTrace());
 		}
 	}
 
@@ -167,11 +169,11 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 		$result = array();
 		
 		if(is_string($string)) {
-			$stringArray = explode(Bedrock_Common::TXT_NEWLINE, $string);
+			$stringArray = explode(\Bedrock\Common::TXT_NEWLINE, $string);
 			$result = self::parseYamlArray($stringArray);
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('Only strings can be decoded, please provide a valid string to decode.');
+			throw new \Bedrock\Common\Data\Exception('Only strings can be decoded, please provide a valid string to decode.');
 		}
 
 		return $result;
@@ -251,7 +253,7 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 				}
 				elseif($properties['level'] > $currentLevel) {
 					array_unshift($yamlArray, $line);
-					$result[$key] = self::parseYamlArray($yamlArray, $properties['level']);
+					$result[$index] = self::parseYamlArray($yamlArray, $properties['level']);
 				}
 				else {
 					array_unshift($yamlArray, $line);
@@ -366,4 +368,3 @@ class Bedrock_Common_Data_YAML extends Bedrock_Common_Data {
 		}
 	}
 }
-?>

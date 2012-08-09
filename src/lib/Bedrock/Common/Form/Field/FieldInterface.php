@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Form\Field;
+
 /**
  * Form field interface for implementing custom form Field objects.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 12/31/2008
- * @updated 12/31/2008
+ * @updated 07/02/2012
  */
-interface Bedrock_Common_Form_Field_Interface {
+interface FieldInterface {
 	/**
 	 * Initializes a new form field with the specified options.
 	 *
@@ -53,4 +55,3 @@ interface Bedrock_Common_Form_Field_Interface {
 	 */
 	public function render($property = 'input');
 }
-?>

@@ -1,18 +1,20 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Data Structure Base Class
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 04/20/2009
- * @updated 04/20/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, SeekableIterator {
+class Data extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected $_value = null;
 	protected $_data = array();
 	protected $_options = array();
-	private $_defaults = array(
+	protected $_defaults = array(
 		'convert_arrays' => false,
 		'format_output' => true
 	);
@@ -60,7 +62,7 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 			$this->_options[$name] = $value;
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('The specified option "' . $name . '" does not exist.');
+			throw new \Bedrock\Common\Data\Exception('The specified option "' . $name . '" does not exist.');
 		}
 	}
 
@@ -75,7 +77,7 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 			return $this->_options[$name];
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('The specified option "' . $name . '" does not exist.');
+			throw new \Bedrock\Common\Data\Exception('The specified option "' . $name . '" does not exist.');
 		}
 	}
 
@@ -92,7 +94,7 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 			$this->_options[$name] = $this->_defaults[$name];
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('The specified option "' . $name . '" does not exist.');
+			throw new \Bedrock\Common\Data\Exception('The specified option "' . $name . '" does not exist.');
 		}
 	}
 
@@ -120,7 +122,7 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 	/**
 	 * Creates a clone of the current object.
 	 *
-	 * @return Bedrock_Common_Data the cloned object
+	 * @return \Bedrock\Common\Data the cloned object
 	 */
 	public function __clone() {
 		return new self($this->_data, $this->optionGet('convert_arrays'));
@@ -291,7 +293,7 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 		}
 
 		if(!$this->valid()) {
-			throw new Bedrock_Common_Data_Exception('Invalid seek position.');
+			throw new \Bedrock\Common\Data\Exception('Invalid seek position.');
 		}
 	}
 
@@ -304,4 +306,3 @@ class Bedrock_Common_Data extends Bedrock implements ArrayAccess, Countable, See
 		return (current($this->_data) !== false);
 	}
 }
-?>

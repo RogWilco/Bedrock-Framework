@@ -1,30 +1,32 @@
 <?php
+namespace Bedrock\Common\Form;
+
 /**
  * Applies validation rules to a form and stores any failures.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 01/02/2009
- * @updated 01/02/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Form_Validator extends Bedrock {
+class Validator extends \Bedrock {
 	protected $_errors = array();
 	
 	/**
 	 * Initializes the form validator object.
 	 */
 	public function __construct() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -34,16 +36,16 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 	 * @param string $formDefinition the target form's definition file
 	 */
 	public function validate($formDefinition) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -53,16 +55,16 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 	 * @param string $name the name of a value or property to retrieve
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -73,16 +75,16 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 	 * @param mixed $value the value to apply
 	 */
 	public function __set($name, $value) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -93,7 +95,7 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 	 * @return boolean the result of the error check
 	 */
 	public function hasErrors($field = null) {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			// Setup
@@ -107,12 +109,12 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 				
 			}
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -120,17 +122,16 @@ class Bedrock_Common_Form_Validator extends Bedrock {
 	 * Clears all currently stored errors.
 	 */
 	public function clearErrors() {
-		Bedrock_Common_Logger::logEntry();
+		\Bedrock\Common\Logger::logEntry();
 		
 		try {
 			$this->_errors = array();
 			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
-?>
