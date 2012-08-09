@@ -30,8 +30,6 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * @param array $values the record's values
 	 */
 	public function __construct($table, $values = array(), $database = NULL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			parent::__construct($database);
 			
@@ -68,11 +66,9 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 				
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('A record object could not be initialized.');
 		}
 	}
@@ -157,8 +153,6 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * @return array an array of values
 	 */
 	public function toArray() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -167,12 +161,10 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 				$result[$column->name] = $this->_data[$column->name];
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('There was a problem converting the Record to an array.');
 		}
 	}
@@ -181,8 +173,6 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * Saves the current record to the database.
 	 */
 	public function save() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			$sql = '';
 
@@ -315,16 +305,13 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 			$this->_connection->exec($sql);
 			$this->_state = self::STATE_UNCHANGED;
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('There was a problem saving the record to the database.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('An error was encountered and the record could not be saved.');
 		}
 	}
@@ -333,8 +320,6 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * Deletes the currend record from the database.
 	 */
 	public function delete() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			if($this->_state == self::STATE_UNCHANGED) {
 				$sql = 'DELETE FROM ' . self::sanitize($this->_table->getProperty('name')) . ' WHERE ' . self::sanitize($this->_key_primary->name) . ' = ' . self::sanitize($this->_data[$this->_key_primary->name]);
@@ -348,16 +333,13 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 				throw new \Bedrock\Model\Record\Exception('Record not found in database.');
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('A database error was encountered, the record could not be deleted.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('The record could not be deleted.');
 		}
 	}
@@ -368,15 +350,11 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * @param \Bedrock\Model\Record $record the record to associate
 	 */
 	public function associate($record) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			\Bedrock\Model\Query::associate($this, $record);
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('The record could not be associated.');
 		}
 	}
@@ -388,15 +366,11 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * @param \Bedrock\Model\Record $record the record to remove associations with
 	 */
 	public function dissociate($record) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			\Bedrock\Model\Query::dissociate($this, $record);
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('The record could not be dissociated.');
 		}
 	}
@@ -409,16 +383,12 @@ class Record extends \Bedrock\Model implements \ArrayAccess, \Countable, \Seekab
 	 * @return \Bedrock\Model\ResultSet any associated records in the table
 	 */
 	public function associated($tableName, $limit = array()) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			$result = \Bedrock\Model\Query::associated($this, $tableName, $limit);
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Record\Exception('A problem was encountered while checking for associated records.');
 		}
 	}

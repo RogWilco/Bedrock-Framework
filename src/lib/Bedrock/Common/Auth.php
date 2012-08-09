@@ -33,8 +33,6 @@ class Auth extends \Bedrock {
 	 * @return integer the result of the login process
 	 */
 	public static function login($username, $password) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$protocol = new self::$_protocol($username, $password);
@@ -45,12 +43,10 @@ class Auth extends \Bedrock {
 				self::$_status = self::STATUS_LOGGED_IN;
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('A problem was encountered while attempting to authenticate the specified user.');
 		}
 	}
@@ -59,17 +55,13 @@ class Auth extends \Bedrock {
 	 * Logs the current user out of the system.
 	 */
 	public static function logout() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			self::$_status = self::STATUS_LOGGED_OUT;
 			self::$_id = 0;
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('The current user could not be logged out.');
 		}
 	}
@@ -89,17 +81,13 @@ class Auth extends \Bedrock {
 	 * @param string $protocol a valid authentication protocol
 	 */
 	public static function setProtocol($protocol) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			\Bedrock\Common\Logger::info('Protocol set to: ' . $protocol);
 			self::$_protocol = $protocol;
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Auth\Exception('The protocol could not be set.');
 		}
 	}

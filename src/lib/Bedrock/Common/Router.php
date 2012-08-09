@@ -69,8 +69,6 @@ class Router extends \Bedrock {
 	 * Delegates the request to the proper controller.
 	 */
 	public function delegate() {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$route = '';
@@ -147,11 +145,9 @@ class Router extends \Bedrock {
 				}
 			}
 
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Bedrock\Common\Router\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			$this->delegateToError();
 		}
 	}
@@ -164,8 +160,6 @@ class Router extends \Bedrock {
 	 * @return mixed either the controller if it exists, or false otherwise
 	 */
 	protected static function getController($delegationQueue, $route) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = false;
@@ -183,12 +177,10 @@ class Router extends \Bedrock {
 				}
 			}
 
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Router\Exception($ex->getMessage());
 		}
 	}
@@ -197,8 +189,6 @@ class Router extends \Bedrock {
 	 * Delegates the request to an error dialog.
 	 */
 	private function delegateToError() {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$controller = false;
@@ -223,11 +213,9 @@ class Router extends \Bedrock {
 				$controller->error();
 			}
 
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Router\Exception($ex->getMessage());
 		}
 	}

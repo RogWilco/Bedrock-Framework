@@ -31,8 +31,6 @@ class String extends \Bedrock {
 	 * @return string the generated string
 	 */
 	public static function random($length = 0, $allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -42,12 +40,10 @@ class String extends \Bedrock {
 				$result .= $allowed[mt_rand(0, $allowedLength)];
 			}
 
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -59,8 +55,6 @@ class String extends \Bedrock {
 	 * @return string the simplified string
 	 */
 	public static function simplify($string) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = $string;
@@ -70,12 +64,10 @@ class String extends \Bedrock {
 			$result = str_replace(' ', '_', $result);
 			$result = strtolower($result);
 
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 

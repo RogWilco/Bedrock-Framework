@@ -17,16 +17,12 @@ class Validator extends \Bedrock {
 	 * Initializes the form validator object.
 	 */
 	public function __construct() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -36,16 +32,12 @@ class Validator extends \Bedrock {
 	 * @param string $formDefinition the target form's definition file
 	 */
 	public function validate($formDefinition) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -55,16 +47,12 @@ class Validator extends \Bedrock {
 	 * @param string $name the name of a value or property to retrieve
 	 */
 	public function __get($name) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -75,16 +63,12 @@ class Validator extends \Bedrock {
 	 * @param mixed $value the value to apply
 	 */
 	public function __set($name, $value) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -95,8 +79,6 @@ class Validator extends \Bedrock {
 	 * @return boolean the result of the error check
 	 */
 	public function hasErrors($field = null) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -109,12 +91,10 @@ class Validator extends \Bedrock {
 				
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -122,16 +102,12 @@ class Validator extends \Bedrock {
 	 * Clears all currently stored errors.
 	 */
 	public function clearErrors() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			$this->_errors = array();
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

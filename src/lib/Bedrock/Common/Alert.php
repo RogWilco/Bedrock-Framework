@@ -26,16 +26,12 @@ class Alert extends \Bedrock implements \Bedrock\Common\Alert\AlertInterface {
 	 * methods.
 	 */
 	public function __construct() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			parent::__construct();
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -46,8 +42,6 @@ class Alert extends \Bedrock implements \Bedrock\Common\Alert\AlertInterface {
 	 * @return array the corresponding alerts
 	 */
 	public function __get($name) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -99,12 +93,10 @@ class Alert extends \Bedrock implements \Bedrock\Common\Alert\AlertInterface {
 					break;
 			}
 			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -139,16 +131,12 @@ class Alert extends \Bedrock implements \Bedrock\Common\Alert\AlertInterface {
 	 * @param string $type the type of alert to send
 	 */
 	public static function alert($message, $title = '', $type = \Bedrock\Common\Alert::TYPE_BASE) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			self::getInstance()->addAlert(array('message' => $message, 'title' => $title, 'type' => $type));
 			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
