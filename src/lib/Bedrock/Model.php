@@ -44,15 +44,11 @@ abstract class Model extends \Bedrock {
 	 * @return mixed the sanitized value
 	 */
 	public static function sanitize($value) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
-			\Bedrock\Common\Logger::logExit();
 			return addslashes($value);
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem sanitizing the specified data.');
 		}
 	}
@@ -64,15 +60,11 @@ abstract class Model extends \Bedrock {
 	 * @return mixed the desanitized value
 	 */
 	public static function desanitize($value) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
-			\Bedrock\Common\Logger::logExit();
 			return stripslashes($value);
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem sanitizing the specified data.');
 		}
 	}

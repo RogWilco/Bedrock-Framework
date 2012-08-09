@@ -27,8 +27,6 @@ class Database extends \Bedrock {
 	 * @param mixed $databaseConfig the database configuration
 	 */
 	public function __construct($databaseConfig) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Build Connection String
 			$dsn = $databaseConfig->type . ':host=' . $databaseConfig->host . ';dbname=' . $databaseConfig->dbname;
@@ -48,17 +46,13 @@ class Database extends \Bedrock {
 			$this->_dbConfig = $databaseConfig;
 			
 			parent::__construct();
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem connecting to the database.');
 		}
 	}
@@ -70,21 +64,16 @@ class Database extends \Bedrock {
 	 * @return \Bedrock\Model\Table the resulting table object
 	 */
 	public function __get($tableName) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// If requested table isn't cached, load it.
 			if(!is_object($this->_tables[$tableName])) {
 				$this->_tables[$tableName] = new \Bedrock\Model\Table(array('name' => $tableName), $this);
 				$this->_tables[$tableName]->load();
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $this->_tables[$tableName];
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
 	}
@@ -93,8 +82,6 @@ class Database extends \Bedrock {
 	 * Loads all current database and table details into the database object.
 	 */
 	public function load() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Get Table List
 			$res = $this->_connection->query('SHOW TABLES');
@@ -102,12 +89,9 @@ class Database extends \Bedrock {
 			while($row = $res->fetch(\PDO::FETCH_NUM)) {
 				$this->__get($row[0]);
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -161,8 +145,6 @@ class Database extends \Bedrock {
 	 * @return string all current table definitions
 	 */
 	public function toString($format = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -175,13 +157,10 @@ class Database extends \Bedrock {
 			foreach($this->_tables as $table) {
 				$result .= $table->toString($format);
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -195,8 +174,6 @@ class Database extends \Bedrock {
 	 * @return boolean whether or not the import was successful
 	 */
 	public function importTableSchemas($importSource, $importType = \Bedrock\Model::FORMAT_SQL, $sourceIsFile = true) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = true;
@@ -318,13 +295,10 @@ class Database extends \Bedrock {
 					
 					break;
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -335,8 +309,6 @@ class Database extends \Bedrock {
 	 * @param string $exportType the format to use
 	 */
 	public function exportTableSchemas($exportLocation, $exportType = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$fileContents = '';
@@ -398,12 +370,9 @@ class Database extends \Bedrock {
 			}
 			
 			\Bedrock\Model::writeFile($exportLocation, $fileContents);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('Table schema export failed.');
 		}
 	}
@@ -416,8 +385,6 @@ class Database extends \Bedrock {
 	 * @param boolean $append whether or not to append the imported data to existing table data
 	 */
 	public function importTableData($importSource, $importType, $append = false) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$ext = '.' . $importType;
@@ -437,12 +404,9 @@ class Database extends \Bedrock {
 					$table->importData($fileName, $importType, $append);
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -453,8 +417,6 @@ class Database extends \Bedrock {
 	 * @param string $exportLocation the location to which to export
 	 */
 	public function exportTableData($exportLocation, $exportType) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Load Tables
 			$this->load();
@@ -466,12 +428,9 @@ class Database extends \Bedrock {
 				\Bedrock\Common\Logger::info('Exporting table "' . $name . '" ...');
 				$table->exportData($exportLocation, $exportType);
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

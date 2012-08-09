@@ -19,8 +19,6 @@ class Query extends \Bedrock\Control {
 	 * @param array $args an array of arguments passed from the GET string
 	 */
 	public function index($args) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$this->_params = $this->getParams($args);
@@ -39,12 +37,9 @@ class Query extends \Bedrock\Control {
 					// Do Nothing
 					break;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -53,8 +48,6 @@ class Query extends \Bedrock\Control {
 	 * parameters.
 	 */
 	public function get() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$results = array();
@@ -127,12 +120,9 @@ class Query extends \Bedrock\Control {
 			
 			$response = \Bedrock\Common\DataFormat\Factory::get($format, $results);
 			$response->printData();
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -140,18 +130,13 @@ class Query extends \Bedrock\Control {
 	 * Builds a query and saves the data passed via URL parameters.
 	 */
 	public function set() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			//$table = $args[0];
 			// TODO: implement this method
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -163,8 +148,6 @@ class Query extends \Bedrock\Control {
 	 * @return array the corresponding parameters
 	 */
 	protected function getParams($args) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$params = array();
@@ -246,13 +229,10 @@ class Query extends \Bedrock\Control {
 					array_unshift($params['sort'], array($_POST['sortname'], $_POST['sortorder']));
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $params;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

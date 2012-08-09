@@ -47,8 +47,6 @@ class Table extends \Bedrock\Model {
 	 * @param \Bedrock\Model\Database $database the Database object to use
 	 */
 	public function __construct($tableConfig = array(), $database = NULL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			parent::__construct($database);
 			
@@ -59,12 +57,10 @@ class Table extends \Bedrock\Model {
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('The table object could not be initialized.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('The table object could not be initialized.');
 		}
 	}
@@ -73,8 +69,6 @@ class Table extends \Bedrock\Model {
 	 * Loads the table schema from the database.
 	 */
 	public function load() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			$resTable = $this->_connection->query('SHOW TABLE STATUS WHERE Name = \'' . self::sanitize($this->_name) . '\'');
 			$resColumns = $this->_connection->query('SHOW FULL COLUMNS FROM ' . self::sanitize($this->_name));
@@ -206,12 +200,10 @@ class Table extends \Bedrock\Model {
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('There was a problem retrieving the table information.');
 		}
 	}
@@ -221,8 +213,6 @@ class Table extends \Bedrock\Model {
 	 * exist.
 	 */
 	public function save() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			if($this->_state == self::STATE_CHANGED) {
 				// Update Table
@@ -301,17 +291,13 @@ class Table extends \Bedrock\Model {
 			}
 			
 			$this->_state = self::STATE_UNCHANGED;
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while saving the table schema.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while saving the table schema.');
 		}
 	}
@@ -320,24 +306,18 @@ class Table extends \Bedrock\Model {
 	 * Drops the current table from the database.
 	 */
 	public function drop() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Execute Query
 			$this->_connection->query('DROP TABLE IF EXISTS ' . self::sanitize($this->_name));
 			
 			$this->_state = self::STATE_NEW;
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 	}
@@ -346,23 +326,17 @@ class Table extends \Bedrock\Model {
 	 * Empties the table of all data and resets any auto increment fields.
 	 */
 	public function reset() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Execute Query
 			$this->_connection->query('DELETE FROM ' . self::sanitize($this->_name));
 			$this->_connection->query('ALTER TABLE ' . self::sanitize($this->_name) . ' AUTO_INCREMENT = 0');
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while dropping the table from the database.');
 		}
 	}
@@ -376,8 +350,6 @@ class Table extends \Bedrock\Model {
 	 * @return bool whether or not the revert was successful
 	 */
 	public function revert($backupName) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = false;
@@ -390,13 +362,10 @@ class Table extends \Bedrock\Model {
 
 				$result = (bool) $res;
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('Reverting a table from the backup table "' . $backupName . '" failed!');
 		}
 	}
@@ -684,8 +653,6 @@ class Table extends \Bedrock\Model {
 	 * @return string the generated string
 	 */
 	public function toString($format = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -727,17 +694,13 @@ class Table extends \Bedrock\Model {
 					$result .= $this->dataToString(\Bedrock\Model::FORMAT_CSV) . "\n";
 					break;
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\DOMException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -748,8 +711,6 @@ class Table extends \Bedrock\Model {
 	 * @return string the schema represented as a string
 	 */
 	public function schemaToString($formatType = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -938,18 +899,14 @@ class Table extends \Bedrock\Model {
 					$result = \Bedrock\Common\Data\CSV::encode($data, ', ', $columns);
 					break;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\DOMException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered converting the schema for table "' . $this->_name . '" to a string.');
 		}
 	}
@@ -961,8 +918,6 @@ class Table extends \Bedrock\Model {
 	 * @return string the data represented as a string
 	 */
 	public function dataToString($formatType = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -1073,13 +1028,10 @@ class Table extends \Bedrock\Model {
 					$result = \Bedrock\Common\Data\CSV::encode($records, ', ', $columns);
 					break;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered converting the data for table "' . $this->_name . '" to a string.');
 		}
 	}
@@ -1093,8 +1045,6 @@ class Table extends \Bedrock\Model {
 	 * @return boolean whether or not the import was successful
 	 */
 	public function importSchema($importSource, $importType = \Bedrock\Model::FORMAT_SQL, $sourceIsFile = true) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -1296,14 +1246,10 @@ class Table extends \Bedrock\Model {
 				$this->_connection->query('DROP TABLE IF EXISTS ' . self::sanitize($backupName));
 				$result = true;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Bedrock\Model\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
-
 			if(isset($backupName)) {
 				$this->revert($backupName);
 			}
@@ -1312,8 +1258,6 @@ class Table extends \Bedrock\Model {
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
-
 			if(isset($backupName)) {
 				$this->revert($backupName);
 			}
@@ -1330,18 +1274,13 @@ class Table extends \Bedrock\Model {
 	 * @param integer $exportType the export format to use
 	 */
 	public function exportSchema($exportLocation, $exportType = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			\Bedrock\Common\Logger::info('Exporting schema of table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . ' to "' . $exportLocation . '" ...');
 			$fileContents = $this->schemaToString($exportType);
 			self::writeFile($exportLocation, $fileContents);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('Schema export failed.');
 		}
 	}
@@ -1355,8 +1294,6 @@ class Table extends \Bedrock\Model {
 	 * @param boolean $append whether or not existing data should be replaced or appended to
 	 */
 	public function importData($importSource, $importType = \Bedrock\Model::FORMAT_SQL, $append = false) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$importSql = array();
@@ -1464,12 +1401,9 @@ class Table extends \Bedrock\Model {
 			foreach($importSql as $query) {
 				$this->_connection->exec($query);
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('Data import failed.');
 		}
 	}
@@ -1482,18 +1416,13 @@ class Table extends \Bedrock\Model {
 	 * @param integer $exportType the export format to use
 	 */
 	public function exportData($exportLocation, $exportType = \Bedrock\Model::FORMAT_SQL) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			\Bedrock\Common\Logger::info('Exporting data in table "' . $this->_name . '" as ' . strtoupper(self::formatToString($exportType)) . '...');
 			$fileContents = $this->dataToString($exportType);
 			self::writeFile($exportLocation, $fileContents);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('Data export failed.');
 		}
 	}

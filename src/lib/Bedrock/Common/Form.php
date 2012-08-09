@@ -25,20 +25,15 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $options additional options for the form object, either as an array, a Config object, or a string containing the path to an XML form definition file
 	 */
 	public function __construct($options = null) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Load Default Properties
 			$this->defaults();
 			
 			// Load Specified Options
 			$this->load($options);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -46,8 +41,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * Applies any default properties for the current object.
 	 */
 	public function defaults() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			parent::defaults();
 			
@@ -57,12 +50,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 				'method' => 'post',
 				'action' => $_SERVER['PHP_SELF']
 			)), true);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -73,8 +63,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $arg the data to load as an array, Config object, or a path to an XML form definition file
 	 */
 	public function load($arg) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Argument: File Path
@@ -193,12 +181,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			elseif($arg != null) {
 				throw new \Bedrock\Common\Form\Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock\Common\Config objects, or null.');
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -209,8 +194,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -235,13 +218,10 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 					}
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -252,8 +232,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $value the value to assign to the specified field
 	 */
 	public function __set($name, $value) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			if($value instanceof \Bedrock\Common\Form\Field) {
 				$this->_fields[$name] = $value;
@@ -264,12 +242,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				throw new \Bedrock\Common\Form\Exception('Only Field and Group objects can be assigned to a Form.');
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -280,16 +255,11 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param string $className the class to map to
 	 */
 	public static function addMapping($type, $className) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			self::$_typeMappings[$type] = $className;
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -301,8 +271,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return string the name of the corresponding class
 	 */
 	public static function getMapping($type) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -310,13 +278,10 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			if(array_key_exists($type, self::$_typeMappings)) {
 				$result = self::$_typeMappings[$type];
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -328,8 +293,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return mixed either the corresponding Group, all Groups, or null if none are found
 	 */
 	public function groups($groupIndex = null) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -347,13 +310,10 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				$result = $this->_groups;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -365,8 +325,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return mixed either the corresponding Field, all Fields, or null if none are found
 	 */
 	public function fields($fieldIndex = null) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -384,13 +342,10 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				$result = $this->_fields;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -402,8 +357,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return array either the corresponding switch block, all switch blocks, or null if none are found
 	 */
 	public function switches($switchIndex = null) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -414,13 +367,10 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				$result = $this->_switches;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -430,8 +380,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $field the field data to store
 	 */
 	private function storeField($field) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Source Data: SimpleXMLElement
@@ -499,12 +447,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				throw new \Bedrock\Common\Form\Exception('Invalid data provided, field could not be stored.');
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -514,8 +459,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $group the group data to store
 	 */
 	private function storeGroup($group) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Source Data: SimpleXMLElement
@@ -556,12 +499,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			else {
 				throw new \Bedrock\Common\Form\Exception('Invalid data provided, group could not be stored.');
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -571,8 +511,6 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @param mixed $switch the switch data to store
 	 */
 	private function storeSwitch($switch) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$data = array();
@@ -660,12 +598,9 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 			}
 			
 			$this->_switches[] = new \Bedrock\Common\Config($data, true);
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -675,21 +610,16 @@ class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	 * @return boolean whether or not the form passed validation
 	 */
 	public function validate() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
 			
 			// Validate the Form
 			
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	

@@ -19,8 +19,6 @@ class Stats extends \Bedrock {
 	 * @return string the last line of the command executed
 	 */
 	protected function execute($command, &$output = array()) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -41,13 +39,10 @@ class Stats extends \Bedrock {
 			$result = substr($result, 0, strrpos($result, ','));
 			
 			\Bedrock\Common\Logger::info('Returning result "' . $result . '"');
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -57,8 +52,6 @@ class Stats extends \Bedrock {
 	 * @return string the current server's uptime
 	 */
 	public function getUptime() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -66,13 +59,10 @@ class Stats extends \Bedrock {
 			
 			// Execute Command/Parse Results
 			$result = self::execute($cmd);
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -82,8 +72,6 @@ class Stats extends \Bedrock {
 	 * @return string the current server's operating system
 	 */
 	public function getOperatingSystem() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -99,13 +87,10 @@ class Stats extends \Bedrock {
 			$version = trim($version[1]);
 			
 			$result = $name . ' (' . $version . ')';
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

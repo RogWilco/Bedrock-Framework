@@ -17,8 +17,6 @@ class XML extends \Bedrock\Common\DataFormat {
 	 * @param array $data the data to use
 	 */
 	public function __construct($data = array()) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Build Data
 			foreach($data as $entry) {
@@ -31,12 +29,9 @@ class XML extends \Bedrock\Common\DataFormat {
 					}
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to construct an XML object from the supplied data.');
 		}
 	}
@@ -47,8 +42,6 @@ class XML extends \Bedrock\Common\DataFormat {
 	 * @return array the currently stored data
 	 */
 	public function toArray() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -64,13 +57,10 @@ class XML extends \Bedrock\Common\DataFormat {
 					}
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an array.');
 		}
 	}
@@ -82,8 +72,6 @@ class XML extends \Bedrock\Common\DataFormat {
 	 * @return string the data assembled into an XML string
 	 */
 	public function toString($indent = '') {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -104,13 +92,10 @@ class XML extends \Bedrock\Common\DataFormat {
 					}
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an XML string.');
 		}
 	}

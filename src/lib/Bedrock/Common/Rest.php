@@ -19,8 +19,6 @@ class Rest extends \Bedrock\Common {
 	 * @return string any response received
 	 */
 	public static function curl($url, $options = array()) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -44,13 +42,10 @@ class Rest extends \Bedrock\Common {
 			if($result === false) {
 				throw new \Bedrock\Common\Rest\Exception('A cURL error has occurred: ' . curl_error($ch));
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Rest\Exception('The HTTP request was not successful.');
 		}
 	}
@@ -65,8 +60,6 @@ class Rest extends \Bedrock\Common {
 	 * @return string the returned response
 	 */
 	public static function get($url, $params = array(), $options = array()) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -85,13 +78,10 @@ class Rest extends \Bedrock\Common {
 			
 			// Execute Request
 			$result = self::curl($url, $options);
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via GET) was not successful.');
 		}
 	}
@@ -106,8 +96,6 @@ class Rest extends \Bedrock\Common {
 	 * @return string the returned response
 	 */
 	public static function post($url, $params = array(), $options = array()) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -127,13 +115,10 @@ class Rest extends \Bedrock\Common {
 			
 			// Execute Request
 			$result = self::curl($url, $options);
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via POST) was not successful.');
 		}
 	}
@@ -148,8 +133,6 @@ class Rest extends \Bedrock\Common {
 	 * @return string the returned response
 	 */
 	public static function put($url, $file, $options = array()) {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -166,13 +149,10 @@ class Rest extends \Bedrock\Common {
 			$options[CURLOPT_RETURNTRANSFER] = true;
 
 			$result = self::curl($url, $options);
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via PUT) was not successful.');
 		}
 	}

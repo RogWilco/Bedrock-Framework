@@ -21,8 +21,6 @@ class Utilities extends \Bedrock\Model {
 	 * @return string the name of the mapping table
 	 */
 	public static function getMappingTableName($firstTableName, $secondTableName) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -39,18 +37,14 @@ class Utilities extends \Bedrock\Model {
 			
 			$result = $res['Name'];
 			\Bedrock\Common\Logger::info('Mapping table found: "' . $result . '"');
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\PDOException $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A database error was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\Exception('A problem was encountered while attempting to retrieve a mapping table name for "' . $firstTableName . '" and "' . $secondTableName . '"');
 		}
 	}
@@ -62,8 +56,6 @@ class Utilities extends \Bedrock\Model {
 	 * @return array an array of associated tables and the type of association
 	 */
 	public static function getAssociatedTableNames($tableName) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -93,13 +85,10 @@ class Utilities extends \Bedrock\Model {
 				
 				$result[$row['Name']] = $type;
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

@@ -20,8 +20,6 @@ class ResultSet extends \Bedrock\Model implements \ArrayAccess, \Countable, \See
 	 * @param array $records an array of records to add to the ResultSet
 	 */
 	public function __construct($records = array()) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			if($records) {
 				foreach($records as $record) {
@@ -30,12 +28,9 @@ class ResultSet extends \Bedrock\Model implements \ArrayAccess, \Countable, \See
 			}
 			
 			parent::__construct();
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\ResultSet\Exception('A result set cound not be initialized.');
 		}
 	}
@@ -46,8 +41,6 @@ class ResultSet extends \Bedrock\Model implements \ArrayAccess, \Countable, \See
 	 * @return array an array of rows/values
 	 */
 	public function toArray() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -57,13 +50,10 @@ class ResultSet extends \Bedrock\Model implements \ArrayAccess, \Countable, \See
 					$result[] = $record->toArray();
 				}
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Model\ResultSet\Exception('There was a problem converting the ResultSet to an array.');
 		}
 	}

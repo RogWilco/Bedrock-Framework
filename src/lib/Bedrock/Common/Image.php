@@ -25,21 +25,15 @@ class Image extends \Bedrock {
 	 */
 	public function __construct($location) {
 		try {
-			\Bedrock\Common\Logger::logEntry();
-
 			if(!is_file($location)) {
-				\Bedrock\Common\Logger::logExit();
 				throw new \Bedrock\Common\Image\Exception('No image file was found at the location "' . $location . '"');
 			}
 
 			$this->_location = $location;
 			$this->load();
-
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Image\Exception('An image could not be initialized.');
 		}
 	}
@@ -74,8 +68,6 @@ class Image extends \Bedrock {
 	 */
 	public function load() {
 		try {
-			\Bedrock\Common\Logger::logEntry();
-
 			// Reset Changed Properties
 			$this->_changed = array();
 
@@ -91,12 +83,9 @@ class Image extends \Bedrock {
 			$this->_properties['type'] = $result[2];
 			$this->_properties['filename'] = $result[3];
 			$this->_properties['directory'] = $result[4];
-
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Image\Exception('The image could not be loaded.');
 		}
 	}
@@ -106,8 +95,6 @@ class Image extends \Bedrock {
 	 */
 	public function commit() {
 		try {
-			\Bedrock\Common\Logger::logEntry();
-
 			if(count($this->_changed) > 0) {
 				// Commit: Size
 				if($this->_changed['width'] || $this->_changed['height']) {
@@ -154,12 +141,9 @@ class Image extends \Bedrock {
 
 			// Reset
 			$this->_changed = array();
-
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Image\Exception('The image could not be loaded.');
 		}
 	}
@@ -172,13 +156,10 @@ class Image extends \Bedrock {
 	 */
 	public static function exec($method, $params) {
 		try {
-			\Bedrock\Common\Logger::logEntry();
-
 			// Setup
 			$command = '';
 
 			if(!self::$_methods[$method]) {
-				\Bedrock\Common\Logger::logExit();
 				throw new \Bedrock\Common\Image\Exception('Unknown method "' . $method . '" specified.');
 			}
 
@@ -220,7 +201,6 @@ class Image extends \Bedrock {
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Image\Exception('The method "' . $method . '" could not be executed.');
 		}
 	}

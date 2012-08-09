@@ -24,8 +24,6 @@ class Email extends \Bedrock {
 	 */
 	public static function send($from, $to, $subject, $body) {
 		try {
-			\Bedrock\Common\Logger::logEntry();
-			
 			// Setup
 			$config = \Bedrock\Common\Registry::get('config');
 			
@@ -48,17 +46,13 @@ class Email extends \Bedrock {
 			if(\PEAR::isError($mail)) {
 				throw new \Bedrock\Common\Email\Exception($mail->getMessage());
 			}
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Bedrock\Common\Email\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw $ex;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 			throw new \Bedrock\Common\Email\Exception('The email could not be sent.');
 		}
 	}

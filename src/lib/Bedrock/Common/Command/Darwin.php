@@ -18,8 +18,6 @@ class Darwin implements \Bedrock\Common\Command\CommandInterface {
 	 * @return string the last line of output for the command executed
 	 */
 	public static function exec($command, &$output = array()) {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -31,12 +29,9 @@ class Darwin implements \Bedrock\Common\Command\CommandInterface {
 			}
 			
 			\Bedrock\Common\Logger::info('Returning result "' . $result . '"');
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -44,16 +39,11 @@ class Darwin implements \Bedrock\Common\Command\CommandInterface {
 	 * Reboots the system.
 	 */
 	public static function reboot() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			self::exec('sudo -S reboot < ../config/config.password.txt');
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 	
@@ -61,16 +51,11 @@ class Darwin implements \Bedrock\Common\Command\CommandInterface {
 	 * Shuts down the system.
 	 */
 	public static function shutdown() {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			self::exec('sudo -S halt');
-			
-			\Bedrock\Common\Logger::logExit();
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }

@@ -21,8 +21,6 @@ abstract class Plugin extends \Bedrock {
 	 * @return boolean whether or not all dependency requirements have been met
 	 */
 	public static function checkDependencies() {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = true;
@@ -30,13 +28,10 @@ abstract class Plugin extends \Bedrock {
 			if(count(self::missingDependencies()) > 0) {
 				$result = false;
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -47,8 +42,6 @@ abstract class Plugin extends \Bedrock {
 	 * @return array an array of class names required for the current plugin
 	 */
 	public static function missingDependencies() {
-		\Bedrock\Common\Logger::logEntry();
-
 		try {
 			// Setup
 			$result = array();
@@ -58,13 +51,10 @@ abstract class Plugin extends \Bedrock {
 					$result[] = $dependency;
 				}
 			}
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 
@@ -77,8 +67,6 @@ abstract class Plugin extends \Bedrock {
 	 * @return boolean whether or not the process was successful
 	 */
 	public static function loadDependencies($source = '') {
-		\Bedrock\Common\Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -95,13 +83,10 @@ abstract class Plugin extends \Bedrock {
 
 			// Verify all dependencies were loaded.
 			
-
-			\Bedrock\Common\Logger::logExit();
 			return $result;
 		}
 		catch(\Exception $ex) {
 			\Bedrock\Common\Logger::exception($ex);
-			\Bedrock\Common\Logger::logExit();
 		}
 	}
 }
