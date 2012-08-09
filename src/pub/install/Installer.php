@@ -411,18 +411,14 @@ class Installer {
 					$t . ' * @param array $args an array of arguments passed from the GET string' . $n .
 					$t . ' */' . $n .
 					$t . 'public function index($args) {' . $n .
-					$t . $t . '\\Bedrock\\Common\\Logger::logEntry();' . $n .
 					$t . $t . 'try {' . $n .
 					$t . $t . $t . '// Sample Output (feel free to delete this)' . $n .
 					$t . $t . $t . '$view = new \\' . $namespace . '\\View\\Index();' .  $n .
 					$t . $t . $t . '$view->setValue(\'message\', \'Bedrock Framework Application: Installation Successful!\');' . $n .
 					$t . $t . $t . '$view->render(\'test\');' . $n .
-					$t . $t . $t . '' . $n .
-					$t . $t . $t . '\\Bedrock\\Common\\Logger::logExit();' . $n .
 					$t . $t . '}' . $n .
 					$t . $t . 'catch(Exception $ex) {' . $n .
 					$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
-					$t . $t . $t . '\\Bedrock\\Common\\Logger::logExit();' . $n .
 					$t . $t . '}' . $n .
 					$t . '}' . $n .
 					'}' . $n .
@@ -470,8 +466,6 @@ class Installer {
 					$t . ' * @param string $page the name of the page to render, or \'self\' for the main page' . $n .
 					$t . ' */' . $n .
 					$t . 'public function render($page = \'self\') {' . $n .
-					$t . $t . '\\Bedrock\\Common\\Logger::logEntry();' . $n .
-					$t . $t . '' . $n .
 					$t . $t . 'try {' . $n .
 					$t . $t . $t . 'switch($page) {' . $n .
 					$t . $t . $t . $t . '// This "test" case can be removed, it is only used once following installation.' . $n .
@@ -497,12 +491,9 @@ class Installer {
 					$t . $t . $t . $t . 'default:' . $n .
 					$t . $t . $t . $t . $t . 'break;' . $n .
 					$t . $t . $t . '}' . $n .
-					$t . $t . $t . '' . $n .
-					$t . $t . $t . '\\Bedrock\\Common\\Logger::logExit();' . $n .
 					$t . $t . '}' . $n .
 					$t . $t . 'catch(Exception $ex) {' . $n .
 					$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
-					$t . $t . $t . '\\Bedrock\\Common\\Logger::logExit();' . $n .
 					$t . $t . $t . 'throw new \\Bedrock\\View\\Exception(\'The view could not be rendered.\');' . $n .
 					$t . $t . '}' . $n .
 					$t . '}' . $n .
