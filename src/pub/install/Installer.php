@@ -133,6 +133,19 @@ class Installer {
 			// Install
 			self::out('Installing Bedrock Framework ' . self::$_data['bedrock_version'], 'status');
 
+            // Install: Directories
+			self::out('Creating directory structure...', 'info');
+
+			self::out('- Creating configuration directory.', 'info');
+			if(!is_dir(self::$_data['root_cfg'])) {
+				mkdir(self::$_data['root_cfg'], 0775);
+			}
+
+			self::out('- Creating log directory.', 'info');
+			if(!is_dir(self::$_data['root_log'])) {
+				mkdir(self::$_data['root_log'], 0775);
+			}
+
 			// Install: XML File
 			self::out('Building XML File...', 'info');
 			$xmlString .= '<config></config>';

@@ -54,14 +54,14 @@ class Common extends \Bedrock {
 				define('DELIMITER', self::DELIM_WIN);
 				break;
 		}
-		
+
 		// Autoload Function
-		function __autoload($className) {
+		spl_autoload_register(function($className) {
 			// Imports
 			require_once ROOT . '/lib/Bedrock.php';
 			require_once ROOT . '/lib/Bedrock/Common.php';
 			\Bedrock\Common::autoload($className, ROOT);
-		}
+		});
 
 		// Register Configuration
 		\Bedrock\Common\Registry::set('config', $config);
@@ -113,11 +113,13 @@ class Common extends \Bedrock {
 
 	/**
 	 * An autoload function for classes that are part of the framework. It can
-	 * either be used by itself iwthin an __autoload() definition, or can be
+	 * either be used by itself within an __autoload() definition, or can be
 	 * implemented into an existing autoload function.
 	 *
 	 * @param string $className the name of the class to attempt to load
 	 * @param string $classPath the path within which to search
+	 * @throws \Exception when the specified class cannot be loaded
+	 * @return void
 	 */
 	public static function autoload($className, $classPath = '') {
 		// Setup
@@ -167,6 +169,8 @@ class Common extends \Bedrock {
 	 * @param string $message the associated message
 	 * @param string $file the file in which the error occurred
 	 * @param integer $line the line on which the error occurred
+	 * @throws Common\Error\Exception when invoked
+	 * @return void
 	 */
 	public static function error($code, $message, $file, $line) {
 		require_once 'Bedrock/Common/Error/Exception.php';
