@@ -1,0 +1,363 @@
+#!/usr/bin/php
+<?php
+
+// Retrieve list of files. For each *.php file, parse out docblock, modify tags.
+	// @author - Possible multiple tags. If user is already present, ignore, otherwise, add.
+	// @version - If different, leave alone. If unchanged, increment minor version number by 1.
+	// @created - If new file, insert current timestamp, otherwise ignore.
+	// @updated - Insert current timestamp.
+
+// Update documentation files.
+	// build - Increment by one.
+	// released - Insert current timestamp.
+
+date_default_timezone_set('America/Los_Angeles');
+
+// Setup
+$whitelist = array(
+	'src/lib/Bedrock/',
+	'src/lib/Bedrock.php'
+);
+
+$blacklist = array();
+$filesAdded = array();
+$filesModified = array();
+
+// Obtain Lists of Files
+exec('git diff --cached --name-only --diff-filter=A', $filesAdded);
+exec('git diff --cached --name-only --diff-filter=M', $filesModified);
+
+// ===========================================================================
+// Validation
+// ===========================================================================
+
+// ===========================================================================
+// Added Files
+// ===========================================================================
+foreach($filesAdded as $file) {
+	if(matchList($file, $whitelist) && !matchList($file, $blacklist)) {
+		$data = file_get_contents($file);	
+		$docblock = new DocBlock($data);
+	
+		$author = array();
+		exec('git config user.name', $author);
+		$author = $author[0];
+		
+		// @author
+		$docblock->append('author', $author);
+	
+		// @created
+		$docblock->created = date('m/d/Y');
+	
+		// @updated
+		$docblock->updated = date('m/d/Y');
+	
+		preg_replace(DocBlock::PATTERN_DOCBLOCK, $docblock, $data, 1);
+	
+		file_put_contents($file, $data);
+		exec('git add ' . $file);
+	}
+}
+
+// ===========================================================================
+// Modified Files
+// ===========================================================================
+foreach($filesModified as $file) {
+	if(matchList($file, $whitelist) && !matchList($file, $blacklist)) {
+		$data = file_get_contents($file);	
+		$docblock = new DocBlock($data);
+	
+		exec('git show :' . $file, $dataOld);
+		$dataOld = implode("\n", $dataOld);
+		$docblockOld = new DocBlock($dataOld);
+	
+		$author = array();
+		exec('git config user.name', $author);
+		$author = $author[0];
+		
+		// @author
+		$docblock->append('author', $author);
+	
+		// @version
+		if($docblockOld->version === $docblock->version) {
+			$incPos = strrpos($docblock->version, '.') + 1;
+			$incVer = substr($docblock->version, $incPos);
+			$version = substr($docblock->version, 0, $incPos) . ++$incVer;
+		
+			$docblock->version = $version;
+		}
+	
+		// @updated
+		$docblock->updated = date('m/d/Y');
+	
+		$data = preg_replace(DocBlock::PATTERN_DOCBLOCK, $docblock, $data, 1);
+	
+		file_put_contents($file, $data);
+		exec('git add ' . $file);
+	}
+}
+
+// ===========================================================================
+// Documentation Files
+// ===========================================================================
+/*
+$docs = array(
+	'README.md',
+	'LICENSE.md',
+	'INSTALL.md',
+	'CHANGELOG.md'
+);
+
+$patternVersion = '/(<td\s*id=\"meta_version\">)(.*)(<\/td>.*)/';
+$patternBuild = '/(<td\s*id=\"meta_build\">)(.*)(<\/td>.*)/';
+$patternReleased = '/(<td\s*id=\"meta_released\">)(.*)(<\/td>.*)/';
+
+foreach($docs as $i => $doc) {
+	$data = file_get_contents($doc);
+	$metaReleased = date('m-d-Y');
+
+	if($i == 0) {
+		$metaVersion = preg_extract($patternVersion, $data, 2);
+		$metaBuild = preg_extract($patternBuild, $data, 2) + 1;
+	}
+	else {
+		$data = preg_replace($patternVersion, '${1}' . $metaVersion . '${3}', $data);
+	}
+	
+	$data = preg_replace($patternBuild, '${1}' . $metaBuild . '${3}', $data);
+	$data = preg_replace($patternReleased, '${1}' . $metaReleased .'${3}', $data);
+	
+	file_put_contents($doc, $data);
+	exec('git add ' . $doc);
+}
+*/
+
+/**
+ * Extracts a value from the subject using the specified RegEx pattern.
+ *
+ * @param string $pattern the RegEx pattern to be applied
+ * @param string $subject the subject on which to operate
+ * @param int $group the nth capture group to retrieve, or 0 for the full pattern
+ * @return string the matched text
+ */
+function preg_extract($pattern, $subject, $group = 0) {
+	// Setup
+	$matches = array();
+	
+	preg_match($pattern, $subject, $matches);
+		
+	if(count($matches) && array_key_exists($group, $matches)) {
+		return $matches[$group];
+	}
+	else {
+		return null;
+	}
+}
+
+/**
+ * Matches the specified file against the specified list of rules. Valid rules
+ * include:
+ *
+ *      /anything/under/this/path/
+ *      /anything/directly/in/this/path/*
+ *      /only/this/specific/file.php
+ *
+ * @param string $file the path and filename to be checked
+ * @param array $list the list of rules to be checked against the file
+ * @return whether or not any of the rules resulted in a match against the file
+ */
+function matchList($file, $list) {
+	// Setup
+	$result = false;
+	
+	// Check: Explicit
+	$result = $result || in_array($file, $list);
+	
+	// Check: Wildcard
+	$result = $result || in_array(substr($file, 0, strrpos($file, DIRECTORY_SEPARATOR) + 1) . '*', $list);
+	
+	// Check: Parent Directory
+	foreach($list as $rule) {
+		if(substr($rule, -1) == DIRECTORY_SEPARATOR) {
+			$result = $result || $rule == substr($file, 0, strlen($rule));
+		}
+	}
+	
+	return $result;
+}
+
+/**
+ * Allows for the inspection and manipulation of a valid PHP docblock.
+ *
+ * @author Nick Williams
+ * @version 1.0.0
+ * @created 8/14/2012
+ * @updated 8/15/2012
+ */
+class DocBlock {
+	const PATTERN_DOCBLOCK = "/(\/\*\*([^\*]|\*(?!\/))*)(([^\*]|\*(?!\/))*\*\/)/";
+	const PATTERN_TAG = "/^\s*\*\s*@([^\s]*)\s*(.*)/";
+	const PATTERN_DESCRIPTION = "/^\s*\*\s*([^@]*)$/";
+	const PATTERN_BLANK = "/^\s*\*\s*$/";
+	
+	protected $_raw = '';
+	protected $_description = '';
+	protected $_tags = array();
+	
+	/**
+	 * Initializes a new DocBlock instance using the specified code.
+	 *
+	 * @param string $code code with which to initialize
+	 * @return void
+	 */
+	public function __construct($code = '') {
+		$matches = array();
+		preg_match(self::PATTERN_DOCBLOCK, $code, $matches);
+		
+		$this->parse($matches[0]);
+	}
+	
+	/**
+	 * Parses out the first docblock found in the specified string.
+	 *
+	 * @param string $docblock the text containing the docblock to be parsed
+	 * @return void
+	 */
+	protected function parse($docblock) {
+		$this->_raw = $docblock;
+		
+		$description = array();
+		$inDescription = true;
+		$lines = explode("\n", $this->_raw);
+		
+		array_shift($lines);
+		array_pop($lines);
+		
+		foreach($lines as $line) {
+			$matches = array();
+			
+			if($inDescription && preg_match(self::PATTERN_DESCRIPTION, $line, $matches)) {
+				$description[] = $matches[1];
+			}
+			elseif(preg_match(self::PATTERN_TAG, $line, $matches)) {
+				if($inDescription) {
+					$inDescription = false;
+					$lastLine = array_pop($description);
+					
+					if(trim($lastLine)) {
+						$description[] = $lastLine;
+					}
+					
+					$this->_description = implode("\n", $description);
+				}
+				
+				$tag = $matches[1];
+				$value = $matches[2];
+				
+				if(array_key_exists($tag, $this->_tags)) {
+					if(!is_array($this->_tags[$tag])) {
+						$this->_tags[$tag] = array($this->_tags[$tag]);
+					}
+					
+					$this->_tags[$tag][] = $value;
+				}
+				else {
+					$this->_tags[$tag] = $value;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Retrieves the requested tag's current value.
+	 *
+	 * @param string $tag the desired tag
+	 * @return string|array the corresponding value
+	 */
+	public function __get($tag) {
+		switch($tag) {
+			default:
+				if(array_key_exists($tag, $this->_tags)) {
+					return $this->_tags[$tag];
+				}
+				else {
+					return null;
+				}
+				
+				break;
+			
+			case 'description':
+				return $this->_description;
+				break;
+		}
+		
+	}
+	
+	/**
+	 * Sets the requested tag's value.
+	 *
+	 * @param string $tag the desired tag
+	 * @param string|array $value the value to be assigned
+	 * @return void
+	 */
+	public function __set($tag, $value) {
+		switch($tag) {
+			default:
+				$this->_tags[$tag] = $value;
+				break;
+			
+			case 'description':
+				$this->_description = $value;
+				break;
+		}
+	}
+	
+	/**
+	 * Appends the specified value to the specified tag. If a tag is grouped,
+	 * the specified value will be appeneded if it isn't already present. If
+	 * a tag is singular, it will be converted to a group (array) and the
+	 * value will be appended.
+	 *
+	 * @param string $tag the tag to wich the value will be appended
+	 * @param string $value the value to be appended
+	 */
+	public function append($tag, $value) {
+		if(is_array($this->_tags[$tag]) && !in_array($value, $this->_tags[$tag])) {
+			$this->_tags[$tag][] = $value;
+		}
+		elseif(!is_array($this->_tags[$tag]) && $this->_tags[$tag] != $value) {
+			$this->_tags = array($this->_tags[$tag], $value);
+		}
+	}
+	
+	/**
+	 * Assembles and returns a docblock based on the currently stored values.
+	 */
+	public function __toString() {
+		// Setup
+		$description = explode("\n", $this->_description);
+		
+		// Start Docblock
+		$result = '/**' . "\n";
+		
+		// Description
+		$result .= ' * ' . implode("\n" . ' * ', $description) . "\n" . ' * ' . "\n";
+		
+		// Tags
+		foreach($this->_tags as $tag => $value) {
+			if(is_array($value)) {
+				foreach($value as $subValue) {
+					$result .= ' * @' . $tag . ' ' . $subValue . "\n";
+				}
+			}
+			else {
+				$result .= ' * @' . $tag . ' ' . $value . "\n";
+			}
+		}
+		
+		// End Docblock
+		$result .= ' */';
+		
+		return $result;
+	}
+}
