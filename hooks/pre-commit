@@ -15,8 +15,10 @@ date_default_timezone_set('America/Los_Angeles');
 
 // Setup
 $whitelist = array(
-	'src/lib/Bedrock/',
-	'src/lib/Bedrock.php'
+	':src\/lib\/Bedrock\/.*$:',		// src/lib/Bedrock/
+	':src\/lib\/Bedrock\.php$:',	// src/lib/Bedrock.php
+//	':src\/pub\/.*\.(php|js)$:'		// src/pub/*.(php|js)
+	':src\/pub\/.*\.php$:'			// src/pub/*.php
 );
 
 $blacklist = array();
@@ -170,17 +172,10 @@ function matchList($file, $list) {
 	// Setup
 	$result = false;
 	
-	// Check: Explicit
-	$result = $result || in_array($file, $list);
-	
-	// Check: Wildcard
-	$result = $result || in_array(substr($file, 0, strrpos($file, DIRECTORY_SEPARATOR) + 1) . '*', $list);
-	
-	// Check: Parent Directory
-	foreach($list as $rule) {
-		if(substr($rule, -1) == DIRECTORY_SEPARATOR) {
-			$result = $result || $rule == substr($file, 0, strlen($rule));
-		}
+	foreach($list as $pattern) {
+		$result = $result || preg_match($pattern, $file);
+		
+		if($result) break;
 	}
 	
 	return $result;
