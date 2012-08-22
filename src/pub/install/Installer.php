@@ -4,7 +4,7 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.2
+ * @version 1.0.3
  * @created 04/08/2009
  * @updated 08/22/2012
  */
@@ -422,6 +422,7 @@ class Installer {
 					$t . ' * The main index for the controller.' . $n .
 					$t . ' * ' . $n .
 					$t . ' * @param array $args an array of arguments passed from the GET string' . $n .
+					$t . ' * @return null' . $n .
 					$t . ' */' . $n .
 					$t . 'public function index($args) {' . $n .
 					$t . $t . 'try {' . $n .
@@ -430,7 +431,7 @@ class Installer {
 					$t . $t . $t . '$view->setValue(\'message\', \'Bedrock Framework Application: Installation Successful!\');' . $n .
 					$t . $t . $t . '$view->render(\'test\');' . $n .
 					$t . $t . '}' . $n .
-					$t . $t . 'catch(Exception $ex) {' . $n .
+					$t . $t . 'catch(\\Exception $ex) {' . $n .
 					$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
 					$t . $t . '}' . $n .
 					$t . '}' . $n .
@@ -477,6 +478,8 @@ class Installer {
 					$t . ' * Renders the page.' . $n .
 					$t . ' * ' . $n .
 					$t . ' * @param string $page the name of the page to render, or \'self\' for the main page' . $n .
+					$t . ' * @throws \\Bedrock\\View\\Exception' . $n .
+					$t . ' * @return void' . $n .
 					$t . ' */' . $n .
 					$t . 'public function render($page = \'self\') {' . $n .
 					$t . $t . 'try {' . $n .
@@ -500,12 +503,14 @@ class Installer {
 					$t . $t . $t . $t . $t . 'foreach($this->_javascript as $javascript) {' . $n .
 					$t . $t . $t . $t . $t . $t . 'include $javascript;' . $n .
 					$t . $t . $t . $t . $t . '}' . $n .
+					$t . $t . $t . $t . $t . $n .
+					$t . $t . $t . $t . $t . 'break;' . $n .
 					$t . $t . $t . $t . '' . $n .
 					$t . $t . $t . $t . 'default:' . $n .
 					$t . $t . $t . $t . $t . 'break;' . $n .
 					$t . $t . $t . '}' . $n .
 					$t . $t . '}' . $n .
-					$t . $t . 'catch(Exception $ex) {' . $n .
+					$t . $t . 'catch(\\Exception $ex) {' . $n .
 					$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
 					$t . $t . $t . 'throw new \\Bedrock\\View\\Exception(\'The view could not be rendered.\');' . $n .
 					$t . $t . '}' . $n .
