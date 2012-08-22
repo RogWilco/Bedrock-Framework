@@ -4,7 +4,7 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.2
  * @created 04/08/2009
  * @updated 08/22/2012
  */
@@ -62,7 +62,7 @@ class Installer {
 				'app_name' => 'Bedrock Application',
 				'app_version' => '1.0.0',
 				'app_namespace' => 'Application',
-				'bedrock_version' => '0.1.1',
+				'bedrock_version' => '0.3.0',
 				'root' => 'default',
 				'root_web' => $webRoot,
 				'root_system' => $systemRoot,
