@@ -1,12 +1,12 @@
 <?php
 /**
  * Installer class for handling initial installation of a Bedrock application.
- *
+ * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.0.1
  * @created 04/08/2009
- * @updated 04/08/2009
+ * @updated 08/22/2012
  */
 class Installer {
 	protected static $_data = array();
@@ -487,7 +487,7 @@ class Installer {
 					$t . $t . $t . $t . $t . 'break;' . $n .
 					$t . $t . $t . $t . '' . $n .
 					$t . $t . $t . $t . 'case \'self\':' . $n .
-					$t . $t . $t . $t . $t . 'include $this->_root . \'tpl.index.php\';' . $n .
+					$t . $t . $t . $t . $t . 'include $this->_root . \'index.php\';' . $n .
 					$t . $t . $t . $t . $t . 'break;' . $n .
 					$t . $t . $t . $t . '' . $n .
 					$t . $t . $t . $t . 'case \'body\':' . $n .
