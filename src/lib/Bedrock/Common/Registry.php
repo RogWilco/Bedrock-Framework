@@ -6,9 +6,9 @@ namespace Bedrock\Common;
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 03/29/2008
- * @updated 07/02/2012
+ * @updated 08/24/2012
  */
 class Registry extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected static $_instance = null;
@@ -109,6 +109,15 @@ class Registry extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIt
 		$registry = self::instance();
 
 		return isset($registry->$id);
+	}
+
+	/**
+	 * Clears the curreng registry of all values.
+	 *
+	 * @return void
+	 */
+	public static function clear() {
+		self::$_instance = null;
 	}
 
 	/**

@@ -15,10 +15,12 @@ date_default_timezone_set('America/Los_Angeles');
 
 // Setup
 $whitelist = array(
-	':src\/lib\/Bedrock\/.*$:',		// src/lib/Bedrock/
-	':src\/lib\/Bedrock\.php$:',	// src/lib/Bedrock.php
-//	':src\/pub\/.*\.(php|js)$:'		// src/pub/*.(php|js)
-	':src\/pub\/.*\.php$:'			// src/pub/*.php
+	':src\/lib\/Bedrock\/.*$:',			// src/lib/Bedrock/
+	':src\/lib\/Bedrock\.php$:',		// src/lib/Bedrock.php
+	':test\/lib\/Bedrock\/.*$:',		// test/lib/Bedrock/
+	':test\/.*\.php$:',					// test/*.php
+//	':src\/pub\/.*\.(php|js)$:'			// src/pub/*.(php|js)
+	':src\/pub\/.*\.php$:'				// src/pub/*.php
 );
 
 $blacklist = array();
