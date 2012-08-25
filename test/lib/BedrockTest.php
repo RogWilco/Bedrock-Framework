@@ -1,11 +1,11 @@
 <?php
 /**
  * Tests main Bedrock class.
- *
+ * 
  * @author Nick Williams
- * @version 1.0.0
- * @created
- * @updated
+ * @version 1.0.1
+ * @created 8/24/2012
+ * @updated 08/24/2012
  */
 class BedrockTest extends \Bedrock\Common\TestCase {
 	/**

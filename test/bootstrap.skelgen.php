@@ -1,13 +1,13 @@
 <?php
 /**
  * PHPUnit Skeleton Generator Bootstrap Script
- *
+ * 
  * Contains all code to be executed before running phpunit-skelgen.
- *
+ * 
  * @author Nick Williams
- * @version 1.0.0
- * @created
- * @updated
+ * @version 1.0.1
+ * @created 8/24/2012
+ * @updated 08/24/2012
  */
 
 // Load PHPUnit Config
