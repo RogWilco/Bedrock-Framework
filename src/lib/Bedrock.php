@@ -4,13 +4,12 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.0
  * @created 07/09/2008
- * @updated 08/27/2012
+ * @updated 07/09/2008
  */
 class Bedrock {
 	protected $_properties;
-	protected $_propertiesKey;
 	protected $_config;
 	
 	/**
@@ -21,9 +20,7 @@ class Bedrock {
 		$this->_config = \Bedrock\Common\Registry::get('config');
 		
 		if($options instanceof \Bedrock\Common\Config) {
-			$this->_properties->unlock($this->_propertiesKey);
 			$this->_properties->merge($options);
-			$this->_propertiesKey = $this->_properties->lock();
 		}
 	}
 	
@@ -31,7 +28,7 @@ class Bedrock {
 	 * Applies all default properties for the current object. 
 	 */
 	public function defaults() {
-		$this->_properties = new \Bedrock\Common\Config(array(), true, $this->_propertiesKey);
+		$this->_properties = new \Bedrock\Common\Config(array(), true);
 	}
 	
 	/**
@@ -40,6 +37,15 @@ class Bedrock {
 	 * @return \Bedrock\Common\Config the currently stored public properties
 	 */
 	public function properties() {
-		return $this->_properties;
+		\Bedrock\Common\Logger::logEntry();
+		
+		try {
+			\Bedrock\Common\Logger::logExit();
+			return $this->_properties;
+		}
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			\Bedrock\Common\Logger::logExit();
+		}
 	}
 }
