@@ -3,14 +3,14 @@ namespace Bedrock\Common;
 
 /**
  * Configuration Object
- *
+ * 
  * Allows for an object style interface to application configuration data.
- *
+ * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 03/29/2008
- * @updated 07/02/2012
+ * @updated 08/27/2012
  */
 class Config extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected $_data;
@@ -38,6 +38,9 @@ class Config extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIter
 		// Locked?
 		if($locked) {
 			$unlockKey = $this->lock();
+		}
+		else {
+			$this->_locked = false;
 		}
 	}
 
@@ -75,7 +78,7 @@ class Config extends \Bedrock implements \ArrayAccess, \Countable, \SeekableIter
 	 * @param mixed $value the value to apply
 	 */
 	public function __set($name, $value) {
-		if(!$this->_locked) {
+		if($this->_locked !== true) {
 			if(is_array($value)) {
 				$this->_data[$name] = new self($value, $this->_locked);
 			}
