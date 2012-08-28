@@ -5,9 +5,9 @@ namespace Bedrock\Common;
  * Provides additional functionality on top of the PHPUnit TestCase class.
  * 
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.2
  * @created 08/24/2012
- * @updated 08/27/2012
+ * @updated 08/28/2012
  */
 class TestCase extends \PHPUnit_Framework_TestCase {
 	/**
@@ -53,26 +53,17 @@ class TestCase extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Builds a mock Bedrock\Common\Config object based on the specified array. Useful for building nested config
-	 * objects.
+	 * Obtain the value of a private or protected property on an object.
 	 *
-	 * @param array $array the data with which to build the object
+	 * @param object $object the object from which to retrieve the property
+	 * @param string $property the name of the desired property
 	 *
-	 * @return \PHPUnit_Framework_MockObject_MockObject
+	 * @return mixed the corresponding value
 	 */
-	protected function _buildConfig($array = array()) {
-		// Setup
-		$data = array();
+	protected function _getPrivateProperty($object, $property) {
+		$reflection = new \ReflectionProperty(get_class($object), $property);
+		$reflection->setAccessible(true);
 
-		foreach($array as $key => $value) {
-			if(is_array($value)) {
-				$data[$key] = $this->_buildConfig($value);
-			}
-			else {
-				$data[$key] = $value;
-			}
-		}
-
-		return $this->getMock('Bedrock\\Common\\Config', array('__get', '__set'), array($data, false));
+		return $reflection->getValue($object);
 	}
 }

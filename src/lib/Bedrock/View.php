@@ -6,9 +6,9 @@ namespace Bedrock;
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 07/09/2008
- * @updated 07/02/2012
+ * @updated 08/28/2012
  */
 abstract class View extends \Bedrock {
 	const MESSAGE_ALL = 0;
@@ -216,34 +216,34 @@ abstract class View extends \Bedrock {
 		switch($type) {
 			default:
 			case self::MESSAGE_ALL:
-				if($this->hasMessages(self::MESSAGE_INFO) &&
-						$this->hasMessages(self::MESSAGE_ERROR) &&
-						$this->hasMessages(self::MESSAGE_WARN) &&
+				if($this->hasMessages(self::MESSAGE_INFO) ||
+						$this->hasMessages(self::MESSAGE_ERROR) ||
+						$this->hasMessages(self::MESSAGE_WARN) ||
 						$this->hasMessages(self::MESSAGE_SUCCESS)) {
 					$result = true;
 				}
 				break;
 				
 			case self::MESSAGE_INFO:
-				if(count($this->_messages['info']) > 0) {
+				if(array_key_exists('info', $this->_messages) && count($this->_messages['info']) > 0) {
 					$result = true;
 				}
 				break;
 				
 			case self::MESSAGE_ERROR:
-				if(count($this->_messages['error']) > 0) {
+				if(array_key_exists('error', $this->_messages) && count($this->_messages['error']) > 0) {
 					$result = true;
 				}
 				break;
 				
 			case self::MESSAGE_WARN:
-				if(count($this->_messages['warn']) > 0) {
+				if(array_key_exists('warn', $this->_messages) && count($this->_messages['warn']) > 0) {
 					$result = true;
 				}
 				break;
 				
 			case self::MESSAGE_SUCCESS:
-				if(count($this->_messages['success']) > 0) {
+				if(array_key_exists('success', $this->_messages) && count($this->_messages['success']) > 0) {
 					$result = true;
 				}
 				break;
@@ -254,8 +254,10 @@ abstract class View extends \Bedrock {
 	
 	/**
 	 * Outputs the current template's root path.
+	 *
+	 * @param string $which the desired root path to be printed
 	 */
-	public function printRoot($which) {
+	public function printRoot($which = 'root') {
 		switch($which) {
 			case 'web':
 				echo $this->_webroot;
