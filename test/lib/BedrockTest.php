@@ -1,17 +1,22 @@
 <?php
 /**
- * Tests main Bedrock class.
+ * Test: Bedrock
  * 
  * @author Nick Williams
- * @version 1.0.1
- * @created 8/24/2012
- * @updated 08/24/2012
+ * @version 1.0.2
+ * @created 08/24/2012
+ * @updated 08/27/2012
  */
 class BedrockTest extends \Bedrock\Common\TestCase {
 	/**
 	 * @var Bedrock
 	 */
 	protected $_object;
+
+	/**
+	 * @var Bedrock\Common\Config
+	 */
+	protected $_mockConfig;
 
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
@@ -21,8 +26,17 @@ class BedrockTest extends \Bedrock\Common\TestCase {
 	 */
 	protected function setUp() {
 		$this->_populateRegistry();
+		$this->_mockConfig = $this->getMock('Bedrock\\Common\\Config', array('count'), array(
+			array(
+				'one' => 'unus',
+				'two' => 'duo',
+				'three' => 'tres',
+				'four' => 'quattor'
+			),
+			false
+		));
 
-		$this->_object = new Bedrock;
+		$this->_object = new Bedrock($this->_mockConfig);
 	}
 
 	/**
@@ -32,32 +46,40 @@ class BedrockTest extends \Bedrock\Common\TestCase {
 	 * @return void
 	 */
 	protected function tearDown() {
-		\Bedrock\Common\Registry::clear();
+		$this->_clearRegistry();
 	}
 
 	/**
 	 * @covers Bedrock::defaults
-	 * @todo   Implement testDefaults().
+	 * @covers Bedrock::properties
 	 *
 	 * @return void
 	 */
 	public function testDefaults() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		// Setup
+		$this->_object->defaults();
+		$properties = $this->_object->properties();
+
+		// Assertions
+		$this->assertInstanceOf('Bedrock\\Common\\Config', $properties);
+		$this->assertCount(0, $properties);
 	}
 
 	/**
 	 * @covers Bedrock::properties
-	 * @todo   Implement testProperties().
 	 *
 	 * @return void
 	 */
 	public function testProperties() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		// Setup
+		$properties = $this->_object->properties();
+
+		// Assertions
+		$this->assertInstanceOf('Bedrock\\Common\\Config', $properties);
+		$this->assertCount((4 + 1), $properties); // PHPUnit adds __phpunit_mockObjectId, so count ends up being +1
+
+		foreach($this->_mockConfig as $key => $value) {
+			$this->assertEquals($value, $properties[$key]);
+		}
 	}
 }

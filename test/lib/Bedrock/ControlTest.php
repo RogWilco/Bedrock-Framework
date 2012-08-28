@@ -2,16 +2,16 @@
 namespace Bedrock;
 
 /**
- * Test: Bedrock\Common
- * 
+ * Test: Bedrock\Control
+ *
  * @author Nick Williams
- * @version 1.0.2
- * @created 08/24/2012
- * @updated 08/27/2012
+ * @version 1.0.0
+ * @created
+ * @updated
  */
-class CommonTest extends \Bedrock\Common\TestCase {
+class ControlTest extends \Bedrock\Common\TestCase {
 	/**
-	 * @var Common
+	 * @var Control
 	 */
 	protected $_object;
 
@@ -24,7 +24,7 @@ class CommonTest extends \Bedrock\Common\TestCase {
 	protected function setUp() {
 		$this->_populateRegistry();
 
-		$this->_object = new Common;
+		//$this->_object = $this->getMockForAbstractClass('Bedrock\\Control');
 	}
 
 	/**
@@ -34,16 +34,16 @@ class CommonTest extends \Bedrock\Common\TestCase {
 	 * @return void
 	 */
 	protected function tearDown() {
-		\Bedrock\Common\Registry::clear();
+		$this->_clearRegistry();
 	}
 
 	/**
-	 * @covers Bedrock\Common::init
-	 * @todo   Implement testInit().
+	 * @covers Bedrock\Control::redirect
+	 * @todo   Implement testRedirect().
 	 *
 	 * @return void
 	 */
-	public function testInit() {
+	public function testRedirect() {
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
@@ -51,25 +51,12 @@ class CommonTest extends \Bedrock\Common\TestCase {
 	}
 
 	/**
-	 * @covers Bedrock\Common::autoload
-	 * @todo   Implement testAutoload().
+	 * @covers Bedrock\Control::isAjaxRequest
+	 * @todo   Implement testIsAjaxRequest().
 	 *
 	 * @return void
 	 */
-	public function testAutoload() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @covers Bedrock\Common::error
-	 * @todo   Implement testError().
-	 *
-	 * @return void
-	 */
-	public function testError() {
+	public function testIsAjaxRequest() {
 		// Remove the following lines when you implement this test.
 		$this->markTestIncomplete(
 			'This test has not been implemented yet.'
