@@ -3,11 +3,11 @@ namespace Bedrock;
 
 /**
  * Test: Bedrock\Control
- *
+ * 
  * @author Nick Williams
- * @version 1.0.0
- * @created
- * @updated
+ * @version 1.0.1
+ * @created 08/27/2012
+ * @updated 08/28/2012
  */
 class ModelTest extends \Bedrock\Common\TestCase {
 	/**
@@ -23,8 +23,6 @@ class ModelTest extends \Bedrock\Common\TestCase {
 	 */
 	protected function setUp() {
 		$this->_populateRegistry();
-
-		//$this->_object = $this->getMockForAbstractClass('Bedrock\\Model');
 	}
 
 	/**
@@ -39,28 +37,30 @@ class ModelTest extends \Bedrock\Common\TestCase {
 
 	/**
 	 * @covers Bedrock\Model::sanitize
-	 * @todo   Implement testSanitize().
 	 *
 	 * @return void
 	 */
 	public function testSanitize() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		// Setup
+		$rawValue = 'it\'s it';
+		$sanitizedValue = \Bedrock\Model::sanitize($rawValue);
+
+		// Assertions
+		$this->assertEquals('it\\\'s it', $sanitizedValue);
 	}
 
 	/**
 	 * @covers Bedrock\Model::desanitize
-	 * @todo   Implement testDesanitize().
 	 *
 	 * @return void
 	 */
 	public function testDesanitize() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		// Setup
+		$sanitizedValue = 'it\\\'s it';
+		$rawValue = \Bedrock\Model::desanitize($sanitizedValue);
+
+		// Assertions
+		$this->assertEquals('it\'s it', $rawValue);
 	}
 
 	/**

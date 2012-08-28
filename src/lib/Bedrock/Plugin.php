@@ -3,12 +3,12 @@ namespace Bedrock;
 
 /**
  * Base plugin class upon which plugins are built.
- *
+ * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 06/07/2009
- * @updated 07/02/2012
+ * @updated 08/28/2012
  */
 abstract class Plugin extends \Bedrock {
 	protected $_properties = array();
@@ -64,6 +64,8 @@ abstract class Plugin extends \Bedrock {
 	 * specified.
 	 *
 	 * @param string $source a valid Bedrock package source with the required dependencies
+	 *
+	 * @throws Plugin\Exception if the target save directory isn't writable
 	 * @return boolean whether or not the process was successful
 	 */
 	public static function loadDependencies($source = '') {

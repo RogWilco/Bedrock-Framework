@@ -3,11 +3,11 @@ namespace Bedrock;
 
 /**
  * Test: Bedrock\Control
- *
+ * 
  * @author Nick Williams
- * @version 1.0.0
- * @created
- * @updated
+ * @version 1.0.1
+ * @created 08/27/2012
+ * @updated 08/28/2012
  */
 class ControlTest extends \Bedrock\Common\TestCase {
 	/**

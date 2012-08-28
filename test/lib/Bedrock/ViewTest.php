@@ -2,10 +2,10 @@
 namespace Bedrock;
 
 /**
- * Test: Bedrock\Control
+ * Test: Bedrock\View
  * 
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.2
  * @created 08/27/2012
  * @updated 08/28/2012
  */
@@ -570,14 +570,15 @@ class ViewTest extends \Bedrock\Common\TestCase {
 
 	/**
 	 * @covers Bedrock\View::isAjaxRequest
-	 * @todo   Implement testIsAjaxRequest().
 	 *
 	 * @return void
 	 */
 	public function testIsAjaxRequest() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
+		// Assertions
+		$_POST['ajax'] = 1;
+		$this->assertTrue($this->_object->isAjaxRequest());
+
+		$_POST['ajax'] = 0;
+		$this->assertFalse($this->_object->isAjaxRequest());
 	}
 }
