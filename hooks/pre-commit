@@ -56,7 +56,7 @@ foreach($filesAdded as $file) {
 		// @updated
 		$docblock->updated = date('m/d/Y');
 	
-		preg_replace(DocBlock::PATTERN_DOCBLOCK, $docblock, $data, 1);
+		$data = preg_replace(DocBlock::PATTERN_DOCBLOCK, $docblock, $data, 1);
 	
 		file_put_contents($file, $data);
 		exec('git add ' . $file);
