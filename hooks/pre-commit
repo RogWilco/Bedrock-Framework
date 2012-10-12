@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 
 // Retrieve list of files. For each *.php file, parse out docblock, modify tags.
@@ -49,6 +49,11 @@ foreach($filesAdded as $file) {
 		
 		// @author
 		$docblock->append('author', $author);
+		
+		// @version
+		if(!$docblock->version) {
+			$docblock->version = '1.0.0';
+		}
 	
 		// @created
 		$docblock->created = date('m/d/Y');
@@ -211,7 +216,7 @@ class DocBlock {
 		$matches = array();
 		preg_match(self::PATTERN_DOCBLOCK, $code, $matches);
 		
-		$this->parse($matches[0]);
+		$this->_parse($matches[0]);
 	}
 	
 	/**
@@ -220,7 +225,7 @@ class DocBlock {
 	 * @param string $docblock the text containing the docblock to be parsed
 	 * @return void
 	 */
-	protected function parse($docblock) {
+	protected function _parse($docblock) {
 		$this->_raw = $docblock;
 		
 		$description = array();
@@ -319,11 +324,28 @@ class DocBlock {
 	 * @param string $value the value to be appended
 	 */
 	public function append($tag, $value) {
+		// Handle New Tag
+		if(!array_key_exists($tag, $this->_tags)) {
+			$this->_tags[$tag] = array();
+		}
+		
+		// Handle Empty Tag Values
+		if(!is_array($this->_tags[$tag]) && !trim($this->_tags[$tag])) {
+			$this->_tags[$tag] = array();
+		}
+		else {
+			$count = count($this->_tags[$tag]);
+			
+			if($count && !trim($this->_tags[$tag][$count - 1])) {
+				array_pop($this->_tags[$tag]);
+			}
+		}
+		
 		if(is_array($this->_tags[$tag]) && !in_array($value, $this->_tags[$tag])) {
 			$this->_tags[$tag][] = $value;
 		}
 		elseif(!is_array($this->_tags[$tag]) && $this->_tags[$tag] != $value) {
-			$this->_tags = array($this->_tags[$tag], $value);
+			$this->_tags[$tag] = array($this->_tags[$tag], $value);
 		}
 	}
 	
