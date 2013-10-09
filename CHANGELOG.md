@@ -7,7 +7,7 @@
 	</tr>
 	<tr>
 		<th>Version:</th>
-		<td id="meta_version">0.3.0</td>
+		<td id="meta_version">0.3.1</td>
 	</tr>
 	<tr>
 		<th>Build:</th>
@@ -18,6 +18,14 @@
 		<td id="meta_released">08-10-2012</td>
 	</tr>
 </table>
+
+## Version 0.3.1 \[10-09-2013\]
+
+Minor release, adding composer support.
+
+> ### Improvements
+> * Added initial version of composer.json in order to support loading via
+>   Composer.
 
 ## Version 0.2.1 Build 79 \[03-15-2010\]
 
