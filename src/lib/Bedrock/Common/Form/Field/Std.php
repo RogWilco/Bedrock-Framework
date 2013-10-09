@@ -1,23 +1,23 @@
 <?php
+namespace Bedrock\Common\Form\Field;
+
 /**
  * Standard form fields for base XHTML input types.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 12/25/2008
- * @updated 12/25/2008
+ * @updated 07/02/2012
  *
  */
-class Bedrock_Common_Form_Field_Std extends Bedrock_Common_Form_Field {
+class Std extends \Bedrock\Common\Form\Field {
 	/**
 	 * Renders the specified property or input field.
 	 *
 	 * @param string $property the property to render
 	 */
 	public function render($property = 'input') {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$namespace = '';
@@ -31,7 +31,7 @@ class Bedrock_Common_Form_Field_Std extends Bedrock_Common_Form_Field {
 				list($namespace, $type) = explode(':', $this->__get('type'));
 				
 				if($namespace != 'std') {
-					throw new Bedrock_Common_Form_Exception('The specified type namespace "' . $namespace . '" does not match the field instance type.');
+					throw new \Bedrock\Common\Form\Exception('The specified type namespace "' . $namespace . '" does not match the field instance type.');
 				}
 				
 				switch($type) {
@@ -39,7 +39,7 @@ class Bedrock_Common_Form_Field_Std extends Bedrock_Common_Form_Field {
 					// Type: Unsupported
 					// =========================================================
 					default:
-						throw new Bedrock_Common_Form_Exception('The specified field type "' . $type . '" is not a recognized field type.');
+						throw new \Bedrock\Common\Form\Exception('The specified field type "' . $type . '" is not a recognized field type.');
 						break;
 						
 					// =========================================================
@@ -100,7 +100,7 @@ class Bedrock_Common_Form_Field_Std extends Bedrock_Common_Form_Field {
 					// Type: Textarea Box
 					// =========================================================
 					case 'textarea':
-						$html = '<textarea name="' . $this->__get('name') . '" id="' . $this->_get('id') . '" >' . $this->_value . '</textarea>' . "\n";
+						$html = '<textarea name="' . $this->__get('name') . '" id="' . $this->__get('id') . '" >' . $this->_value . '</textarea>' . "\n";
 						break;
 						
 					// =========================================================
@@ -179,13 +179,9 @@ class Bedrock_Common_Form_Field_Std extends Bedrock_Common_Form_Field {
 				
 				echo $html;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 }
-?>

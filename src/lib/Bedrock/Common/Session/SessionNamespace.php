@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Session;
+
 /**
  * Session Namespace Object
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/05/2008
- * @updated 10/05/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Session_Namespace extends Bedrock {
+class SessionNamespace extends \Bedrock {
 	protected $_namespace = 'Global';
 	protected $_locked = false;
 	protected $_root = 'Bedrock';
@@ -19,11 +21,9 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * @param string $namespace a name for the namespace
 	 */
 	public function __construct($namespace) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if(trim($namespace) === '') {
-				throw new Bedrock_Common_Session_Exception('A namespace could not be initialized, empty or invalid namespace parameter specified.');
+				throw new \Bedrock\Common\Session\Exception('A namespace could not be initialized, empty or invalid namespace parameter specified.');
 			}
 			
 			$this->_namespace = trim($namespace);
@@ -31,13 +31,10 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 			if(!isset($_SESSION[$this->_root][$this->_namespace])) {
 				$_SESSION[$this->_root][$this->_namespace] = array();
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The namespace "' . $namespace . '" could not be created.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('The namespace "' . $namespace . '" could not be created.');
 		}
 	}
 	
@@ -48,13 +45,11 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * @param mixed $value the value to save
 	 */
 	public function __set($name, $value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			$name = trim($name);
 			
 			if($name == '') {
-				throw new Bedrock_Common_Session_Exception('The specified value could not be set, the name provided was an empty string.');
+				throw new \Bedrock\Common\Session\Exception('The specified value could not be set, the name provided was an empty string.');
 			}
 			
 			if(is_object($value)) {
@@ -65,13 +60,10 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 			}
 			
 			$_SESSION[$this->_root][$this->_namespace][$name] = $value;
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The value "' . $name . '" could not be set.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('The value "' . $name . '" could not be set.');
 		}
 	}
 	
@@ -82,13 +74,11 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * @return mixed the requested value
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			$name = trim($name);
 			
 			if($name == '') {
-				throw new Bedrock_Common_Session_Exception('The specified value could not be retrieved, the name provided was an empty string.');
+				throw new \Bedrock\Common\Session\Exception('The specified value could not be retrieved, the name provided was an empty string.');
 			}
 			
 			if($this->__isset($name)) {
@@ -102,25 +92,23 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 			else {
 				$result = NULL;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('Could not retrieve the specfied value "' . $name . '"');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('Could not retrieve the specfied value "' . $name . '"');
 		}
 	}
-	
+
 	/**
 	 * Checks if the specified value is set.
 	 *
 	 * @param string $name the name of the value to check
+	 *
+	 * @throws \Bedrock\Common\Session\Exception if the check is unsuccessful
+	 * @return bool whether or not the specified value is set
 	 */
 	public function __isset($name) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -130,14 +118,11 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 					&& array_key_exists('value', $_SESSION[$this->_root][$this->_namespace][$name])) {
 				$result = true;	
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('Could not determine if the value "' . $name . '" was set.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('Could not determine if the value "' . $name . '" was set.');
 		}
 	}
 	
@@ -147,21 +132,16 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * @param string $name the name of the value to check
 	 */
 	public function __unset($name) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			$name = trim($name);
 			
 			if($this->__isset($name)) {
 				unset($_SESSION[$this->_root][$this->_namespace][$name]);
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The value "' . $name . '" could not be unset.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('The value "' . $name . '" could not be unset.');
 		}
 	}
 	
@@ -170,21 +150,16 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * being made.
 	 */
 	public function lock() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($this->_namespace == 'Global') {
-				throw new Bedrock_Common_Session_Exception('The global namespace cannot be locked.');
+				throw new \Bedrock\Common\Session\Exception('The global namespace cannot be locked.');
 			}
 			
 			$this->_locked = true;
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Session_Exception('The namespace "' . $this->_namespace . '" could not be locked.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Session\Exception('The namespace "' . $this->_namespace . '" could not be locked.');
 		}
 	}
 	
@@ -192,16 +167,11 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 	 * Unlocks the current namespace, allowing for changes to be made.
 	 */
 	public function unlock() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			$this->_locked = false;
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -212,4 +182,3 @@ class Bedrock_Common_Session_Namespace extends Bedrock {
 		$_SESSION[$this->_root][$this->_namespace] = array();
 	}
 }
-?>

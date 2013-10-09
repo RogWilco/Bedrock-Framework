@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Common\Router;
+
 /**
  * Stores special cases for the router to handle. Useful when default route
  * parsing should not take place under specific circumstances.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 11/10/2008
- * @updated 11/10/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Router_SpecialCases extends Bedrock {
+class SpecialCases extends \Bedrock {
 	protected static $_cases = array();
 	
 	/**
@@ -22,11 +24,11 @@ class Bedrock_Common_Router_SpecialCases extends Bedrock {
 	 */
 	public static function add($route, $controller, $method) {
 		if(!class_exists($controller)) {
-			throw new Bedrock_Common_Router_Exception('The specified controller "' . $controller . '" could not be found.');
+			throw new \Bedrock\Common\Router\Exception('The specified controller "' . $controller . '" could not be found.');
 		}
 		
 		if(!method_exists($controller, $method)) {
-			throw new Bedrock_Common_Router_Exception('The specified controller method "' . $controller . '::' . $method . '()" could not be found.');
+			throw new \Bedrock\Common\Router\Exception('The specified controller method "' . $controller . '::' . $method . '()" could not be found.');
 		}
 		
 		self::$_cases[] = array(
@@ -45,4 +47,3 @@ class Bedrock_Common_Router_SpecialCases extends Bedrock {
 		return self::$_cases;
 	}
 }
-?>

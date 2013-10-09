@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Basic application logger, providing simple 3-level logging capabilities.
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 2.0.0
+ * @version 2.1.0
  * @created 06/09/2008
- * @updated 06/09/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Logger extends Bedrock {
+class Logger extends \Bedrock {
 	const LEVEL_ERROR = 4;
 	const LEVEL_WARN = 3;
 	const LEVEL_INFO = 2;
@@ -77,7 +79,7 @@ class Bedrock_Common_Logger extends Bedrock {
 	/**
 	 * Adds a target object for log data to be written to.
 	 *
-	 * @param Bedrock_Common_Logger_Target $targetObj a target object
+	 * @param \Bedrock\Common\Logger\Target\TargetInterface $targetObj a target object
 	 * @param mixed $level the logging level to use for the target
 	 */
 	public static function addTarget($targetObj, $level = self::LEVEL_DEFAULT) {
@@ -196,7 +198,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				switch($target->getFormat()) {
 					default:
 					case self::OUTPUT_STRING:
-						$n = Bedrock_Common::TXT_NEWLINE;
+						$n = \Bedrock\Common::TXT_NEWLINE;
 						
 						$logString = $n . $n . $n . '----- ' . self::$_meta['title'] .
 							' PHP Log | ' . self::$_meta['status'] .
@@ -233,7 +235,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				switch($target->getFormat()) {
 					default:
 					case self::OUTPUT_STRING:
-						$n = Bedrock_Common::TXT_NEWLINE;
+						$n = \Bedrock\Common::TXT_NEWLINE;
 						
 						if($logArray['type'] == self::TYPE_EXCEPTION && is_object($logArray['msg'])) {
 							$message = get_class($logArray['msg']) . ': ' . $logArray['msg']->getMessage();
@@ -353,7 +355,7 @@ class Bedrock_Common_Logger extends Bedrock {
 	/**
 	 * Logs an ERROR level Exception.
 	 *
-	 * @param $ex the Exception to log
+	 * @param \Exception $ex the Exception to log
 	 */
 	public static function exception($ex) {
 		$caller = self::getCaller();
@@ -460,13 +462,15 @@ class Bedrock_Common_Logger extends Bedrock {
 	 *
 	 * @param mixed $object the object to convert
 	 * @param string $title if a title is associated with the object
+	 *
+	 * @return array the created array
 	 */
 	protected static function objectToArray($object, $title = '') {
 		// Setup
 		$result = array();
 		
 		switch(get_class($object)) {
-			case 'Bedrock_Model_ResultSet':
+			case 'Bedrock\\Model\\ResultSet':
 				if(!$title) {
 					$title = 'ResultSet: ' . $object->count() . ' Records';
 				}
@@ -496,7 +500,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				}
 				break;
 				
-			case 'Bedrock_Model_Record':
+			case 'Bedrock\\Model\\Record':
 				if(!$title) {
 					$title = 'Record: ' . $object->getTable()->getProperty('name');
 				}
@@ -509,7 +513,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				
 				break;
 				
-			case 'Bedrock_Model_Database':
+			case 'Bedrock\\Model\\Database':
 				$tables = $object->getTables();
 				$config = $object->getConfig();
 				
@@ -525,7 +529,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				
 				break;
 				
-			case 'Bedrock_Model_Table':
+			case 'Bedrock\\Model\\Table':
 				if(!$title) {
 					$title = 'Table: ' . $object->getProperty('name');
 				}
@@ -539,7 +543,7 @@ class Bedrock_Common_Logger extends Bedrock {
 				
 				break;
 				
-			case 'Bedrock_Model_Column':
+			case 'Bedrock\\Model\\Column':
 				if(!$title) {
 					$title = 'Column: ' . $object->name;
 				}
@@ -569,4 +573,3 @@ class Bedrock_Common_Logger extends Bedrock {
 		return $result;
 	}
 }
-?>

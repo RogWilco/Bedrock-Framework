@@ -1,20 +1,22 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Manages form content and validation.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 12/15/2008
- * @updated 12/15/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interface {
+class Form extends \Bedrock implements \Bedrock\Common\Form\FormInterface {
 	protected $_groups = array();
 	protected $_fields = array();
 	protected $_switches = array();
 	protected static $_typeMappings = array(
-		'std' => 'Bedrock_Common_Form_Field_Std',
-		'adv' => 'Bedrock_Common_Form_Field_Adv'
+		'std' => 'Bedrock\\Common\\Form\\Field\\Std',
+		'adv' => 'Bedrock\\Common\\Form\\Field\\Adv'
 	);
 	
 	/**
@@ -23,20 +25,15 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $options additional options for the form object, either as an array, a Config object, or a string containing the path to an XML form definition file
 	 */
 	public function __construct($options = null) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Load Default Properties
 			$this->defaults();
 			
 			// Load Specified Options
 			$this->load($options);
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -44,23 +41,18 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * Applies any default properties for the current object.
 	 */
 	public function defaults() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			parent::defaults();
 			
-			$this->_properties->merge(new Bedrock_Common_Config(array(
+			$this->_properties->merge(new \Bedrock\Common\Config(array(
 				'name' => 'form',
 				'id' => 'form',
 				'method' => 'post',
 				'action' => $_SERVER['PHP_SELF']
 			)), true);
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -71,8 +63,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $arg the data to load as an array, Config object, or a path to an XML form definition file
 	 */
 	public function load($arg) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Argument: File Path
@@ -111,7 +101,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					}
 				}
 				else {
-					throw new Bedrock_Common_Form_Exception('A valid form definition file was not found at "' . $arg . '"');
+					throw new \Bedrock\Common\Form\Exception('A valid form definition file was not found at "' . $arg . '"');
 				}
 			}
 			
@@ -153,7 +143,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// =================================================================
 			// Argument: Config Object
 			// =================================================================
-			elseif($arg instanceof Bedrock_Common_Config) {
+			elseif($arg instanceof \Bedrock\Common\Config) {
 				// Store Properties
 				$this->_properties->name = $arg->name;
 				$this->_properties->id = $arg->id;
@@ -189,14 +179,11 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// Argument: Invalid
 			// =================================================================
 			elseif($arg != null) {
-				throw new Bedrock_Common_Form_Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock_Common_Config objects, or null.');
+				throw new \Bedrock\Common\Form\Exception('Invalid data type specified (' . gettype($arg) . '), valid types include array, string, Bedrock\Common\Config objects, or null.');
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -207,8 +194,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -233,13 +218,10 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					}
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -250,24 +232,19 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $value the value to assign to the specified field
 	 */
 	public function __set($name, $value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
-			if($value instanceof Bedrock_Common_Form_Field) {
+			if($value instanceof \Bedrock\Common\Form\Field) {
 				$this->_fields[$name] = $value;
 			}
-			elseif($value instanceof Bedrock_Common_Form_Group) {
+			elseif($value instanceof \Bedrock\Common\Form\Group) {
 				$this->_groups[$name] = $value;
 			}
 			else {
-				throw new Bedrock_Common_Form_Exception('Only Field and Group objects can be assigned to a Form.');
+				throw new \Bedrock\Common\Form\Exception('Only Field and Group objects can be assigned to a Form.');
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -278,16 +255,11 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param string $className the class to map to
 	 */
 	public static function addMapping($type, $className) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			self::$_typeMappings[$type] = $className;
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -299,8 +271,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @return string the name of the corresponding class
 	 */
 	public static function getMapping($type) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -308,13 +278,10 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			if(array_key_exists($type, self::$_typeMappings)) {
 				$result = self::$_typeMappings[$type];
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -326,8 +293,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @return mixed either the corresponding Group, all Groups, or null if none are found
 	 */
 	public function groups($groupIndex = null) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -338,20 +303,17 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			elseif(is_int($groupIndex)) {
 				$this->seek($groupIndex);
 				
-				if($this->current() instanceof Bedrock_Common_Form_Group) {
+				if($this->current() instanceof \Bedrock\Common\Form\Group) {
 					$result = $this->current();
 				}
 			}
 			else {
 				$result = $this->_groups;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -359,12 +321,10 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * Retrieves the requested Field by name or index, or returns all stored
 	 * Fields if no index/name is given.
 	 *
-	 * @param mxied $fieldIndex either the index of the Field, or the Field's name
+	 * @param mixed $fieldIndex either the index of the Field, or the Field's name
 	 * @return mixed either the corresponding Field, all Fields, or null if none are found
 	 */
 	public function fields($fieldIndex = null) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -375,20 +335,17 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			elseif(is_int($fieldIndex)) {
 				$this->seek(count($this->_groups) + $fieldIndex);
 				
-				if($this->current() instanceof Bedrock_Common_Form_Field) {
+				if($this->current() instanceof \Bedrock\Common\Form\Field) {
 					$result = $this->current();
 				}
 			}
 			else {
 				$result = $this->_fields;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -400,8 +357,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @return array either the corresponding switch block, all switch blocks, or null if none are found
 	 */
 	public function switches($switchIndex = null) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = null;
@@ -412,13 +367,10 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			else {
 				$result = $this->_switches;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -428,13 +380,11 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $field the field data to store
 	 */
 	private function storeField($field) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Source Data: SimpleXMLElement
 			// =================================================================
-			if($field instanceof SimpleXMLElement) {
+			if($field instanceof \SimpleXMLElement) {
 				if(!isset($field->attributes()->id) || $field->attributes()->id == '') {
 					$field->addAttribute('id', $this->_properties->id . '_' . (string) $field->attributes()->name);
 				}
@@ -447,14 +397,14 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					$this->_fields[(string) $field->attributes()->name] =  new $fieldClass($field);
 				}
 				else {
-					$this->_fields[(string) $field->attributes()->name] = new Bedrock_Common_Form_Field($field);
+					$this->_fields[(string) $field->attributes()->name] = new \Bedrock\Common\Form\Field($field);
 				}
 			}
 			
 			// =================================================================
 			// Source Data: Config
 			// =================================================================
-			elseif($field instanceof Bedrock_Common_Config) {
+			elseif($field instanceof \Bedrock\Common\Config) {
 				if(!isset($field->id) || $field->id == '') {
 					$field->id = $this->_properties->id . '_' . $field->name;
 				}
@@ -467,7 +417,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					$this->_fields[$field->name] = new $fieldClass($field);
 				}
 				else {
-					$this->_fields[$field->name] = new Bedrock_Common_Form_Field($field);
+					$this->_fields[$field->name] = new \Bedrock\Common\Form\Field($field);
 				}
 			}
 			
@@ -487,7 +437,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					$this->_fields[$field['name']] = new $fieldClass($field);
 				}
 				else {
-					$this->_fields[$field['name']] = new Bedrock_Common_Form_Field($field);
+					$this->_fields[$field['name']] = new \Bedrock\Common\Form\Field($field);
 				}
 			}
 			
@@ -495,14 +445,11 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// Source Data: Unsupported
 			// =================================================================
 			else {
-				throw new Bedrock_Common_Form_Exception('Invalid data provided, field could not be stored.');
+				throw new \Bedrock\Common\Form\Exception('Invalid data provided, field could not be stored.');
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -512,29 +459,27 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $group the group data to store
 	 */
 	private function storeGroup($group) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// =================================================================
 			// Source Data: SimpleXMLElement
 			// =================================================================
-			if($group instanceof SimpleXMLElement) {
+			if($group instanceof \SimpleXMLElement) {
 				if(!isset($group->attributes()->id) || $group->attributes()->id == '') {
 					$group->addAttribute('id', $this->_properties->id . '_' . (string) $group->attributes()->name);
 				}
 				
-				$this->_groups[(string) $group->attributes()->name] = new Bedrock_Common_Form_Group($group);
+				$this->_groups[(string) $group->attributes()->name] = new \Bedrock\Common\Form\Group($group);
 			}
 			
 			// =================================================================
 			// Source Data: Config
 			// =================================================================
-			elseif($group instanceof Bedrock_Common_Config) {
+			elseif($group instanceof \Bedrock\Common\Config) {
 				if(!isset($group->id) || $group->id == '') {
 					$group->id = $this->_properties->id . '_' . $group->name;
 				}
 				
-				$this->_groups[$group->name] = new Bedrock_Common_Form_Group($group);
+				$this->_groups[$group->name] = new \Bedrock\Common\Form\Group($group);
 			}
 			
 			// =================================================================
@@ -545,21 +490,18 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 					$group['id'] = $this->_properties->id . '_' . $group['name'];
 				}
 				
-				$this->_groups[$group['name']] = new Bedrock_Common_Form_Group($group);
+				$this->_groups[$group['name']] = new \Bedrock\Common\Form\Group($group);
 			}
 			
 			// =================================================================
 			// Source Data: Unsupported
 			// =================================================================
 			else {
-				throw new Bedrock_Common_Form_Exception('Invalid data provided, group could not be stored.');
+				throw new \Bedrock\Common\Form\Exception('Invalid data provided, group could not be stored.');
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -569,8 +511,6 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @param mixed $switch the switch data to store
 	 */
 	private function storeSwitch($switch) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$data = array();
@@ -578,7 +518,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// =================================================================
 			// Source Data: SimpleXMLElement
 			// =================================================================
-			if($switch instanceof SimpleXMLElement) {
+			if($switch instanceof \SimpleXMLElement) {
 				// Setup
 				$data = array(
 					'depends' => $switch->attributes()->depends,
@@ -603,7 +543,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// =================================================================
 			// Source Data: Config
 			// =================================================================
-			elseif($switch instanceof Bedrock_Common_Config) {
+			elseif($switch instanceof \Bedrock\Common\Config) {
 				// Setup
 				$data = array(
 					'depends' => $switch->depends,
@@ -654,16 +594,13 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 			// Source Data: Unsupported
 			// =================================================================
 			else {
-				throw new Bedrock_Common_Form_Exception('Invalid data provided, switch block could not be stored.');
+				throw new \Bedrock\Common\Form\Exception('Invalid data provided, switch block could not be stored.');
 			}
 			
-			$this->_switches[] = new Bedrock_Common_Config($data, true);
-			
-			Bedrock_Common_Logger::logExit();
+			$this->_switches[] = new \Bedrock\Common\Config($data, true);
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -673,21 +610,16 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 * @return boolean whether or not the form passed validation
 	 */
 	public function validate() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
 			
 			// Validate the Form
 			
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -715,10 +647,10 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 */
 	public function offsetGet($offset) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Common_Form_Exception('Fields and Groups can only be accessed using a numeric offset.');
+			throw new \Bedrock\Common\Form\Exception('Fields and Groups can only be accessed using a numeric offset.');
 		}
 		elseif(!$this->offsetExists($offset)) {
-			throw new Bedrock_Common_Form_Exception('A Field or Group does not exist at the requested offset of ' . $offset);
+			throw new \Bedrock\Common\Form\Exception('A Field or Group does not exist at the requested offset of ' . $offset);
 		}
 		
 		if($this->_groups[$offset]) {
@@ -737,16 +669,16 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 */
 	public function offsetSet($offset, $value) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Common_Form_Exception('Fields and Groups can only be set using a numeric offset.');
+			throw new \Bedrock\Common\Form\Exception('Fields and Groups can only be set using a numeric offset.');
 		}
-		elseif(!($value instanceof Bedrock_Common_Form_Field) && !($value instanceof Bedrock_Common_Form_Group)) {
-			throw new Bedrock_Common_Form_Exception('Attempted to add an unrecognized type to a Form object (only Field and Group objects are allowed).');
+		elseif(!($value instanceof \Bedrock\Common\Form\Field) && !($value instanceof \Bedrock\Common\Form\Group)) {
+			throw new \Bedrock\Common\Form\Exception('Attempted to add an unrecognized type to a Form object (only Field and Group objects are allowed).');
 		}
 		
-		if($value instanceof Bedrock_Common_Form_Group) {
+		if($value instanceof \Bedrock\Common\Form\Group) {
 			$this->_groups[$offset] = $value;
 		}
-		elseif($value instanceof Bedrock_Common_Form_Field) {
+		elseif($value instanceof \Bedrock\Common\Form\Field) {
 			$this->_fields[$offset] = $value;
 		}
 	}
@@ -758,7 +690,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 	 */
 	public function offsetUnset($offset) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Common_Form_Exception('Fields or Groups can only be set using a numeric offset.');
+			throw new \Bedrock\Common\Form\Exception('Fields or Groups can only be set using a numeric offset.');
 		}
 		
 		if($this->_groups[$offset]) {
@@ -893,7 +825,7 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 		}
 		
 		if(!$this->valid()) {
-			throw new Bedrock_Common_Form_Exception('Invalid index specified.');
+			throw new \Bedrock\Common\Form\Exception('Invalid index specified.');
 		}
 		
 		return $result;
@@ -909,4 +841,3 @@ class Bedrock_Common_Form extends Bedrock implements Bedrock_Common_Form_Interfa
 		return (current($this->_groups) !== false || current($this->_fields) !== false);
 	}
 }
-?>

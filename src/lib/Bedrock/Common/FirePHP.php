@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Hadles communication with the FirePHP Firefox extension.
  * 
@@ -40,11 +42,11 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/19/2008
- * @updated 10/19/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_FirePHP extends Bedrock {
+class FirePHP extends \Bedrock {
 	const VERSION = '0.2.b.7';
 	const TYPE_LOG = 'LOG';
 	const TYPE_INFO = 'INFO';
@@ -85,7 +87,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * initialized.
 	 *
 	 * @param boolean $autoCreate whether or not to create an instance if none is found
-	 * @return Bedrock_Common_FirePHP the current instance
+	 * @return \Bedrock\Common\FirePHP the current instance
 	 */
 	public static function getInstance($autoCreate = false) {
 		if($autoCreate && !self::$_instance) {
@@ -98,7 +100,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	/**
 	 * Initializes a new object instance.
 	 *
-	 * @return Bedrock_Common_FirePHP a new instance
+	 * @return \Bedrock\Common\FirePHP a new instance
 	 */
 	public static function init() {
 		return self::$_instance = new self();
@@ -148,7 +150,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 		
 		// Only throw exceptions for errors we are asking for
 		if(error_reporting() & $errno) {
-			throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+			throw new \Bedrock\Common\Error\Exception($errstr, 0, $errno, $errfile, $errline);
 		}
 	}
 	
@@ -193,7 +195,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the grouping was successful
 	 */
 	public function group($name) {
-		return $this->fb(NULL, $name, Bedrock_Common_FirePHP::TYPE_GROUP_START);
+		return $this->fb(NULL, $name, self::TYPE_GROUP_START);
 	}
 	
 	/**
@@ -202,7 +204,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the grouping was successful
 	 */
 	public function groupEnd() {
-		return $this->fb(NULL, NULL, Bedrock_Common_FirePHP::TYPE_GROUP_END);
+		return $this->fb(NULL, NULL, self::TYPE_GROUP_END);
 	}
 	
 	/**
@@ -213,7 +215,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the data was logged
 	 */
 	public function log($object, $label = NULL) {
-		return $this->fb($object, $label, Bedrock_Common_FirePHP::TYPE_LOG);
+		return $this->fb($object, $label, self::TYPE_LOG);
 	}
 	
 	/**
@@ -224,7 +226,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the data was logged
 	 */
 	public function info($object, $label = NULL) {
-		return $this->fb($object, $label, Bedrock_Common_FirePHP::TYPE_INFO);
+		return $this->fb($object, $label, self::TYPE_INFO);
 	}
 	
 	/**
@@ -235,7 +237,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the data was logged
 	 */
 	public function warn($object, $label = NULL) {
-		return $this->fb($object, $label, Bedrock_Common_FirePHP::TYPE_WARN);
+		return $this->fb($object, $label, self::TYPE_WARN);
 	}
 	
 	/**
@@ -246,7 +248,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the data was logged
 	 */
 	public function error($object, $label = NULL) {
-		return $this->fb($object, $label, Bedrock_Common_FirePHP::TYPE_ERROR);
+		return $this->fb($object, $label, self::TYPE_ERROR);
 	}
 	
 	/**
@@ -257,7 +259,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the data was dumped
 	 */
 	public function dump($key, $variable) {
-		return $this->fb($variable, $key, Bedrock_Common_FirePHP::TYPE_DUMP);
+		return $this->fb($variable, $key, self::TYPE_DUMP);
 	}
 	
 	/**
@@ -267,7 +269,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return boolean whether or not the trace was logged
 	 */
 	public function trace($Label) {
-		return $this->fb($Label, Bedrock_Common_FirePHP::TYPE_TRACE);
+		return $this->fb($Label, self::TYPE_TRACE);
 	}
 	
 	/**
@@ -275,10 +277,10 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 *
 	 * @param string $label a label for the table
 	 * @param string $table the contents of the table
-	 * @return true
+	 * @return boolean wether or not the table was logged
 	 */
 	public function table($label, $table) {
-		return $this->fb($table, $label, Bedrock_Common_FirePHP::TYPE_TABLE);
+		return $this->fb($table, $label, self::TYPE_TABLE);
 	}
 	
 	/**
@@ -315,7 +317,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 		$linenum = '';
 		
 		if(headers_sent($filename, $linenum)) {
-			throw new Bedrock_Common_Exception('Headers already sent in ' . $filename . ' on line ' . $linenum . '. Cannot send log data to FirePHP. You must have Output Buffering enabled via ob_start() or output_buffering ini directive.');
+			throw new \Bedrock\Common\Exception('Headers already sent in ' . $filename . ' on line ' . $linenum . '. Cannot send log data to FirePHP. You must have Output Buffering enabled via ob_start() or output_buffering ini directive.');
 		}
 		
 		if(func_num_args() == 1) {}
@@ -344,7 +346,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 			$label = func_get_arg(1);
 		}
 		else {
-			throw new Bedrock_Common_Exception('Wrong number of arguments to fb() function.');
+			throw new \Bedrock\Common\Exception('Wrong number of arguments to fb() function.');
 		}
 		
 		if(!$this->detectClientExtension()) {
@@ -356,14 +358,14 @@ class Bedrock_Common_FirePHP extends Bedrock {
 			$meta['line'] = $object->getLine();
 			$trace = $object->getTrace();
 			
-			if($object instanceof Bedrock_Common_Exception 
+			if($object instanceof \Bedrock\Common\Exception
 					&& isset($trace[0]['function'])
 					&& $trace[0]['function'] == 'errorHandler'
 					&& isset($trace[0]['class'])
 					&& $trace[0]['class'] == 'FirePHP') {
 				$severity = false;
 				
-				switch($Object->getSeverity()) {
+				switch($object->getSeverity()) {
 					case E_WARNING:
 						$severity = 'E_WARNING';
 						break;
@@ -431,9 +433,9 @@ class Bedrock_Common_FirePHP extends Bedrock {
 			for($i=0; $i<sizeof($trace); $i++) {
 				if(isset($trace[$i]['class'])
 						&& isset($trace[$i]['file'])
-						&& ($trace[$i]['class'] == 'Bedrock_Common_FirePHP'
-							|| $trace[$i]['class'] == 'Bedrock_Common_Stream_Output_FirePHP'
-							|| $trace[$i]['class'] == 'Bedrock_Common_Logger')
+						&& ($trace[$i]['class'] == 'Bedrock\\Common\\FirePHP'
+							|| $trace[$i]['class'] == 'Bedrock\\Common\\Stream\\Output\\FirePHP'
+							|| $trace[$i]['class'] == 'Bedrock\\Common\\Logger')
 						&& ((substr($this->standardizePath($trace[$i]['file']), -11, 11) == 'FirePHP.php')
 							|| (substr($this->standardizePath($trace[$i]['file']), -11, 11) == 'FirePHP.php')
 							|| (substr($this->standardizePath($trace[$i]['file']), -10, 10) == 'Logger.php'))) {
@@ -471,9 +473,9 @@ class Bedrock_Common_FirePHP extends Bedrock {
 				for($i=0; $trace && $i<sizeof($trace); $i++) {
 					if(isset($trace[$i]['class'])
 							&& isset($trace[$i]['file'])
-							&& ($trace[$i]['class'] == 'Bedrock_Common_FirePHP'
-								|| $trace[$i]['class'] == 'Bedrock_Common_Stream_Output_FirePHP'
-								|| $trace[$i]['class'] == 'Bedrock_Common_Logger')
+							&& ($trace[$i]['class'] == 'Bedrock\\Common\\FirePHP'
+								|| $trace[$i]['class'] == 'Bedrock\\Common\\Stream\\Output\\FirePHP'
+								|| $trace[$i]['class'] == 'Bedrock\\Common\\Logger')
 							&& ((substr($this->standardizePath($trace[$i]['file']), -11, 11) == 'FirePHP.php')
 								|| (substr($this->standardizePath($trace[$i]['file']), -11, 11) == 'FirePHP.php')
 								|| (substr($this->standardizePath($trace[$i]['file']), -10, 10) == 'Logger.php'))) {
@@ -628,7 +630,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 	 * @return string the encoded JSON string
 	 */
 	protected function jsonEncode($object) {
-		if(function_exists('json_encode') && $this->options['useNativeJsonEncode'] != false) {
+		if(function_exists('json_encode') && $this->_options['useNativeJsonEncode'] != false) {
 			return json_encode($this->encodeObject($object));
     	}
     	else {
@@ -661,7 +663,7 @@ class Bedrock_Common_FirePHP extends Bedrock {
 			array_push($this->_objectStack, $object);
 			$return['__className'] = $class = get_class($object);
 			
-			$reflectionClass = new ReflectionClass($class);
+			$reflectionClass = new \ReflectionClass($class);
 			$properties = array();
 			
 			foreach($reflectionClass->getProperties() as $property) {
@@ -1043,4 +1045,3 @@ class Bedrock_Common_FirePHP extends Bedrock {
 		return $this->json_encode(strval($name)) . ':' . $encoded_value;
 	}
 }
-?>

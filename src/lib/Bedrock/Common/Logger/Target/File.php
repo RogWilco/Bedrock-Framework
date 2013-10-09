@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Logger\Target;
+
 /**
  * File Output Target
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 06/12/2009
- * @updated 06/12/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Logger_Target_File extends Bedrock implements Bedrock_Common_Logger_Target_Interface {
+class File extends \Bedrock implements \Bedrock\Common\Logger\Target\TargetInterface {
 	protected $_handle = NULL;
 
 	/**
@@ -28,7 +30,7 @@ class Bedrock_Common_Logger_Target_File extends Bedrock implements Bedrock_Commo
 	 */
 	public function open($args = array()) {
 		if(!$this->_handle = fopen($args, 'a')) {
-			throw new Bedrock_Common_Logger_Target_Exception('Could not open the specified file: ' . $args);
+			throw new \Bedrock\Common\Logger\Target\Exception('Could not open the specified file: ' . $args);
 		}
 	}
 
@@ -55,11 +57,10 @@ class Bedrock_Common_Logger_Target_File extends Bedrock implements Bedrock_Commo
 	 */
 	public function write($data) {
 		if(!$this->_handle) {
-			throw new Bedrock_Common_Logger_Target_Exception('Cannot write to file target, no file selected.');
+			throw new \Bedrock\Common\Logger\Target\Exception('Cannot write to file target, no file selected.');
 		}
 		elseif(fwrite($this->_handle, $data) === false) {
-			throw new Bedrock_Common_Logger_Target_Exception('There was a problem writing to the file target.');
+			throw new \Bedrock\Common\Logger\Target\Exception('There was a problem writing to the file target.');
 		}
 	}
 }
-?>

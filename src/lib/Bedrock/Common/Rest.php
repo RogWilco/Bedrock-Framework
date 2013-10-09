@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Provides basic RESTful utilities useful for use with various web APIs.
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 05/06/2009
- * @updated 05/06/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Rest extends Bedrock_Common {
+class Rest extends \Bedrock\Common {
 	/**
 	 * Sends a request using cURL.
 	 *
@@ -17,14 +19,12 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 	 * @return string any response received
 	 */
 	public static function curl($url, $options = array()) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
 
 			if(!function_exists('curl_init')) {
-				throw new Bedrock_Common_Rest_Exception('PHP\'s cURL library is not available and is required to make requests with cURL.');
+				throw new \Bedrock\Common\Rest\Exception('PHP\'s cURL library is not available and is required to make requests with cURL.');
 			}
 
 			$ch = curl_init();
@@ -40,16 +40,13 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 			curl_close($ch);
 
 			if($result === false) {
-				throw new Bedrock_Common_Rest_Exception('A cURL error has occurred: ' . curl_error($ch));
+				throw new \Bedrock\Common\Rest\Exception('A cURL error has occurred: ' . curl_error($ch));
 			}
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Rest_Exception('The HTTP request was not successful.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Rest\Exception('The HTTP request was not successful.');
 		}
 	}
 
@@ -63,8 +60,6 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 	 * @return string the returned response
 	 */
 	public static function get($url, $params = array(), $options = array()) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -83,14 +78,11 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 			
 			// Execute Request
 			$result = self::curl($url, $options);
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Rest_Exception('The HTTP request (via GET) was not successful.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via GET) was not successful.');
 		}
 	}
 
@@ -104,8 +96,6 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 	 * @return string the returned response
 	 */
 	public static function post($url, $params = array(), $options = array()) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
@@ -125,14 +115,11 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 			
 			// Execute Request
 			$result = self::curl($url, $options);
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Rest_Exception('The HTTP request (via POST) was not successful.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via POST) was not successful.');
 		}
 	}
 
@@ -146,15 +133,13 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 	 * @return string the returned response
 	 */
 	public static function put($url, $file, $options = array()) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = '';
 
 			// Verify File
 			if(!is_file($file)) {
-				throw new Bedrock_Common_Rest_Exception('The specified location "' . $file . '" does not reference a valid file.');
+				throw new \Bedrock\Common\Rest\Exception('The specified location "' . $file . '" does not reference a valid file.');
 			}
 
 			// Apply cURL Options
@@ -164,15 +149,11 @@ class Bedrock_Common_Rest extends Bedrock_Common {
 			$options[CURLOPT_RETURNTRANSFER] = true;
 
 			$result = self::curl($url, $options);
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Rest_Exception('The HTTP request (via PUT) was not successful.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Rest\Exception('The HTTP request (via PUT) was not successful.');
 		}
 	}
 }
-?>

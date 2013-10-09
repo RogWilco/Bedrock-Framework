@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Data;
+
 /**
  * Data Container: CSV (Comma Separated Values)
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 04/23/2009
- * @updated 04/23/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
+class CSV extends \Bedrock\Common\Data {
 	protected $_columns = array();
 	private $_defaults = array(
 		'column_headings' => false,
@@ -63,9 +65,9 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 		$result = '';
 		$columnCount = count($columns);
 		
-		if(is_array($data) || $data instanceof Bedrock_Common_Data) {
+		if(is_array($data) || $data instanceof \Bedrock\Common\Data) {
 			if($columnCount > 0) {
-				$result .= implode($delimiter, $columns) . Bedrock_Common::TXT_NEWLINE;
+				$result .= implode($delimiter, $columns) . \Bedrock\Common::TXT_NEWLINE;
 			}
 
 			foreach($data as $row) {
@@ -73,7 +75,7 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 					foreach($columns as $column) {
 						if(!array_key_exists($column, $row)) {
 							$result .= $delimiter;
-							contine;
+							continue;
 						}
 						else {
 							$type = gettype($row[$column]);
@@ -134,11 +136,11 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 					}
 				}
 
-				$result = substr($result, 0, -(strlen($delimiter))) . Bedrock_Common::TXT_NEWLINE;
+				$result = substr($result, 0, -(strlen($delimiter))) . \Bedrock\Common::TXT_NEWLINE;
 			}
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
+			throw new \Bedrock\Common\Data\Exception('The specified data is not in a supported format, please provide a valid array or Data descendant.');
 		}
 
 		return $result;
@@ -157,7 +159,9 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 		$result = array();
 		
 		if(is_string($string)) {
-			$rows = explode(Bedrock_Common::TXT_NEWLINE, $string);
+			$rows = explode(\Bedrock\Common::TXT_NEWLINE, $string);
+			$columnNames = null;
+			$columnCount = null;
 			
 			if($columns) {
 				$columnNames = array_shift($rows);
@@ -175,7 +179,7 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 					$rowCount = count($row);
 					
 					if($columnCount != $rowCount) {
-						throw new Bedrock_Common_Data_Exception('One or more rows dit not contain a matching number of values for the columns specified.');
+						throw new \Bedrock\Common\Data\Exception('One or more rows dit not contain a matching number of values for the columns specified.');
 					}
 					
 					$result[] = array_combine($columnNames, $row);
@@ -198,7 +202,7 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 			}
 		}
 		else {
-			throw new Bedrock_Common_Data_Exception('Only strings can be decoded, please provide a valid string to decode.');
+			throw new \Bedrock\Common\Data\Exception('Only strings can be decoded, please provide a valid string to decode.');
 		}
 		
 		return $result;
@@ -222,4 +226,3 @@ class Bedrock_Common_Data_CSV extends Bedrock_Common_Data {
 		}
 	}
 }
-?>

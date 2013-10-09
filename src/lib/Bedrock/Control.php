@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock;
+
 /**
  * The base controller object.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 07/09/2008
- * @updated 07/09/2008
+ * @updated 07/02/2012
  */
-abstract class Bedrock_Control extends Bedrock {
+abstract class Control extends \Bedrock {
 	const ERROR_TYPE_UNKNOWN = 'UNKNOWN';
 	const ERROR_TYPE_HTTP404 = 'HTTP404';
 
@@ -18,7 +20,7 @@ abstract class Bedrock_Control extends Bedrock {
 	 * @param string $location the URL to which the client should be sent
 	 */
 	public static function redirect($location) {
-		Bedrock_Common_Logger::info('Redirecting: ' . $location);
+		\Bedrock\Common\Logger::info('Redirecting: ' . $location);
 		header('Location: ' . $location);
 	}
 	
@@ -41,4 +43,3 @@ abstract class Bedrock_Control extends Bedrock {
 	
 	abstract function index($args);
 }
-?>

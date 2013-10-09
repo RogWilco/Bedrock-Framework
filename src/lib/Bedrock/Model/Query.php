@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * A query object used to manage transactions and queries executed against the
  * database.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 08/29/2008
- * @updated 08/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_Query extends Bedrock_Model {
+class Query extends \Bedrock\Model {
 	const TARGET_TABLE = 0;
 	const TARGET_VIEW = 1;
 	const TARGET_PROCEDURE = 2;
@@ -27,11 +29,9 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 *
 	 * @param string $targetName the name of the table/view/procedure to be queried
 	 * @param integer $targetType the type of target being queried
-	 * @param PDO $database an optional database connection to use, the default will be used otherwise
+	 * @param \PDO $database an optional database connection to use, the default will be used otherwise
 	 */
 	public function __construct($targetName = '', $targetType = self::TARGET_TABLE, $database = NULL) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			parent::__construct($database);
 			
@@ -49,13 +49,10 @@ class Bedrock_Model_Query extends Bedrock_Model {
 					$this->_procedure = $targetName;
 					break;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The query could not be initialized for table "' . $table . '"');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The query could not be initialized for "' . $targetName . '"');
 		}
 	}
 	
@@ -70,22 +67,17 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * Initializes a query using the specified table.
 	 *
 	 * @param string $table the name of the table to be queried
-	 * @return Bedrock_Model_Query a new query object
+	 * @return \Bedrock\Model\Query a new query object
 	 */
 	public static function from($table) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
-			Bedrock_Common_Logger::info('Querying from table "' . $table . '"');
+			\Bedrock\Common\Logger::info('Querying from table "' . $table . '"');
 			self::$_instance = new self($table, self::TARGET_TABLE);
-			
-			Bedrock_Common_Logger::logExit();
 			return self::$_instance;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The query could not be initialized for table "' . $table . '"');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The query could not be initialized for table "' . $table . '"');
 		}
 	}
 	
@@ -93,21 +85,16 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * Initializes a query using the specified stored procedure.
 	 *
 	 * @param string $procedure the name of the procedure to be run
-	 * @return Bedrock_Model_Query a new query object
+	 * @return \Bedrock\Model\Query a new query object
 	 */
 	public function procedure($procedure) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
-			Bedrock_Common_Logger::info('Querying from procedure "' . $procedure . '"');
+			\Bedrock\Common\Logger::info('Querying from procedure "' . $procedure . '"');
 			self::$_instance = new self($procedure, self::TARGET_PROCEDURE);
-			
-			Bedrock_Common_Logger::logExit();
 			return self::$_instance;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -117,11 +104,9 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * @param string $field the field to compare, or the stored procedure parameter name
 	 * @param string $operator the operator to use (=, >, <, <>, etc.)
 	 * @param string $value one or more value parameters
-	 * @return Bedrock_Model_Query the updated Query object
+	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function where($field, $operator, $value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$logValue = $value;
@@ -150,28 +135,25 @@ class Bedrock_Model_Query extends Bedrock_Model {
 				case self::TARGET_TABLE:
 				case self::TARGET_VIEW:
 					if($this->_query['associate']) {
-						Bedrock_Common_Logger::info('Applying WHERE clause to record association: ' . $field . ' ' . $operator . ' ' . $logValue);
+						\Bedrock\Common\Logger::info('Applying WHERE clause to record association: ' . $field . ' ' . $operator . ' ' . $logValue);
 						
 					}
 					else {
-						Bedrock_Common_Logger::info('Adding to WHERE clause: ' . $field . ' ' . $operator . ' ' . $logValue);
+						\Bedrock\Common\Logger::info('Adding to WHERE clause: ' . $field . ' ' . $operator . ' ' . $logValue);
 						$this->_query['where'][] = array('field' => $field, 'operator' => $operator, 'value' => $value);
 					}
 					break;
 					
 				case self::TARGET_PROCEDURE:
-					Bedrock_Common_Logger::info('Assigning value "' . $logValue . '" to parameter "' . $field . '"');
+					\Bedrock\Common\Logger::info('Assigning value "' . $logValue . '" to parameter "' . $field . '"');
 					$this->_query['params'][$field] = $value;
 					break;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $this;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('A where clause could not be added to the Query object.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('A where clause could not be added to the Query object.');
 		}
 	}
 	
@@ -179,26 +161,21 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * Specifies sort parameters to use for the current query.
 	 *
 	 * @param string $sortParams any sort parameters to apply
-	 * @return Bedrock_Model_Query the updated Query object
+	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function sort($sortParams) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('ORDER BY clauses cannot be used on stored procedure queries.');
+				throw new \Bedrock\Model\Query\Exception('ORDER BY clauses cannot be used on stored procedure queries.');
 			}
 			
-			Bedrock_Common_Logger::info('Applying sorting parameters: "' . $sortParams . '"');
+			\Bedrock\Common\Logger::info('Applying sorting parameters: "' . $sortParams . '"');
 			$this->_query['sort'][] = $sortParams;
-			
-			Bedrock_Common_Logger::logExit();
 			return $this;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The specified sort parameters could not be applied to the Query object.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The specified sort parameters could not be applied to the Query object.');
 		}
 	}
 	
@@ -208,27 +185,22 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 *
 	 * @param integer $start the record number to start with
 	 * @param integer $count the total number of records to return
-	 * @return Bedrock_Model_Query the updated Query object
+	 * @return \Bedrock\Model\Query the updated Query object
 	 */
 	public function limit($start, $count) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('LIMIT clauses cannot be used on stored procedure queries.');
+				throw new \Bedrock\Model\Query\Exception('LIMIT clauses cannot be used on stored procedure queries.');
 			}
 			
-			Bedrock_Common_Logger::info('Applying start limit: ' . $start);
-			Bedrock_Common_Logger::info('Applying count limit: ' . $count);
+			\Bedrock\Common\Logger::info('Applying start limit: ' . $start);
+			\Bedrock\Common\Logger::info('Applying count limit: ' . $count);
 			$this->_query['limit'] = ' LIMIT ' . self::sanitize($start) . ', ' . self::sanitize($count);
-			
-			Bedrock_Common_Logger::logExit();
 			return $this;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The specified limit could not be applied to the Query object.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The specified limit could not be applied to the Query object.');
 		}
 	}
 	
@@ -236,15 +208,13 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * Sets the query to retrieve all records that match the supplied Record
 	 * object.
 	 *
-	 * @param Bedrock_Model_Record $record the record object against which to perform a match
-	 * @return Bedrock_Model_Query the updated Query object
+	 * @param \Bedrock\Model\Record $record the record object against which to perform a match
+	 * @return \Bedrock\Model\Query the updated Query object
 	 */
-	public static function match($record) {
-		Bedrock_Common_Logger::logEntry();
-		
+	public function match($record) {
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('MATCH clauses cannot be used on stored procedure queries.');
+				throw new \Bedrock\Model\Query\Exception('MATCH clauses cannot be used on stored procedure queries.');
 			}
 			
 			// Build Where Clause
@@ -260,36 +230,30 @@ class Bedrock_Model_Query extends Bedrock_Model {
 			
 			self::$_instance = new self($record->getProperty('table'));
 			self::$_instance->where($where);
-			
-			Bedrock_Common_Logger::logExit();
 			return  self::$_instance;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The specified record could not be used for matching.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The specified record could not be used for matching.');
 		}
 	}
 	
 	/**
 	 * Associates a record from one table with one or more records from another.
 	 *
-	 * @param Bedrock_Model_Record $firstRecord the record to associate
-	 * @param Bedrock_Model_Record $secondRecord the second record to associate, or null to use a where clause
-	 * @return Bedrock_Model_Query the resulting query object when the second record is null, allowing for a where clause
+	 * @param \Bedrock\Model\Record $firstRecord the record to associate
+	 * @param \Bedrock\Model\Record $secondRecord the second record to associate, or null to use a where clause
+	 * @return \Bedrock\Model\Query the resulting query object when the second record is null, allowing for a where clause
 	 */
 	public function associate($firstRecord, $secondRecord = NULL) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('Stored procedure queries cannot be associated with other records.');
+				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot be associated with other records.');
 			}
 			
 			if(is_null($secondRecord)) {
 				$this->reset();
 				$this->_query['associate'] = $firstRecord;
-				Bedrock_Common_Logger::logExit();
 				return $this;
 			}
 			else {
@@ -305,30 +269,30 @@ class Bedrock_Model_Query extends Bedrock_Model {
 					
 					switch($firstMapping) {	
 						default:
-						case Bedrock_Model_Table::MAP_TYPE_ONE_ONE:
-						case Bedrock_Model_Table::MAP_TYPE_ONE_MANY:
+						case \Bedrock\Model\Table::MAP_TYPE_ONE_ONE:
+						case \Bedrock\Model\Table::MAP_TYPE_ONE_MANY:
 							// Update First Record's Table
 							$firstForeignKeys = $firstTable->getForeignKeys();
 							$foreignKey = $firstForeignKeys[$secondTable->getProperty('name')]->name;
 							
 							$sql = 'UPDATE ' . $firstTable->getProperty('name') . ' SET ' . $foreignKey . ' = ' . self::sanitize($secondRecord->{$secondRecord->getPrimaryKey()}) . ' WHERE ' . $firstRecord->getPrimaryKey() . ' = ' . self::sanitize($firstRecord->{$firstRecord->getPrimaryKey()});
-							Bedrock_Common_Logger::info('Associating: "' . $sql . '"');
+							\Bedrock\Common\Logger::info('Associating: "' . $sql . '"');
 							$this->_connection->exec($sql);
 							break;
 							
-						case Bedrock_Model_Table::MAP_TYPE_MANY_ONE:
+						case \Bedrock\Model\Table::MAP_TYPE_MANY_ONE:
 							// Update Second Record's Table
 							$secondForeignKeys = $secondTable->getForeignKeys();
 							$foreignKey = $secondForeignKeys[$secondTable->getProperty('name')]->name;
 							
 							$sql = 'UPDATE ' . $secondTable->getProperty('name') . ' SET ' . $foreignKey . ' = ' . self::sanitize($firstRecord->{$firstRecord->getPrimaryKey()}) . ' WHERE ' . $secondRecord->getPrimaryKey() . ' = ' . self::sanitize($secondRecord->{$secondRecord->getPrimaryKey()});
-							Bedrock_Common_Logger::info('Associating: "' . $sql . '"');
+							\Bedrock\Common\Logger::info('Associating: "' . $sql . '"');
 							$this->_connection->exec($sql);
 							break;
 							
-						case Bedrock_Model_Table::MAP_TYPE_MANY_MANY:
+						case \Bedrock\Model\Table::MAP_TYPE_MANY_MANY:
 							// Use Mapping Table
-							$mapTableName = Bedrock_Model_Utilities::getMappingTableName($firstTable->getProperty('name'), $secondTable->getProperty('name'));
+							$mapTableName = \Bedrock\Model\Utilities::getMappingTableName($firstTable->getProperty('name'), $secondTable->getProperty('name'));
 							
 							$firstField = $firstRecord->getPrimaryKey() . '_' . $firstTable->getProperty('name');
 							$secondField = $secondRecord->getPrimaryKey() . '_' . $secondTable->getProperty('name');
@@ -338,42 +302,38 @@ class Bedrock_Model_Query extends Bedrock_Model {
 							
 							// Check for Existing Association
 							$countSql = 'SELECT COUNT(*) AS count FROM ' . $mapTableName . ' WHERE ' . $firstField . ' = ' . $firstPrimary . ' AND ' . $secondField . ' = ' . $secondPrimary;
-							Bedrock_Common_Logger::info('Checking for existing association: "' . $countSql . '"');
-							$countResult = $this->_connection->query($countSql)->fetch(PDO::FETCH_ASSOC);
+							\Bedrock\Common\Logger::info('Checking for existing association: "' . $countSql . '"');
+							$countResult = $this->_connection->query($countSql)->fetch(\PDO::FETCH_ASSOC);
 							
 							if($countResult['count'] == 0) {
 								// Add Association
 								$sql = 'INSERT INTO ' . $mapTableName . ' (' . $firstField . ', ' . $secondField . ') ' .
 										'VALUES (' . $firstPrimary . ', ' . $secondPrimary . ')';
 								
-								Bedrock_Common_Logger::info('No association found, adding: "' . $sql . '"');
+								\Bedrock\Common\Logger::info('No association found, adding: "' . $sql . '"');
 								
 								$this->_connection->exec($sql);
 							}
 							else {
-								Bedrock_Common_Logger::info('Association exists, no further action is necessary.');
+								\Bedrock\Common\Logger::info('Association exists, no further action is necessary.');
 							}
 							
 							break;
 					}
 				}
 				else {
-					throw new Bedrock_Model_Query_Exception('Records could not be associated, no compatible table mappings were found.');
+					throw new \Bedrock\Model\Query\Exception('Records could not be associated, no compatible table mappings were found.');
 				}
-				
-				Bedrock_Common_Logger::logExit();
 				return;
 			}
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('A problem with the database connection was encountered.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('A general error occurred.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('A general error occurred.');
 		}
 	}
 	
@@ -381,22 +341,19 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * Removes associations between a record from one table with one or more
 	 * records from another.
 	 *
-	 * @param Bedrock_Model_Record $firstRecord the record to dissociate
-	 * @param Bedrock_Model_Record $secondRecord the second record to dissociate, or null to use a where clause
-	 * @return Bedrock_Model_Query the resulting query object when the second record is null, allowing for a where clause
+	 * @param \Bedrock\Model\Record $firstRecord the record to dissociate
+	 * @param \Bedrock\Model\Record $secondRecord the second record to dissociate, or null to use a where clause
+	 * @return \Bedrock\Model\Query the resulting query object when the second record is null, allowing for a where clause
 	 */
 	public function dissociate($firstRecord, $secondRecord = NULL) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('Stored procedure queries cannot be associated with other records.');
+				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot be associated with other records.');
 			}
 			
 			if(is_null($secondRecord)) {
 				$this->reset();
 				$this->_query['dissociate'] = $firstRecord;
-				Bedrock_Common_Logger::logExit();
 				return $this;
 			}
 			else {
@@ -412,30 +369,30 @@ class Bedrock_Model_Query extends Bedrock_Model {
 					
 					switch($firstMapping) {
 						default:
-						case Bedrock_Model_Table::MAP_TYPE_ONE_ONE:
-						case Bedrock_Model_Table::MAP_TYPE_ONE_MANY:
+						case \Bedrock\Model\Table::MAP_TYPE_ONE_ONE:
+						case \Bedrock\Model\Table::MAP_TYPE_ONE_MANY:
 							// Update First Record's Table
 							$firstForeignKeys = $firstTable->getForeignKeys();
 							$foreignKey = $firstForeignKeys[$secondTable->getProperty('name')]->name;
 							
 							$sql = 'UPDATE ' . $firstTable->getProperty('name') . ' SET ' . $foreignKey . ' = NULL WHERE ' . $firstRecord->getPrimaryKey() . ' = ' . self::sanitize($firstRecord->{$firstRecord->getPrimaryKey()});
-							Bedrock_Common_Logger::info('Dissociating: "' . $sql . '"');
+							\Bedrock\Common\Logger::info('Dissociating: "' . $sql . '"');
 							$this->_connection->exec($sql);
 							break;
 							
-						case Bedrock_Model_Table::MAP_TYPE_MANY_ONE:
+						case \Bedrock\Model\Table::MAP_TYPE_MANY_ONE:
 							// Update Second Record's Table
 							$secondForeignKeys = $secondTable->getForeignKeys();
 							$foreignKey = $secondForeignKeys[$secondTable->getProperty('name')]->name;
 							
 							$sql = 'UPDATE ' . $secondTable->getProperty('name') . ' SET ' . $foreignKey . ' = NULL WHERE ' . $secondRecord->getPrimaryKey() . ' = ' . self::sanitize($secondRecord->{$secondRecord->getPrimaryKey()});
-							Bedrock_Common_Logger::info('Dissociating: "' . $sql . '"');
+							\Bedrock\Common\Logger::info('Dissociating: "' . $sql . '"');
 							$this->_connection->exec($sql);
 							break;
 							
-						case Bedrock_Model_Table::MAP_TYPE_MANY_MANY:
+						case \Bedrock\Model\Table::MAP_TYPE_MANY_MANY:
 							// Use Mapping Table
-							$mapTableName = Bedrock_Model_Utilities::getMappingTableName($firstTable->getProperty('name'), $secondTable->getProperty('name'));
+							$mapTableName = \Bedrock\Model\Utilities::getMappingTableName($firstTable->getProperty('name'), $secondTable->getProperty('name'));
 							
 							$firstField = $firstRecord->getPrimaryKey() . '_' . $firstTable->getProperty('name');
 							$secondField = $secondRecord->getPrimaryKey() . '_' . $secondTable->getProperty('name');
@@ -448,52 +405,50 @@ class Bedrock_Model_Query extends Bedrock_Model {
 									$firstField . ' = ' . self::sanitize($firstPrimary) . ' AND ' .
 									$secondField . ' = ' . self::sanitize($secondPrimary);
 							
-							Bedrock_Common_Logger::info('Dissociating Records: "' . $sql . '"');
+							\Bedrock\Common\Logger::info('Dissociating Records: "' . $sql . '"');
 							$this->_connection->exec($sql);
 							break;
 					}
 				}
 				else {
-					throw new Bedrock_Model_Query_Exception('Records could not be dissociated, no compatible table mappings were found.');
+					throw new \Bedrock\Model\Query\Exception('Records could not be dissociated, no compatible table mappings were found.');
 				}
-				
-				Bedrock_Common_Logger::logExit();
 				return;
 			}
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('A problem with the database connection was encountered.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The specified Record(s) could not be dissociated.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The specified Record(s) could not be dissociated.');
 		}
 	}
-	
+
 	/**
 	 * Queries for all records from the target table that are associated with
 	 * the specified record.
 	 *
-	 * @param Bedrock_Model_Record $record the record to find associations with
+	 * @param \Bedrock\Model\Record $record the record to find associations with
 	 * @param string $targetTableName the name of the target table from which to retrieve associated Records
+	 * @param array $limit
+	 *
+	 * @throws \Bedrock\Model\Query\Exception if the query fails
+	 * @return \Bedrock\Model\ResultSet the corresponding ResultSet
 	 */
-	public static function associated($record, $targetTableName, $limit = array()) {
-		Bedrock_Common_Logger::logEntry();
-		
+	public function associated($record, $targetTableName, $limit = array()) {
 		try {
 			if($this->_target == self::TARGET_PROCEDURE) {
-				throw new Bedrock_Model_Query_Exception('Stored procedure queries cannot have associated records.');
+				throw new \Bedrock\Model\Query\Exception('Stored procedure queries cannot have associated records.');
 			}
 			
 			// Setup
-			$result = new Bedrock_Model_ResultSet();
-			$connection = Bedrock_Common_Registry::get('database')->getConnection();
+			$result = new \Bedrock\Model\ResultSet();
+			$connection = \Bedrock\Common\Registry::get('database')->getConnection();
 			$recordTable = $record->getTable();
 			$recordTableName = $recordTable->getProperty('name');
-			$targetTable = new Bedrock_Model_Table(array('name' => $targetTableName));
+			$targetTable = new \Bedrock\Model\Table(array('name' => $targetTableName));
 			
 			$targetTable->load();
 			
@@ -504,10 +459,10 @@ class Bedrock_Model_Query extends Bedrock_Model {
 				// Query for Associated Records
 				switch($mappings[$targetTableName]) {
 					default:
-					case Bedrock_Model_Table::MAP_TYPE_ONE_ONE:
-					case Bedrock_Model_Table::MAP_TYPE_ONE_MANY:
+					case \Bedrock\Model\Table::MAP_TYPE_ONE_ONE:
+					case \Bedrock\Model\Table::MAP_TYPE_ONE_MANY:
 						$foreignKeys = $targetTable->getForeignKeys();
-						$query = Bedrock_Model_Query::from($targetTableName)->where($foreignKeys[$recordTableName]->name, '=', $record->{$record->getPrimaryKey()});
+						$query = \Bedrock\Model\Query::from($targetTableName)->where($foreignKeys[$recordTableName]->name, '=', $record->{$record->getPrimaryKey()});
 						
 						if(count($limit)) {
 							$query = $query->limit($limit['start'], $limit['count']);
@@ -517,9 +472,9 @@ class Bedrock_Model_Query extends Bedrock_Model {
 						
 						break;
 						
-					case Bedrock_Model_Table::MAP_TYPE_MANY_ONE:
+					case \Bedrock\Model\Table::MAP_TYPE_MANY_ONE:
 						$foreignKeys = $recordTable->getForeignKeys();
-						$query = Bedrock_Model_Query::from($targetTableName)->where($targetTable->getPrimaryKey()->name, '=', $record->{$foreignKeys[$targetTableName]->name});
+						$query = \Bedrock\Model\Query::from($targetTableName)->where($targetTable->getPrimaryKey()->name, '=', $record->{$foreignKeys[$targetTableName]->name});
 						
 						if(count($limit)) {
 							$query = $query->limit($limit['start'], $limit['count']);
@@ -529,8 +484,8 @@ class Bedrock_Model_Query extends Bedrock_Model {
 						
 						break;
 						
-					case Bedrock_Model_Table::MAP_TYPE_MANY_MANY:
-						$mappingTableName = Bedrock_Model_Utilities::getMappingTableName($recordTableName, $targetTableName);
+					case \Bedrock\Model\Table::MAP_TYPE_MANY_MANY:
+						$mappingTableName = \Bedrock\Model\Utilities::getMappingTableName($recordTableName, $targetTableName);
 						$query = 'SELECT t.* FROM ' . $targetTableName . ' t LEFT JOIN ' . $mappingTableName . ' m ON t.' . $targetTable->getPrimaryKey()->name . ' = m.' . $targetTable->getPrimaryKey()->name . '_' . $targetTableName . ' WHERE m.' . $recordTable->getPrimaryKey()->name . '_' . $recordTableName . ' = :recordPrimaryKey';
 						
 						if(count($limit)) {
@@ -539,48 +494,44 @@ class Bedrock_Model_Query extends Bedrock_Model {
 						
 						$statement = $connection->prepare($query);
 						$statement->execute(array(':recordPrimaryKey' => $record->{$record->getPrimaryKey()}));
-						$results = $statement->fetchAll(PDO::FETCH_ASSOC);
+						$results = $statement->fetchAll(\PDO::FETCH_ASSOC);
+						$records = array();
 						
 						if($results) {
 							foreach($results as $result) {
-								$records[] = new Bedrock_Model_Record($targetTableName, $result);
+								$records[] = new \Bedrock\Model\Record($targetTableName, $result);
 							}
 						}
 						
-						$result = new Bedrock_Model_ResultSet($records);
+						$result = new \Bedrock\Model\ResultSet($records);
 						$result->setCountAll(count($records));
 						break;
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('There was a problem with the database connection, associated records could not be retrieved.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('There was a problem with the database connection, associated records could not be retrieved.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('Could not retrieve associated records for the specified Record object.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('Could not retrieve associated records for the specified Record object.');
 		}
 	}
 	
 	/**
 	 * Executes the assembled query and returns the corresponding results.
 	 * 
-	 * @return Bedrock_Model_ResultSet a ResultSet object holding the corresponding results
+	 * @return \Bedrock\Model\ResultSet a ResultSet object holding the corresponding results
 	 */
 	public function execute() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$sql = '';
 			$records = array();
 			$results = array();
+			$whereClause = '';
 			
 			// Build Query
 			switch($this->_target) {
@@ -589,7 +540,6 @@ class Bedrock_Model_Query extends Bedrock_Model {
 				case self::TARGET_VIEW:
 					if($this->_table) {
 						$sql = $this->_query['from'];
-						$whereClause = '';
 						
 						if(is_array($this->_query['where'])) {
 							foreach($this->_query['where'] as $key => $where) {
@@ -730,15 +680,15 @@ class Bedrock_Model_Query extends Bedrock_Model {
 			}
 			
 			if(!$sql) {
-				$resultSet = new Bedrock_Model_ResultSet();
+				$resultSet = new \Bedrock\Model\ResultSet();
 			}
 			else {
 				// Query Database
-				Bedrock_Common_Logger::info('Executing Query: "' . $sql . '"');
+				\Bedrock\Common\Logger::info('Executing Query: "' . $sql . '"');
 				$results = $this->_connection->query($sql);
 				
 				if($results) {
-					$results = $results->fetchAll(PDO::FETCH_ASSOC);
+					$results = $results->fetchAll(\PDO::FETCH_ASSOC);
 				}
 				else {
 					$results = array();
@@ -746,19 +696,19 @@ class Bedrock_Model_Query extends Bedrock_Model {
 				
 				// Build Records
 				foreach($results as $result) {
-					Bedrock_Common_Logger::info('Adding new record to ResultSet.');
-					$records[] = new Bedrock_Model_Record($this->_table, $result);
+					\Bedrock\Common\Logger::info('Adding new record to ResultSet.');
+					$records[] = new \Bedrock\Model\Record($this->_table, $result);
 				}
 				
 				// Build ResultSet
-				$resultSet = new Bedrock_Model_ResultSet($records);
+				$resultSet = new \Bedrock\Model\ResultSet($records);
 				
 				// Determine Count
 				if($this->_query['limit']) {
 					$countSql = 'SELECT COUNT(*) AS count FROM ' . $this->_table . ' ' . $whereClause;
 					
-					Bedrock_Common_Logger::info('Executing Count Query: "' . $countSql . '"');
-					$countResult = $this->_connection->query($countSql)->fetch(PDO::FETCH_ASSOC);
+					\Bedrock\Common\Logger::info('Executing Count Query: "' . $countSql . '"');
+					$countResult = $this->_connection->query($countSql)->fetch(\PDO::FETCH_ASSOC);
 					
 					$resultSet->setCountAll($countResult['count']);
 				}
@@ -766,34 +716,28 @@ class Bedrock_Model_Query extends Bedrock_Model {
 					$resultSet->setCountAll(count($records));
 				}
 				
-				Bedrock_Common_Logger::info('Total Record Count: ' . $resultSet->countAll());
+				\Bedrock\Common\Logger::info('Total Record Count: ' . $resultSet->countAll());
 			}
 			
-			Bedrock_Common_Logger::info(array('ResultSet: "' . $sql . '" (' . $resultSet->count() . ')' , $resultSet), Bedrock_Common_Logger::TYPE_TABLE);
-			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::info(array('ResultSet: "' . $sql . '" (' . $resultSet->count() . ')' , $resultSet), \Bedrock\Common\Logger::TYPE_TABLE);
 			return $resultSet;
 		}
-		catch(PDOException $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('A problem with the database connection was encountered.');
+		catch(\PDOException $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('A problem with the database connection was encountered.');
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The Query object could not execute the stored query.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The Query object could not execute the stored query.');
 		}
 	}
 	
 	/**
 	 * Executes the assembled query and returns the first result returned.
 	 *
-	 * @return Bedrock_Model_Record the first record returned from the query
+	 * @return \Bedrock\Model\Record the first record returned from the query
 	 */
 	public function executeFirst() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = NULL;
@@ -804,14 +748,11 @@ class Bedrock_Model_Query extends Bedrock_Model {
 			if(count($resultSet) > 0) {
 				$result = $resultSet[0];
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_Query_Exception('The Query object could not query for the first record using the stored query.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\Query\Exception('The Query object could not query for the first record using the stored query.');
 		}
 	}
 	
@@ -822,8 +763,6 @@ class Bedrock_Model_Query extends Bedrock_Model {
 	 * @return string the resulting string
 	 */
 	public static function valueToString($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -855,14 +794,10 @@ class Bedrock_Model_Query extends Bedrock_Model {
 					$result = '\'' . self::sanitize($value) . '\'';
 					break;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 }
-?>

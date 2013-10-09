@@ -12,22 +12,23 @@
  * @updated 04/08/2009
  */
 
+use Bedrock\Common;
+
 // Imports
 require_once '../lib/Bedrock.php';
 require_once '../lib/Bedrock/Common.php';
 
 try {
 	// Initialize Environment
-	Bedrock_Common::init('../cfg/application.xml');
-	Bedrock_Common_Logger::logEntry();
+	Common::init('../cfg/application.xml');
+	Common\Logger::logEntry();
 
 	// Start Router
-	Bedrock_Common_Registry::get('router')->delegate();
+	Common\Registry::get('router')->delegate();
 
-	Bedrock_Common_Logger::logExit();
+	Common\Logger::logExit();
 }
-catch(Bedrock_Common_Exception $ex) {
-	Bedrock_Common_Logger::exception($ex);
-	Bedrock_Common_Logger::logExit();
+catch(Common\Exception $ex) {
+	Common\Logger::exception($ex);
+	Common\Logger::logExit();
 }
-?>

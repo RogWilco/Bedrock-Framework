@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Form;
+
 /**
  * Form Generator Class
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 05/25/2008
- * @updated 05/25/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Form_Generator extends Bedrock {
+class Generator extends \Bedrock {
 	protected $_fields;
 	protected $_name;
 	protected $_method;
@@ -869,4 +871,3 @@ class Bedrock_Common_Form_Generator extends Bedrock {
 		return $fieldString;
 	}
 }
-?>

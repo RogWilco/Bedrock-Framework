@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * A general utilities class for string manipulation, also offerring a more
  * advanced String object.
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 05/11/2009
- * @updated 05/11/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_String extends Bedrock {
+class String extends \Bedrock {
 	protected $_value = '';
 
 	/**
@@ -29,8 +31,6 @@ class Bedrock_Common_String extends Bedrock {
 	 * @return string the generated string
 	 */
 	public static function random($length = 0, $allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789') {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -39,13 +39,10 @@ class Bedrock_Common_String extends Bedrock {
 			for($i = 0; $i < $length; $i++) {
 				$result .= $allowed[mt_rand(0, $allowedLength)];
 			}
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 
@@ -57,8 +54,6 @@ class Bedrock_Common_String extends Bedrock {
 	 * @return string the simplified string
 	 */
 	public static function simplify($string) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = $string;
@@ -67,13 +62,10 @@ class Bedrock_Common_String extends Bedrock {
 			$result = trim($result);
 			$result = str_replace(' ', '_', $result);
 			$result = strtolower($result);
-
 			return $result;
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 
@@ -139,11 +131,10 @@ class Bedrock_Common_String extends Bedrock {
 	/**
 	 * Maps to the standard PHP "trim" function.
 	 *
-	 * @param string $charlist a list of characters to strip
+	 * @param string $charList a list of characters to strip
 	 * @return string the resulting string
 	 */
-	public function trim($charlist = null) {
+	public function trim($charList = null) {
 		return trim($this->_value, $charList);
 	}
 }
-?>

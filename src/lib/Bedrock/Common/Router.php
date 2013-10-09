@@ -1,4 +1,6 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Router
  *
@@ -6,11 +8,11 @@
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 02/30/2008
- * @updated 02/30/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Router extends Bedrock {
+class Router extends \Bedrock {
 	protected $_args = array();
 	protected $_delegationQueue = array();
 
@@ -49,15 +51,16 @@ class Bedrock_Common_Router extends Bedrock {
 	 * within Bedrock's controller classes.
 	 */
 	public function defaultDelegationQueue() {
-		$config = Bedrock_Common_Registry::get('config');
+		$config = \Bedrock\Common\Registry::get('config');
 
+        // TODO: Update to properly handle namespace refactored code.
 		$this->addToDelegationQueue(array(
-				'class' => $config->meta->namespace . '_Control',
+				'class' => $config->meta->namespace . '\\Control',
 				'path' => $config->root->lib . $config->meta->namespace . DIRECTORY_SEPARATOR . 'Control' . DIRECTORY_SEPARATOR
 		));
 
 		$this->addToDelegationQueue(array(
-				'class' => 'Bedrock_Control',
+				'class' => 'Bedrock\\Control',
 				'path' => $config->root->lib . 'Bedrock' . DIRECTORY_SEPARATOR . 'Control' . DIRECTORY_SEPARATOR
 		));
 	}
@@ -66,8 +69,6 @@ class Bedrock_Common_Router extends Bedrock {
 	 * Delegates the request to the proper controller.
 	 */
 	public function delegate() {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$route = '';
@@ -81,7 +82,7 @@ class Bedrock_Common_Router extends Bedrock {
                 $route = "index";
             }
 
-			Bedrock_Common_Logger::info('Route: ' . $route);
+			\Bedrock\Common\Logger::info('Route: ' . $route);
 
 			// Separate the route into parts.
 			$route = trim($route, "/\\");
@@ -89,12 +90,13 @@ class Bedrock_Common_Router extends Bedrock {
 
 			// Find Controller
 			if($parts[0] == 'query' || substr($parts[0], 0, 6) == 'query:') {
-            	$controller = new Bedrock_Control_Query();
+            	$controller = new \Bedrock\Control\Query();
             	$controller->index($parts);
             }
 			else {
 				// Handle Stored Special Cases
-            	$cases = Bedrock_Common_Router_SpecialCases::retrieve();
+            	$cases = \Bedrock\Common\Router\SpecialCases::retrieve();
+				$specialCase = null;
 
             	foreach($cases as $case) {
             		if(substr($route, 0, strlen($case['route'])) == $case['route']) {
@@ -108,6 +110,7 @@ class Bedrock_Common_Router extends Bedrock {
 
 				if(!$specialCase) {
 					$parts = array_map('ucwords', $parts);
+					$controller = null;
 
 					while($parts) {
 						// Check for ::index() method.
@@ -128,11 +131,11 @@ class Bedrock_Common_Router extends Bedrock {
 
 					// Finally, delegate to a 404 error.
 					if($controller === false) {
-						Bedrock_Common_Logger::error('No controller found using route: "' . $route . '"');
+						\Bedrock\Common\Logger::error('No controller found using route: "' . $route . '"');
 						$this->delegateToError();
 					}
 					elseif(!method_exists($controller, $action)) {
-						Bedrock_Common_Logger::error('No action found using route: "' . $route . '"');
+						\Bedrock\Common\Logger::error('No action found using route: "' . $route . '"');
 						$this->delegateToError();
 					}
 					else {
@@ -141,12 +144,9 @@ class Bedrock_Common_Router extends Bedrock {
 					}
 				}
 			}
-
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Bedrock_Common_Router_Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Bedrock\Common\Router\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 			$this->delegateToError();
 		}
 	}
@@ -159,8 +159,6 @@ class Bedrock_Common_Router extends Bedrock {
 	 * @return mixed either the controller if it exists, or false otherwise
 	 */
 	protected static function getController($delegationQueue, $route) {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$result = false;
@@ -170,21 +168,18 @@ class Bedrock_Common_Router extends Bedrock {
 				$file = array_pop($route);
 				$path = $rootController['path'] . implode(DIRECTORY_SEPARATOR, $route) . DIRECTORY_SEPARATOR;
 				$fullpath = $path . $file . '.php';
-				$class = $rootController['class'] . (count($route) > 0 ? '_' . implode('_', $route) : '') . '_' . $file;
+				$class = $rootController['class'] . (count($route) > 0 ? '\\' . implode('\\', $route) : '') . '\\' . $file;
 
 				if(is_file($fullpath) && is_readable($fullpath) && is_callable($class, $method)) {
 					$result = new $class();
 					break;
 				}
 			}
-
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Router_Exception($ex->getMessage());
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Router\Exception($ex->getMessage());
 		}
 	}
 
@@ -192,8 +187,6 @@ class Bedrock_Common_Router extends Bedrock {
 	 * Delegates the request to an error dialog.
 	 */
 	private function delegateToError() {
-		Bedrock_Common_Logger::logEntry();
-
 		try {
 			// Setup
 			$controller = false;
@@ -202,7 +195,7 @@ class Bedrock_Common_Router extends Bedrock {
 				$path = $rootController['path'] . DIRECTORY_SEPARATOR . 'Error.php';
 
 				if(is_file($path) && is_readable($path)) {
-					$class = $rootController['class'] . '_Error';
+					$class = $rootController['class'] . '\\Error';
 
 					if(method_exists($class, 'error')) {
 						$controller = new $class();
@@ -217,14 +210,10 @@ class Bedrock_Common_Router extends Bedrock {
 				$controller->type = 'HTTP404';
 				$controller->error();
 			}
-
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_Router_Exception($ex->getMessage());
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\Router\Exception($ex->getMessage());
 		}
 	}
 }
-?>

@@ -1,15 +1,18 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * Stores a result set returned from a database query.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 09/09/2008
- * @updated 09/09/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Countable, SeekableIterator {
+class ResultSet extends \Bedrock\Model implements \ArrayAccess, \Countable, \SeekableIterator {
 	protected $_records = array();
+	protected $_fullcount = null;
 	
 	/**
 	 * Initializes a resultset collection.
@@ -17,8 +20,6 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	 * @param array $records an array of records to add to the ResultSet
 	 */
 	public function __construct($records = array()) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			if($records) {
 				foreach($records as $record) {
@@ -27,13 +28,10 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 			}
 			
 			parent::__construct();
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_ResultSet_Exception('A result set cound not be initialized.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\ResultSet\Exception('A result set cound not be initialized.');
 		}
 	}
 	
@@ -43,8 +41,6 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	 * @return array an array of rows/values
 	 */
 	public function toArray() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -54,14 +50,11 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 					$result[] = $record->toArray();
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Model_ResultSet_Exception('There was a problem converting the ResultSet to an array.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Model\ResultSet\Exception('There was a problem converting the ResultSet to an array.');
 		}
 	}
 	
@@ -85,14 +78,14 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	 * Returns the requested row from the ResultSet.
 	 *
 	 * @param integer $offset the specified row to retrieve
-	 * @return Bedrock_Model_Record the corresponding record
+	 * @return \Bedrock\Model\Record the corresponding record
 	 */
 	public function offsetGet($offset) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Model_ResultSet_Exception('Records can only be accessed using a numeric offset.');
+			throw new \Bedrock\Model\ResultSet\Exception('Records can only be accessed using a numeric offset.');
 		}
 		elseif(!$this->offsetExists($offset)) {
-			throw new Bedrock_Model_ResultSet_Exception('A record does not exist at the requested offset of ' . $offset);
+			throw new \Bedrock\Model\ResultSet\Exception('A record does not exist at the requested offset of ' . $offset);
 		}
 		
 		return $this->_records[$offset];
@@ -102,14 +95,14 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	 * Sets the specified row to the specified Record object.
 	 *
 	 * @param integer $offset the offset to use
-	 * @param Bedrock_Model_Record $value the record to add
+	 * @param \Bedrock\Model\Record $value the record to add
 	 */
 	public function offsetSet($offset, $value) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Model_ResultSet_Exception('Records can only be set using a numeric offset.');
+			throw new \Bedrock\Model\ResultSet\Exception('Records can only be set using a numeric offset.');
 		}
-		elseif(get_class($value) != 'Bedrock_Model_Record') {
-			throw new Bedrock_Model_ResultSet_Exception('Attempted to add a non-record to a ResultSet object.');
+		elseif(get_class($value) != 'Bedrock\Model\Record') {
+			throw new \Bedrock\Model\ResultSet\Exception('Attempted to add a non-record to a ResultSet object.');
 		}
 		
 		$this->_records[$offset] = $value;
@@ -122,7 +115,7 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	 */
 	public function offsetUnset($offset) {
 		if(!is_numeric($offset)) {
-			throw new Bedrock_Model_ResultSet_Exception('Records can only be set using a numeric offset.');
+			throw new \Bedrock\Model\ResultSet\Exception('Records can only be set using a numeric offset.');
 		}
 		
 		unset($this->_records[$offset]);
@@ -131,7 +124,7 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	/**
 	 * Returns the currently selected Record object.
 	 *
-	 * @return Bedrock_Model_Record the record object currently selected
+	 * @return \Bedrock\Model\Record the record object currently selected
 	 */
 	public function current() {
 		return current($this->_records);
@@ -170,7 +163,7 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	/**
 	 * Returns the record object at the specified index.
 	 *
-	 * @param Bedrock_Model_Record $index
+	 * @param \Bedrock\Model\Record $index
 	 */
 	public function seek($index) {
 		// Setup
@@ -183,7 +176,7 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 		}
 		
 		if(!$this->valid()) {
-			throw new Bedrock_Model_ResultSet_Exception('Invalid index specified.');
+			throw new \Bedrock\Model\ResultSet\Exception('Invalid index specified.');
 		}
 	}
 	
@@ -200,11 +193,11 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 	/**
 	 * Adds a record to the resultset.
 	 *
-	 * @param Bedrock_Model_Record $record a record object to add to the resultset
+	 * @param \Bedrock\Model\Record $record a record object to add to the resultset
 	 */
 	public function add($record) {
-		if(get_class($record) != 'Bedrock_Model_Record') {
-			throw new Bedrock_Model_ResultSet_Exception('Attempted to add a non-record object as a record.');
+		if(get_class($record) != 'Bedrock\\Model\\Record') {
+			throw new \Bedrock\Model\ResultSet\Exception('Attempted to add a non-record object as a record.');
 		}
 		
 		$this->_records[] = $record;
@@ -246,4 +239,3 @@ class Bedrock_Model_ResultSet extends Bedrock_Model implements ArrayAccess, Coun
 		return $this->_fullcount;
 	}
 }
-?>

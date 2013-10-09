@@ -4,23 +4,26 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.0.1
  * @created 07/09/2008
- * @updated 07/09/2008
+ * @updated 08/27/2012
  */
 class Bedrock {
 	protected $_properties;
+	protected $_propertiesKey;
 	protected $_config;
 	
 	/**
 	 * Initializes the object.
 	 */
-	public function __construct(Bedrock_Common_Config $options = null) {
+	public function __construct(\Bedrock\Common\Config $options = null) {
 		$this->defaults();
-		$this->_config = Bedrock_Common_Registry::get('config');
+		$this->_config = \Bedrock\Common\Registry::get('config');
 		
-		if($options instanceof Bedrock_Common_Config) {
+		if($options instanceof \Bedrock\Common\Config) {
+			$this->_properties->unlock($this->_propertiesKey);
 			$this->_properties->merge($options);
+			$this->_propertiesKey = $this->_properties->lock();
 		}
 	}
 	
@@ -28,25 +31,15 @@ class Bedrock {
 	 * Applies all default properties for the current object. 
 	 */
 	public function defaults() {
-		$this->_properties = new Bedrock_Common_Config(array(), true);
+		$this->_properties = new \Bedrock\Common\Config(array(), true, $this->_propertiesKey);
 	}
 	
 	/**
 	 * Retrieves the publicly available properties for the object.
 	 *
-	 * @return Bedrock_Common_Config the currently stored public properties
+	 * @return \Bedrock\Common\Config the currently stored public properties
 	 */
 	public function properties() {
-		Bedrock_Common_Logger::logEntry();
-		
-		try {
-			Bedrock_Common_Logger::logExit();
-			return $this->_properties;
-		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-		}
+		return $this->_properties;
 	}
 }
-?>

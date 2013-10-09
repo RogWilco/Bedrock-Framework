@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Logger\Target;
+
 /**
  * Growl Logger Target
  *
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 06/12/2008
- * @updated 06/12/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Logger_Target_Growl extends Bedrock implements Bedrock_Common_Logger_Target_Interface {
+class Growl extends \Bedrock implements \Bedrock\Common\Logger\Target\TargetInterface {
 	const LIMIT_CHAR = 400;
 	const LIMIT_MSG = 3;
 
@@ -37,7 +39,7 @@ class Bedrock_Common_Logger_Target_Growl extends Bedrock implements Bedrock_Comm
 		$appName = $args[2];
 		
 		// Initialize Growl Notification
-		$this->_growl = new Bedrock_Common_Growl($address, $password, $appName);
+		$this->_growl = new \Bedrock\Common\Growl($address, $password, $appName);
 		$this->_growl->addNotification('logger');
 		$this->_growl->register();
 	}
@@ -84,8 +86,7 @@ class Bedrock_Common_Logger_Target_Growl extends Bedrock implements Bedrock_Comm
 			self::$_count++;
 		}
 		else {
-			throw new Bedrock_Common_Logger_Target_Exception('No Growl stream has been initialized.');
+			throw new \Bedrock\Common\Logger\Target\Exception('No Growl stream has been initialized.');
 		}
 	}
 }
-?>

@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Displays unobtrusive alerts to the user.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 10/30/2008
- * @updated 10/30/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Interface {
+class Alert extends \Bedrock implements \Bedrock\Common\Alert\AlertInterface {
 	const TYPE_BASE = 'base';
 	const TYPE_INFO = 'info';
 	const TYPE_SUCCESS = 'success';
@@ -24,16 +26,11 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 	 * methods.
 	 */
 	public function __construct() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			parent::__construct();
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -44,8 +41,6 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 	 * @return array the corresponding alerts
 	 */
 	public function __get($name) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
@@ -96,13 +91,10 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 					}
 					break;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -119,7 +111,7 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 	 * Returns the current instance of the alert object. If one does not exist,
 	 * it will be created.
 	 *
-	 * @return Payload_View_Common_Alert the resulting Alert object
+	 * @return \Bedrock\Common\Alert the resulting Alert object
 	 */
 	public static function getInstance() {
 		if(!self::$_instance) {
@@ -136,17 +128,12 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 	 * @param string $title an optional title for the alert
 	 * @param string $type the type of alert to send
 	 */
-	public static function alert($message, $title = '', $type = Bedrock_Common_Alert::TYPE_BASE) {
-		Bedrock_Common_Logger::logEntry();
-		
+	public static function alert($message, $title = '', $type = \Bedrock\Common\Alert::TYPE_BASE) {
 		try {
 			self::getInstance()->addAlert(array('message' => $message, 'title' => $title, 'type' => $type));
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -190,4 +177,3 @@ class Bedrock_Common_Alert extends Bedrock implements Bedrock_Common_Alert_Inter
 		self::alert($message, $title, self::TYPE_ERROR);
 	}
 }
-?>

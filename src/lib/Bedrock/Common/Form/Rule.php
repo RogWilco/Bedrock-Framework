@@ -1,14 +1,16 @@
 <?php
+namespace Bedrock\Common\Form;
+
 /**
  * Base rule class containing a common set of form validation rules.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 01/02/2009
- * @updated 01/02/2009
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Form_Rule extends Bedrock {
+class Rule extends \Bedrock {
 	/**
 	 * Determines whether or not the specified value is set.
 	 *
@@ -16,8 +18,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function required($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -26,13 +26,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if($value != '') {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -43,18 +40,13 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function numeric($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Check Value
 			$result = is_numeric($value);
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -65,8 +57,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function alphabetic($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -78,13 +68,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			else {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -95,18 +82,13 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function alphanumeric($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Check Value
 			$result = ctype_alnum($value);
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -119,8 +101,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function minLength($value, $length) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -128,13 +108,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(strlen($value) >= $length) {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -147,8 +124,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function maxLength($value, $length) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -157,13 +132,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(strlen($value) <= $length) {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -175,18 +147,13 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function match($valueA, $valueB) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Check Values
 			$result = $valueA === $valueB;
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -198,8 +165,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function like($valueA, $valueB) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -208,13 +173,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(strcmp(strtolower($valueA), strtolower($valueB)) == 0) {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -226,8 +188,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function whiteList($value, $allowedValues) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -236,26 +196,21 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(in_array($value, $allowedValues)) {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
 	/**
 	 * Checks if the value matches any of the specified disallowed values.
 	 *
-	 * @param mxied $value the value to check
+	 * @param mixed $value the value to check
 	 * @param array $disallowedValues an array of disallowed values
 	 * @return boolean the result of the check
 	 */
 	public static function blackList($value, $disallowedValues) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = true;
@@ -264,13 +219,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(in_array($value, $disallowedValues)) {
 				$result = false;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -281,8 +233,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function email($value) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -292,13 +242,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 			if(preg_match($pattern, $value)) {
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -310,8 +257,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function phone($value, $locale = 'US') {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -338,13 +283,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 					
 				// @todo implement support for additional locales
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -356,8 +298,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function postalCode($value, $locale = 'US') {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -375,13 +315,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 					
 				// @todo implement support for additional locales
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -393,8 +330,6 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 	 * @return boolean the result of the check
 	 */
 	public static function password($valueA, $valueB) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = false;
@@ -405,14 +340,10 @@ class Bedrock_Common_Form_Rule extends Bedrock {
 				
 				$result = true;
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 }
-?>

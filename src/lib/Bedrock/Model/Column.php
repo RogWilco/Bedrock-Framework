@@ -1,16 +1,18 @@
 <?php
+namespace Bedrock\Model;
+
 /**
  * A column object representing a table column in the database. It stores
  * properties about the column and is typically stored within a
- * Bedrock_Model_Table object.
+ * \Bedrock\Model\Table object.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 08/29/2008
- * @updated 08/29/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Model_Column extends Bedrock_Model {
+class Column extends \Bedrock\Model {
 	const FK_TYPE_NONE = 0;
 	const FK_TYPE_ONE_TO_ONE = 1;
 	const FK_TYPE_MANY_TO_MANY = 2;
@@ -63,8 +65,8 @@ class Bedrock_Model_Column extends Bedrock_Model {
 	/**
 	 * Returns the requested property.
 	 *
-	 * @param unknown_type $name
-	 * @return unknown
+	 * @param string $name the property to be retrieved
+	 * @return mixed the corresponding value
 	 */
 	public function __get($name) {
 		switch($name) {
@@ -318,7 +320,7 @@ class Bedrock_Model_Column extends Bedrock_Model {
 				break;
 				
 			default:
-				throw new Bedrock_Model_Exception('Invalid data type "' . $this->_type . '" specified.');
+				throw new \Bedrock\Model\Exception('Invalid data type "' . $this->_type . '" specified.');
 				break;
 		}
 		
@@ -422,4 +424,3 @@ class Bedrock_Model_Column extends Bedrock_Model {
 		return $type;
 	}
 }
-?>

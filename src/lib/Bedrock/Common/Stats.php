@@ -1,15 +1,17 @@
 <?php
+namespace Bedrock\Common;
+
 /**
  * Provides server stats and related information. This class currently only
  * works in a Mac OS X server evironment.
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 07/21/2008
- * @updated 07/21/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_Stats extends Bedrock {
+class Stats extends \Bedrock {
 	/**
 	 * Executes the specified command and returns the resulting output.
 	 *
@@ -17,8 +19,6 @@ class Bedrock_Common_Stats extends Bedrock {
 	 * @return string the last line of the command executed
 	 */
 	protected function execute($command, &$output = array()) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -26,7 +26,7 @@ class Bedrock_Common_Stats extends Bedrock {
 			$returnVar = NULL;
 			
 			if($command != '') {
-				Bedrock_Common_Logger::info('Executing command "' . $command . '" at location "' . '' .'"');
+				\Bedrock\Common\Logger::info('Executing command "' . $command . '" at location "' . '' .'"');
 				$result = exec($command, $output, $returnVar);
 			}
 			
@@ -38,14 +38,11 @@ class Bedrock_Common_Stats extends Bedrock {
 			
 			$result = substr($result, 0, strrpos($result, ','));
 			
-			Bedrock_Common_Logger::info('Returning result "' . $result . '"');
-			
-			Bedrock_Common_Logger::logExit();
+			\Bedrock\Common\Logger::info('Returning result "' . $result . '"');
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -55,8 +52,6 @@ class Bedrock_Common_Stats extends Bedrock {
 	 * @return string the current server's uptime
 	 */
 	public function getUptime() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -64,13 +59,10 @@ class Bedrock_Common_Stats extends Bedrock {
 			
 			// Execute Command/Parse Results
 			$result = self::execute($cmd);
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 	
@@ -80,8 +72,6 @@ class Bedrock_Common_Stats extends Bedrock {
 	 * @return string the current server's operating system
 	 */
 	public function getOperatingSystem() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
@@ -97,14 +87,10 @@ class Bedrock_Common_Stats extends Bedrock {
 			$version = trim($version[1]);
 			
 			$result = $name . ' (' . $version . ')';
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
 		}
 	}
 }
-?>

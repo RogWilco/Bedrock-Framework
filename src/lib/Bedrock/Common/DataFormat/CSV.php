@@ -1,39 +1,36 @@
 <?php
+namespace Bedrock\Common\DataFormat;
+
 /**
  * DataFormat CSV Variant
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.0
+ * @version 1.1.0
  * @created 09/26/2008
- * @updated 09/26/2008
+ * @updated 07/02/2012
  */
-class Bedrock_Common_DataFormat_CSV extends Bedrock_Common_DataFormat {
+class CSV extends \Bedrock\Common\DataFormat {
 	/**
 	 * Initializes the DataFormat object.
 	 *
 	 * @param array $data the data to use
 	 */
 	public function __construct($data = array()) {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Build Data
 			foreach($data as $key => $value) {
 				if(is_array($value)) {
-					$this->_data[$key] = new Bedrock_Common_DataFormat_CSV($value);
+					$this->_data[$key] = new self($value);
 				}
 				else {
 					$this->_data[$key] = $value;
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to construct a CSV object from the supplied data.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to construct a CSV object from the supplied data.');
 		}
 	}
 	
@@ -43,29 +40,24 @@ class Bedrock_Common_DataFormat_CSV extends Bedrock_Common_DataFormat {
 	 * @return array the currently stored data
 	 */
 	public function toArray() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = array();
 			
 			// Build Array
 			foreach($this->_data as $key => $value) {
-				if(get_class($value) == 'Bedrock_Common_DataFormat_CSV') {
+				if(get_class($value) == 'Bedrock\\Common\\DataFormat\\CSV') {
 					$result[$key] = $value->toArray();
 				}
 				else {
 					$result[$key] = $value;
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to generate an array.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate an array.');
 		}
 	}
 	
@@ -75,29 +67,23 @@ class Bedrock_Common_DataFormat_CSV extends Bedrock_Common_DataFormat {
 	 * @return string the data assembled into an CSV string
 	 */
 	public function toString() {
-		Bedrock_Common_Logger::logEntry();
-		
 		try {
 			// Setup
 			$result = '';
 			
 			foreach($this->_data as $key => $value) {
-				if(get_class($value) == 'Bedrock_Common_DataFormat_CSV') {
+				if(get_class($value) == 'Bedrock\\Common\\DataFormat\\CSV') {
 					$result .= $value->toString();
 				}
 				else {
 					$result .= $value;
 				}
 			}
-			
-			Bedrock_Common_Logger::logExit();
 			return $result;
 		}
-		catch(Exception $ex) {
-			Bedrock_Common_Logger::exception($ex);
-			Bedrock_Common_Logger::logExit();
-			throw new Bedrock_Common_DataFormat_Exception('A problem was encountered while attempting to generate a CSV string.');
+		catch(\Exception $ex) {
+			\Bedrock\Common\Logger::exception($ex);
+			throw new \Bedrock\Common\DataFormat\Exception('A problem was encountered while attempting to generate a CSV string.');
 		}
 	}
 }
-?>
