@@ -7,7 +7,7 @@
 	</tr>
 	<tr>
 		<th>Version:</th>
-		<td id="meta_version">0.3.0</td>
+		<td id="meta_version">0.3.1</td>
 	</tr>
 	<tr>
 		<th>Build:</th>
