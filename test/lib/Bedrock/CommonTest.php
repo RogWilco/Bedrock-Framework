@@ -5,9 +5,9 @@ namespace Bedrock;
  * Test: Bedrock\Common
  * 
  * @author Nick Williams
- * @version 1.0.2
+ * @version 1.0.3
  * @created 08/24/2012
- * @updated 08/27/2012
+ * @updated 09/07/2020
  */
 class CommonTest extends \Bedrock\Common\TestCase {
 	/**

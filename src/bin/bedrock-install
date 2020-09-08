@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Frameowrk Installer
+ *
+ * Installs a new barebones application.
+ *
+ * @package Bedrock
+ * @author Nick Williams
+ * @version
+ * @created
+ * @updated
+ */
+
+use Bedrock\Common\CLI;
+
+// Imports
+require_once '../lib/Bedrock/Common/CLI.php';
+
+// Process Arguments
+switch($argc) {
+    default:
+        $action = 'help';
+        
+        break;
+        
+    case 2:
+        $action = 'install';
+        $path = CLI::getArg(1);
+        
+        break;
+        
+    case 3:
+        $action = CLI::getArg(1);
+        $path = CLI::getArg(2);
+        
+        break;
+}
+
+// Apply Action
+switch($action) {
+    default:
+    case 'help':
+        
+        break;
+        
+    case 'install':
+        CLI::printLine('');
+        
+        break;
+        
+    case 'clean':
+        CLI::printLine('Cleaning project files...');
+        
+        
+        break;
+}
+
+$path = CLI::getArg(1);

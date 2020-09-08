@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Help/Usage Utility
+ *
+ * Displays information about available commands.
+ *
+ * @package Bedrock
+ * @author Nick Williams
+ * @version
+ * @created
+ * @updated
+ */
+
+use Bedrock\Common\CLI;
+
+// Imports
+require_once '../lib/Bedrock/Common/CLI.php';
+
+// Setup
+$with = '*';
+
+// Process Arguments
+if($argc > 1) {
+	$with = $argv[1];
+}
+
+// Provide Output
+if($with == '*') {
+	$overview = array(
+		array(
+			'help',
+			'Displays usage information about a command or commands.'
+		),
+		array(
+			'install',
+			'Installs a fresh Bedrock application at the specified directory.'
+		),
+		array(
+			'test',
+			'Runts PHPUnit unit tests at the specified directory or test class.'
+		)
+	);
+
+	CLI::printTabbedLayout($overview);
+}
+else {
+	passthru('./bedrock-' . $with . ' help');
+}

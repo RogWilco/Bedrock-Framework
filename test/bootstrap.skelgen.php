@@ -5,9 +5,9 @@
  * Contains all code to be executed before running phpunit-skelgen.
  * 
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.2
  * @created 8/24/2012
- * @updated 08/24/2012
+ * @updated 09/07/2020
  */
 
 // Load PHPUnit Config

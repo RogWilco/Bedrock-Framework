@@ -5,9 +5,9 @@ namespace Bedrock\Common;
  * Provides additional functionality on top of the PHPUnit TestCase class.
  * 
  * @author Nick Williams
- * @version 1.0.2
+ * @version 1.0.3
  * @created 08/24/2012
- * @updated 08/28/2012
+ * @updated 09/07/2020
  */
 class TestCase extends \PHPUnit_Framework_TestCase {
 	/**

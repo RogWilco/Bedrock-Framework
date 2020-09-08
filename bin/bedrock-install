@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Framework Installer
+ *
+ * Installs/stubs out a base framework application.
+ *
+ * @package Bedrock
+ * @author Nick Williams
+ * @version
+ * @created
+ * @updated
+ */
+
+// Setup
+$action = ($argc > 1 ? $argv[1] : 'help');
+
+// Run Action
+switch($action) {
+	default:
+	case 'help':
+		echo 'help';
+		break;
+
+
+}

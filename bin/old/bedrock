@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+
+# Setup
+META_APP="Bedrock Framework"
+META_VERSION="0.3.0"
+LINE_PREFIX=" "
+PWD="`dirname $0`"
+
+# Outputs the specified text, optionally accepting a color for the output.
+println(){
+	# Setup
+	C_BLACK="\033[0;30m"
+	C_RED="\033[0;31m"
+	C_GREEN="\033[0;32m"
+	C_YELLOW="\033[0;33m"
+	C_BLUE="\033[0;34m"
+	C_MAGENTA="\033[0;35m"
+	C_CYAN="\033[0;36m"
+	C_WHITE="\033[0;37m"
+	
+	# Default Color
+	COLOR=$C_WHITE
+	
+	# Specified Color
+	if [ $# -gt 1 ];
+	then
+		case "$2" in
+			"black")
+				COLOR=$C_BLACK
+				;;
+			
+			"red")
+				COLOR=$C_RED
+				;;
+			
+			"green")
+				COLOR=$C_GREEN
+				;;
+			
+			"yellow")
+				COLOR=$C_YELLOW
+				;;
+			
+			"blue")
+				COLOR=$C_BLUE
+				;;
+			
+			"magenta")
+				COLOR=$C_MAGENTA
+				;;
+			
+			"cyan")
+				COLOR=$C_CYAN
+				;;
+			
+			"white")
+				COLOR=$C_WHITE
+				;;
+		esac
+	fi
+	
+	echo -e "$COLOR$1"
+	tput sgr0
+}
+
+# Outputs the script header.
+printHeader() {
+	# Setup
+	OUT=$LINE_PREFIX${1/\n/\n$LINE_PREFIX}
+	
+	println
+	println "================================================================================" black
+	println "$OUT" red
+	println "================================================================================" black
+}
+
+# Outputs the specified text as an action (start or end).
+printAction() {
+	TYPE="start"
+	OUT=""
+	
+	if [ $# -gt 1 ]; then
+		OUT="$2"
+	elif [ $# -eq 1 ]; then
+		if [ "$1" == "end" ]; then
+			TYPE=$1
+		else
+			OUT=$1
+		fi
+	fi
+	
+	case "$TYPE" in
+		"start")
+			println "$LINE_PREFIX$OUT" yellow
+			println "--------------------------------------------------------------------------------" black
+			println
+			;;
+			
+		"end")
+			println
+			println "--------------------------------------------------------------------------------" black
+			println
+			;;
+	esac
+}
+
+printHeader "$META_APP $META_VERSION\nAdministration Binary 1.0.0"
+
+# Default to help if no arguments
+if [ $# -lt 1 ]; then
+	ACTION="help"
+else
+	ACTION="$1"
+fi
+
+# Delegate to sub-binary.
+if [ -e "$PWD/bedrock-$ACTION" -a -x "$PWD/bedrock-$ACTION" ];
+	then
+		if [ $ACTION == "help" -a $# -gt 1 ]; then
+			printAction "Usage: $2"
+		else
+			printAction "$ACTION"
+		fi
+		
+		shift
+		"$PWD/bedrock-$ACTION" "$@"
+	else
+		printAction "$ACTION"
+		println "Invalid command specified: $*"
+fi
+
+# case "$1" in
+# 	# Install a new empty Bedrock applicaiton.
+# 	"install")
+# 		# Action
+# 		printAction "Installing..."
+# 
+# 		;;
+# 
+# 	# Reset an existing application to the base configuration.
+# 	"reset")
+# 		# Action
+# 		printAction start "Resetting installation..."
+# 
+# 		;;
+# 
+# 	# Run unit tests.
+# 	"test")
+# 		# Action
+# 		printAction start "Running unit tests..."
+# 
+# 		cd ../test
+# 		phpunit
+# 		
+# 		printAction end
+# 		;;
+# 			
+# 	*|'help')
+# 		if [ $# -gt 1 ]; then
+# 					if [ "$1" == "help" ]; then
+# 						case "$2" in
+# 							"install")
+# 								printAction "Usage: install"
+# 								println "Installs a fresh Bedrock application at the specified location."
+# 								
+# 								;;
+# 								
+# 							"reset")
+# 								printAction "Usage: reset"
+# 								
+# 								;;
+# 								
+# 							"test")
+# 								printAction "Usage: test"
+# 								
+# 								;;
+# 						esac
+# 					fi
+# 				else
+# 					# Usage Summeary
+# 					printAction "Usage"
+# 					println "install [path ...]\t\tInstalls a fresh Bedrock application at the specified location."
+# 					println "reset [path ...]\t\tResets an existing application to the default setup."
+# 					println "test [path ...]\t\t\tRuns PHPUnit unit tests on the specified directory."
+# 				fi
+# 		;;
+# esac
+
+printAction end

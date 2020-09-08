@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <main>
+    <meta>
+      <title>Bedrock Application</title>
+      <namespace>Application</namespace>
+      <version>
+        <application>1.0.0</application>
+        <bedrock>0.1.1</bedrock>
+      </version>
+      <timezone>America/Los_Angeles</timezone>
+      <dates>
+        <installed>2012-08-21 13:24:58</installed>
+        <updated>2012-08-21 13:24:58</updated>
+      </dates>
+    </meta>
+    <root>
+      <web>/</web>
+      <system>/Users/nwilliams/Dropbox/Projects/Bedrock/src/</system>
+      <cfg>/Users/nwilliams/Dropbox/Projects/Bedrock/src/cfg/</cfg>
+      <lib>/Users/nwilliams/Dropbox/Projects/Bedrock/src/lib/</lib>
+      <log>/Users/nwilliams/Dropbox/Projects/Bedrock/src/log/</log>
+      <pub>/Users/nwilliams/Dropbox/Projects/Bedrock/src/pub/</pub>
+    </root>
+    <database>
+      <type>mysql</type>
+      <host></host>
+      <dbname></dbname>
+      <username></username>
+      <password></password>
+    </database>
+    <logger>
+      <targets>
+        <system>
+          <active>0</active>
+          <level>warn</level>
+        </system>
+        <file>
+          <active>0</active>
+          <level>warn</level>
+        </file>
+        <firephp>
+          <level>traverse</level>
+          <active>0</active>
+        </firephp>
+        <growl>
+          <level>warn</level>
+          <active>0</active>
+        </growl>
+      </targets>
+    </logger>
+    <env>
+      <os></os>
+      <file>
+        <maxsize>2097152</maxsize>
+      </file>
+      <error>E_ALL - E_NOTICE</error>
+    </env>
+    <growl>
+      <host></host>
+    </growl>
+    <cookie>
+      <name>Application</name>
+      <life>172800</life>
+    </cookie>
+  </main>
+</config>

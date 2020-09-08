@@ -5,9 +5,9 @@ namespace Bedrock;
  * Test: Bedrock\View
  * 
  * @author Nick Williams
- * @version 1.0.2
+ * @version 1.0.3
  * @created 08/27/2012
- * @updated 08/28/2012
+ * @updated 09/07/2020
  */
 class ViewTest extends \Bedrock\Common\TestCase {
 	/**
@@ -52,7 +52,8 @@ class ViewTest extends \Bedrock\Common\TestCase {
 		$this->_object->setValue('three', $mockThree);
 
 		// Assertions
-		$this->assertAttributeCount((3 + 1), '_values', $this->_object); //PHPUnit adds __phpunit_mockObjectId, so count ends up being +1
+		//$this->assertAttributeCount((3 + 1), '_values', $this->_object); //PHPUnit adds __phpunit_mockObjectId, so count ends up being +1
+		$this->assertAttributeCount(3, '_values', $this->_object);
 
 		$this->assertAttributeContains('unus', '_values', $this->_object);
 		$this->assertEquals('unus', $this->_object->getValue('one'));
@@ -81,7 +82,7 @@ class ViewTest extends \Bedrock\Common\TestCase {
 		$this->_object->three = $mockThree;
 
 		// Assertions
-		$this->assertAttributeCount((3 + 1), '_values', $this->_object); //PHPUnit adds __phpunit_mockObjectId, so count ends up being +1
+		$this->assertAttributeCount(3, '_values', $this->_object);
 
 		$this->assertAttributeContains('unus', '_values', $this->_object);
 		$this->assertEquals('unus', $this->_object->__get('one'));

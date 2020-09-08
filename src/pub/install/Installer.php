@@ -4,9 +4,9 @@
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.0.3
+ * @version 1.0.4
  * @created 04/08/2009
- * @updated 08/22/2012
+ * @updated 09/07/2020
  */
 class Installer {
 	protected static $_data = array();
@@ -57,6 +57,7 @@ class Installer {
 			array_pop($webRoot);
 			array_pop($webRoot);
 			$webRoot = '/' . implode('/', $webRoot);
+			$binRoot = $systemRoot . 'bin' . DIRECTORY_SEPARATOR;
 			
 			self::$_data = array(
 				'app_name' => 'Bedrock Application',
@@ -64,6 +65,7 @@ class Installer {
 				'app_namespace' => 'Application',
 				'bedrock_version' => '0.3.0',
 				'root' => 'default',
+				'root_bin' => $binRoot,
 				'root_web' => $webRoot,
 				'root_system' => $systemRoot,
 				'root_cfg' => $systemRoot . 'cfg' . DIRECTORY_SEPARATOR,
@@ -248,36 +250,68 @@ class Installer {
 				}
 			}
 
-			self::out('- ' . self::getValue('app_namespace') . '::Control');
-			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Control.php', self::getScriptContent('controller', self::getValue('app_namespace')))) {
-				throw new Exception('Creation of base Controller failed!');
+			self::out('- ' . self::getValue('app_namespace') . '\\CLI\\Control');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'Control.php', self::getScriptContent('cli:controller', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of base CLI controller failed!');
 			}
 
-			self::out('- ' . self::getValue('app_namespace') . '::Control::Index');
-			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Control')) {
-				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Control')) {
-					throw new Exception('Could not create the application Controller root directory.');
+			self::out('- ' . self::getValue('app_namespace') . '\\CLI\\Control\\Index');
+			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'Control')) {
+				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'Control')) {
+					throw new Exception('Could not create the application CLI Controller root directory.');
 				}
 			}
 
-			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Control' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('controller:index', self::getValue('app_namespace')))) {
-				throw new Exception('Creation of index Controller failed!');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'Control' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('cli:controller:index', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of index CLI Controller failed!');
 			}
 
-			self::out('- ' . self::getValue('app_namespace') . '::View');
-			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'View.php', self::getScriptContent('view', self::getValue('app_namespace')))) {
-				throw new Exception('Creation of base View failed!');
+			self::out('- ' . self::getValue('app_namespace') . '\\CLI\\View');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'View.php', self::getScriptContent('cli:view', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of base CLI View failed!');
 			}
 
-			self::out('- ' . self::getValue('app_namespace') . '::View::Index');
-			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'View')) {
-				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'View')) {
-					throw new Exception('Could not create the application View root directory.');
+			self::out('- ' . self::getValue('app_namespace') . '\\CLI\\View\\Index');
+			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'View')) {
+				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'View')) {
+					throw new Exception('Could not create the application CLI View root directory.');
 				}
 			}
 
-			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('view:index', self::getValue('app_namespace')))) {
-				throw new Exception('Creation of index View failed!');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'CLI' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('cli:view:index', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of index CLI View failed!');
+			}
+
+			self::out('- ' . self::getValue('app_namespace') . '\Web\Control');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Control.php', self::getScriptContent('web:controller', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of base Web controller failed!');
+			}
+
+			self::out('- ' . self::getValue('app_namespace') . '\\Web\\Control\\Index');
+			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Control')) {
+				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Control')) {
+					throw new Exception('Could not create the application Web Controller root directory.');
+				}
+			}
+
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'Control' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('web:controller:index', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of index Web Controller failed!');
+			}
+
+			self::out('- ' . self::getValue('app_namespace') . '\\Web\\View');
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'View.php', self::getScriptContent('web:view', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of base Web View failed!');
+			}
+
+			self::out('- ' . self::getValue('app_namespace') . '\\Web\\View\\Index');
+			if(!is_dir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'View')) {
+				if(!mkdir(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'View')) {
+					throw new Exception('Could not create the application Web View root directory.');
+				}
+			}
+
+			if(false === file_put_contents(self::getValue('root_lib') . self::getValue('app_namespace') . DIRECTORY_SEPARATOR . 'Web' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . 'Index.php', self::getScriptContent('web:view:index', self::getValue('app_namespace')))) {
+				throw new Exception('Creation of index Web View failed!');
 			}
 
 			self::out('Installation Complete!', 'success');
@@ -383,13 +417,13 @@ class Installer {
 		$t = "\t";
 
 		switch($script) {
-			case 'controller':
+			case 'cli:controller':
 				$result .=
 					'<?php' . $n .
-                    'namespace ' . $namespace . ';' . $n .
+                    'namespace ' . $namespace . '\\CLI;' . $n .
                     $n .
 					'/**' . $n .
-					' * Autogenerated controller class.' . $n .
+					' * Autogenerated CLI controller class.' . $n .
 					' * ' . $n .
 					' * @package ' . $namespace . $n .
 					' * @author Bedrock Framework Installer' . $n .
@@ -397,19 +431,19 @@ class Installer {
 					' * @created ' . date('m/d/Y') . $n .
 					' * @updated ' . date('m/d/Y') . $n .
 					' */' . $n .
-					'abstract class Control extends \\Bedrock\\Control {' . $n .
+					'abstract class Control extends \\Bedrock\\Control\\CLI {' . $n .
 					$t . '' . $n .
 					'}' . $n .
 					'?>';
 				break;
 
-			case 'controller:index':
+			case 'cli:controller:index':
 				$result .=
 					'<?php' . $n .
-                    'namespace ' . $namespace . '\\Control;' . $n .
+                    'namespace ' . $namespace . '\\CLI\\Control;' . $n .
                     $n .
 					'/**' . $n .
-					' * Autogenerated controller class.' . $n .
+					' * Autogenerated CLI controller class.' . $n .
 					' * ' . $n .
 					' * @package ' . $namespace . $n .
 					' * @author Bedrock Framework Installer' . $n .
@@ -417,7 +451,7 @@ class Installer {
 					' * @created ' . date('m/d/Y') . $n .
 					' * @updated ' . date('m/d/Y') . $n .
 					' */' . $n .
-					'class Index extends \\' . $namespace . '\\Control {' . $n .
+					'class Index extends \\' . $namespace . '\\CLI\\Control {' . $n .
 					$t . '/**' . $n .
 					$t . ' * The main index for the controller.' . $n .
 					$t . ' * ' . $n .
@@ -439,13 +473,13 @@ class Installer {
 					'?>';
 				break;
 
-			case 'view':
+			case 'cli:view':
 				$result .=
 					'<?php' . $n .
-                    'namespace ' . $namespace . ';' . $n .
+                    'namespace ' . $namespace . '\\CLI;' . $n .
                     $n .
                     '/**' . $n .
-					' * Autogenerated view class.' . $n .
+					' * Autogenerated CLI view class.' . $n .
 					' * ' . $n .
 					' * @package ' . $namespace . $n .
 					' * @author Bedrock Framework Installer' . $n .
@@ -453,19 +487,19 @@ class Installer {
 					' * @created ' . date('m/d/Y') . $n .
 					' * @updated ' . date('m/d/Y') . $n .
 					' */' . $n .
-					'abstract class View extends \\Bedrock\\View {' . $n .
+					'abstract class View extends \\Bedrock\\View\\CLI {' . $n .
 					$t . '' . $n .
 					'}' . $n .
 					'?>';
 				break;
 
-			case 'view:index':
+			case 'cli:view:index':
 				$result .=
 					'<?php' . $n .
-                    'namespace ' . $namespace . '\\View;' . $n .
+                    'namespace ' . $namespace . '\\CLI\\View;' . $n .
                     $n .
                     '/**' . $n .
-					' * Autogenerated view class.' . $n .
+					' * Autogenerated CLI view class.' . $n .
 					' * ' . $n .
 					' * @package ' . $namespace . $n .
 					' * @author Bedrock Framework Installer' . $n .
@@ -473,7 +507,7 @@ class Installer {
 					' * @created ' . date('m/d/Y') . $n .
 					' * @updated ' . date('m/d/Y') . $n .
 					' */' . $n .
-					'class Index extends \\' . $namespace . '\\View {' . $n .
+					'class Index extends \\' . $namespace . '\\CLI\\View {' . $n .
 					$t . '/**' . $n .
 					$t . ' * Renders the page.' . $n .
 					$t . ' * ' . $n .
@@ -517,6 +551,142 @@ class Installer {
 					$t . '}' . $n .
 					'}' . $n .
 					'?>';
+				break;
+
+			case 'web:controller':
+				$result .=
+					'<?php' . $n .
+						'namespace ' . $namespace . '\\Web;' . $n .
+						$n .
+						'/**' . $n .
+						' * Autogenerated Web controller class.' . $n .
+						' * ' . $n .
+						' * @package ' . $namespace . $n .
+						' * @author Bedrock Framework Installer' . $n .
+						' * @version 1.0.0' . $n .
+						' * @created ' . date('m/d/Y') . $n .
+						' * @updated ' . date('m/d/Y') . $n .
+						' */' . $n .
+						'abstract class Control extends \\Bedrock\\Control\\Web {' . $n .
+						$t . '' . $n .
+						'}' . $n .
+						'?>';
+				break;
+
+			case 'web:controller:index':
+				$result .=
+					'<?php' . $n .
+						'namespace ' . $namespace . '\\Web\\Control;' . $n .
+						$n .
+						'/**' . $n .
+						' * Autogenerated Web controller class.' . $n .
+						' * ' . $n .
+						' * @package ' . $namespace . $n .
+						' * @author Bedrock Framework Installer' . $n .
+						' * @version 1.0.0' . $n .
+						' * @created ' . date('m/d/Y') . $n .
+						' * @updated ' . date('m/d/Y') . $n .
+						' */' . $n .
+						'class Index extends \\' . $namespace . '\\Web\\Control {' . $n .
+						$t . '/**' . $n .
+						$t . ' * The main index for the controller.' . $n .
+						$t . ' * ' . $n .
+						$t . ' * @param array $args an array of arguments passed from the GET string' . $n .
+						$t . ' * @return null' . $n .
+						$t . ' */' . $n .
+						$t . 'public function index($args) {' . $n .
+						$t . $t . 'try {' . $n .
+						$t . $t . $t . '// Sample Output (feel free to delete this)' . $n .
+						$t . $t . $t . '$view = new \\' . $namespace . '\\View\\Index();' .  $n .
+						$t . $t . $t . '$view->setValue(\'message\', \'Bedrock Framework Application: Installation Successful!\');' . $n .
+						$t . $t . $t . '$view->render(\'test\');' . $n .
+						$t . $t . '}' . $n .
+						$t . $t . 'catch(\\Exception $ex) {' . $n .
+						$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
+						$t . $t . '}' . $n .
+						$t . '}' . $n .
+						'}' . $n .
+						'?>';
+				break;
+
+			case 'web:view':
+				$result .=
+					'<?php' . $n .
+						'namespace ' . $namespace . '\\Web;' . $n .
+						$n .
+						'/**' . $n .
+						' * Autogenerated Web view class.' . $n .
+						' * ' . $n .
+						' * @package ' . $namespace . $n .
+						' * @author Bedrock Framework Installer' . $n .
+						' * @version 1.0.0' . $n .
+						' * @created ' . date('m/d/Y') . $n .
+						' * @updated ' . date('m/d/Y') . $n .
+						' */' . $n .
+						'abstract class View extends \\Bedrock\\View\\Web {' . $n .
+						$t . '' . $n .
+						'}' . $n .
+						'?>';
+				break;
+
+			case 'web:view:index':
+				$result .=
+					'<?php' . $n .
+						'namespace ' . $namespace . '\\Web\\View;' . $n .
+						$n .
+						'/**' . $n .
+						' * Autogenerated Web view class.' . $n .
+						' * ' . $n .
+						' * @package ' . $namespace . $n .
+						' * @author Bedrock Framework Installer' . $n .
+						' * @version 1.0.0' . $n .
+						' * @created ' . date('m/d/Y') . $n .
+						' * @updated ' . date('m/d/Y') . $n .
+						' */' . $n .
+						'class Index extends \\' . $namespace . '\\Web\\View {' . $n .
+						$t . '/**' . $n .
+						$t . ' * Renders the page.' . $n .
+						$t . ' * ' . $n .
+						$t . ' * @param string $page the name of the page to render, or \'self\' for the main page' . $n .
+						$t . ' * @throws \\Bedrock\\View\\Exception' . $n .
+						$t . ' * @return void' . $n .
+						$t . ' */' . $n .
+						$t . 'public function render($page = \'self\') {' . $n .
+						$t . $t . 'try {' . $n .
+						$t . $t . $t . 'switch($page) {' . $n .
+						$t . $t . $t . $t . '// This "test" case can be removed, it is only used once following installation.' . $n .
+						$t . $t . $t . $t . 'case \'test\':' . $n .
+						$t . $t . $t . $t . $t . 'echo $this->getValue(\'message\');' . $n .
+						$t . $t . $t . $t . $t . 'break;' . $n .
+						$t . $t . $t . $t . '' . $n .
+						$t . $t . $t . $t . 'case \'self\':' . $n .
+						$t . $t . $t . $t . $t . 'include $this->_root . \'index.php\';' . $n .
+						$t . $t . $t . $t . $t . 'break;' . $n .
+						$t . $t . $t . $t . '' . $n .
+						$t . $t . $t . $t . 'case \'body\':' . $n .
+						$t . $t . $t . $t . $t . 'if(count($this->_body) > 0) {' . $n .
+						$t . $t . $t . $t . $t . $t . 'include $this->_root . array_pop($this->_body);' . $n .
+						$t . $t . $t . $t . $t . '}' . $n .
+						$t . $t . $t . $t . $t . 'break;' . $n .
+						$t . $t . $t . $t . '' . $n .
+						$t . $t . $t . $t . 'case \'javascript\':' . $n .
+						$t . $t . $t . $t . $t . 'foreach($this->_javascript as $javascript) {' . $n .
+						$t . $t . $t . $t . $t . $t . 'include $javascript;' . $n .
+						$t . $t . $t . $t . $t . '}' . $n .
+						$t . $t . $t . $t . $t . $n .
+						$t . $t . $t . $t . $t . 'break;' . $n .
+						$t . $t . $t . $t . '' . $n .
+						$t . $t . $t . $t . 'default:' . $n .
+						$t . $t . $t . $t . $t . 'break;' . $n .
+						$t . $t . $t . '}' . $n .
+						$t . $t . '}' . $n .
+						$t . $t . 'catch(\\Exception $ex) {' . $n .
+						$t . $t . $t . '\\Bedrock\\Common\\Logger::exception($ex);' . $n .
+						$t . $t . $t . 'throw new \\Bedrock\\View\\Exception(\'The view could not be rendered.\');' . $n .
+						$t . $t . '}' . $n .
+						$t . '}' . $n .
+						'}' . $n .
+						'?>';
 				break;
 		}
 

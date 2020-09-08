@@ -3,12 +3,12 @@ namespace Bedrock;
 
 /**
  * Common Utilities
- *
+ * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 03/13/2009
- * @updated 07/02/2012
+ * @updated 09/07/2020
  */
 class Common extends \Bedrock {
 	// Miscellaneous
@@ -102,7 +102,7 @@ class Common extends \Bedrock {
 			\Bedrock\Common\Session::start();
 		}
 
-		$router = new \Bedrock\Common\Router();
+		$router = new \Bedrock\Common\Router\Web();
 		\Bedrock\Common\Registry::set('router', $router);
 
 		// Execute Callback

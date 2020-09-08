@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+case "$1" in
+	"help")
+		# Version Information
+		echo "Bedrock Installer 1.0.0"
+		
+		# Usage
+		echo "Usage: install [switches] <directory>"
+		
+		# Switches
+		
+		;;
+esac

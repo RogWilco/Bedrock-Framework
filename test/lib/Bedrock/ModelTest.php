@@ -5,9 +5,9 @@ namespace Bedrock;
  * Test: Bedrock\Control
  * 
  * @author Nick Williams
- * @version 1.0.1
+ * @version 1.0.2
  * @created 08/27/2012
- * @updated 08/28/2012
+ * @updated 09/07/2020
  */
 class ModelTest extends \Bedrock\Common\TestCase {
 	/**

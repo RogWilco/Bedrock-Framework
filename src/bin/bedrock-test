@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Unit Tests
+ *
+ * Wraps unit testing functionality.
+ *
+ * @package Bedrock
+ * @author Nick Williams
+ * @version
+ * @created
+ * @updated
+ */
+
+use Bedrock\Common\CLI;
+
+// Imports
+require_once '../src/lib/Bedrock/Common/CLI.php';
+
+// Run Unit Tests
+passthru('phpunit ' . $path);

@@ -6,8 +6,8 @@ namespace Bedrock\View;
  * 
  * @package Bedrock
  * @author Nick Williams
- * @version 1.1.0
+ * @version 1.1.1
  * @created 10/23/2008
- * @updated 07/02/2012
+ * @updated 09/07/2020
  */
-class Exception extends \Exception {}
+class Exception extends \Bedrock\Common\Exception {}

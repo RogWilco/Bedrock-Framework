@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+WITH="*"
+
+if [ $# -gt 0 ]; then
+	if [ -e "bedrock-$1" ]; then
+		WITH=$1
+	fi
+fi
+
+if [ "$WITH" == "*" ]; then
+	echo "everyting"
+else
+	./"bedrock-$WITH" help
+fi

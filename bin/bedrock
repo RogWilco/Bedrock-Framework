@@ -1,0 +1,61 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Main CLI Script
+ *
+ * Provides access to ccommand line controls for various framework related tasks.
+ *
+ * @package Bedrock
+ * @author Nick Williams
+ * @version
+ * @created
+ * @updated
+ */
+
+use Bedrock\Common\CLI;
+
+// Imports
+require_once '../src/lib/Bedrock/Common/CLI.php';
+
+// Setup
+$action = 'help';
+$actionHeadings = array(
+	'help' => 'Help',
+	'install' => 'Installer',
+	'test' => 'Unit Tests'
+);
+
+// Process Arguments
+if($argc >= 2) {
+	$action = $argv[1];
+}
+
+CLI::printTitle('Bedrock Framework', ' ');
+
+// Delegate to Sub-Binary
+if(is_file('bedrock-' . $action)) {
+	$subArgs = $argv;
+	
+	array_shift($subArgs);
+	array_shift($subArgs);
+
+	$actionHeading = $action;
+
+	if(array_key_exists($action, $actionHeadings)) {
+		$actionHeading = $actionHeadings[$action];
+	}
+
+	CLI::printSectionStart($actionHeading, ' ');
+	
+	passthru('./bedrock-' . $action . ' ' . implode(' ', $subArgs));
+	
+	CLI::printSectionEnd();
+}
+else {
+	CLI::printSectionStart('Error', ' ');
+	
+	array_shift($argv);
+	CLI::printLine('Invalid command specified: ' . implode(' ', $argv));
+	
+	CLI::printSectionEnd();
+}

@@ -3,9 +3,9 @@
  * Test: Bedrock
  * 
  * @author Nick Williams
- * @version 1.0.2
+ * @version 1.0.3
  * @created 08/24/2012
- * @updated 08/27/2012
+ * @updated 09/07/2020
  */
 class BedrockTest extends \Bedrock\Common\TestCase {
 	/**
@@ -76,7 +76,7 @@ class BedrockTest extends \Bedrock\Common\TestCase {
 
 		// Assertions
 		$this->assertInstanceOf('Bedrock\\Common\\Config', $properties);
-		$this->assertCount((4 + 1), $properties); // PHPUnit adds __phpunit_mockObjectId, so count ends up being +1
+		$this->assertCount(4, $properties);
 
 		foreach($this->_mockConfig as $key => $value) {
 			$this->assertEquals($value, $properties[$key]);
