@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Bedrock" default="dist">
+	<!-- =================================================================== -->
+	<!-- Configuration                                                       -->
+	<!-- =================================================================== -->
+	<property file="./build.properties" />
+
+	<!-- Project Directories -->
+	<property name="path.src" value="./src" override="true" />
+	<property name="path.lib" value="${path.src}/lib" override="true" />
+	<property name="path.test" value="./test" override="true" />
+
+	<!-- Generated Directories -->
+	<property name="path.dist" value="./dist" override="true" />
+	<property name="path.test.coverage" value="./coverage" override="true" />
+
+	<!-- =================================================================== -->
+	<!-- Tasks                                                               -->
+	<!-- =================================================================== -->
+
+	<!-- clean -->
+	<target name="clean" description="Cleans all generated files, directories, and content.">
+		<delete dir="${path.dist}" />
+		<delete dir="${path.test.coverage}" />
+	</target>
+
+	<!-- dist._core -->
+	<target name="dist._core" hidden="true">
+		<phingcall target="clean" />
+		<mkdir dir="${path.dist}" />
+	</target>
+
+	<!-- dist -->
+	<target name="dist" description="Runs default dist target: dist.zip">
+		<phingcall target="dist.zip" />
+	</target>
+
+	<!-- dist.zip -->
+	<target name="dist.zip" depends="dist._core" description="Generates a distributable zip package.">
+		<zip destfile="${path.dist}/bedrock-${meta.version}.zip">
+			<fileset dir="${path.lib}" />
+		</zip>
+	</target>
+
+	<!-- dist.phar -->
+	<target name="dist.phar" depends="dist.zip" description="Generates a distributable phar package.">
+		<move file="${path.dist}/bedrock-${meta.version}.zip" tofile="${path.dist}/bedrock-${meta.version}.phar" overwrite="true" />
+	</target>
+
+	<!-- test -->
+	<target name="test" description="Executes all available unit tests.">
+		<phpunit configuration="test/phpunit.xml" bootstrap="test/bootstrap.php" printsummary="true" haltonfailure="false">
+			<formatter type="plain" usefile="false" />
+			<batchtest>
+				<fileset dir="${path.test}/lib">
+					<include name="**" />
+				</fileset>
+			</batchtest>
+		</phpunit>
+	</target>
+
+	<!-- test.coverage -->
+	<target name="test.coverage" depends="test" description="Generates a unit test coverage report.">
+
+	</target>
+</project>
